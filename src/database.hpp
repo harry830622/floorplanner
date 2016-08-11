@@ -1,6 +1,7 @@
 #ifndef DATABASE_HPP
 #define DATABASE_HPP
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -12,18 +13,18 @@ class Database {
   int GetOutlineWidth() const;
   int GetOutlineHeight() const;
 
-  int GetMacroIdx(std::string name) const;
+  int GetMacroIdx(const std::string& name) const;
   int GetNumMacros() const;
   std::string GetMacroName(int idx) const;
   int GetMacroWidth(int idx) const;
   int GetMacroHeight(int idx) const;
 
   int GetNumNets() const;
-  std::string GetNetName(int idx) const;
-  int GetNumNetTerminals() const;
-  int GetNetTerminalIdx(int net_idx, int idx) const;
+  int GetNumNetTerminals(int idx) const;
+  int GetNetTerminalIdx(int idx, int terminal_idx) const;
 
-  int GetTerminalIdx(std::string name) const;
+  int GetTerminalIdx(const std::string& name) const;
+  int GetNumTerminals() const;
   std::string GetTerminalName(int idx) const;
   float GetTerminalX(int idx) const;
   float GetTerminalY(int idx) const;
@@ -31,16 +32,16 @@ class Database {
   void SetOutlineWidth(int width);
   void SetOutlineHeight(int height);
 
-  int AddNewMacro(std::string name, int width, int height);
+  int AddNewMacro(const std::string& name, int width, int height);
   int AddNewNet();
-  int AddNewTerminal(std::string name, int x, int y);
+  int AddNewTerminal(const std::string& name, int x, int y);
 
-  void AddNetTerminal(int net_idx, int terminal_idx);
+  void AddNetTerminal(int idx, int terminal_idx);
 
  private:
   class Macro {
    public:
-    Macro(std::string name, int width, int height)
+    Macro(const std::string& name, int width, int height)
         : name_(name), width_(width), height_(height) {}
 
     std::string name_;
@@ -49,7 +50,7 @@ class Database {
 
   class Terminal {
    public:
-    Terminal(std::string name, float x, float y) : name_(name), x_(x), y_(y) {}
+    Terminal(const std::string& name, float x, float y) : name_(name), x_(x), y_(y) {}
 
     std::string name_;
     float x_, y_;
@@ -69,5 +70,7 @@ class Database {
   std::map<std::string, int> terminal_idxs_by_name_;
   std::vector<Net> nets_;
 };
+
+std::ostream& operator<<(std::ostream& os, const Database& database);
 
 #endif

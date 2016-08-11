@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
             }
           }
         },
-        string(" :\t"));
+        string(" :\t\r"));
 
   ifstream nets_input(argv[3]);
   int num_nets = 0;
@@ -75,19 +75,23 @@ int main(int argc, char* argv[]) {
             } else if (first_word == "NetDegree") {
               net_degree = ConvertStringTo<int>(tokens.at(1));
               net_idx = database.AddNewNet();
-              --num_nets;
             } else {
               if (num_nets != 0) {
                 if (net_degree != 0) {
                   int terminal_idx = database.GetTerminalIdx(tokens.at(0));
                   database.AddNetTerminal(net_idx, terminal_idx);
                   --net_degree;
+                  if (net_degree == 0) {
+                    --num_nets;
+                  }
                 }
               }
             }
           }
         },
-        string(" :\t"));
+        string(" :\t\r"));
+
+  cout << database << endl;
 
   Floorplanner floorplanner(database);
   floorplanner.Floorplan();
