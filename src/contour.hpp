@@ -2,21 +2,17 @@
 #define CONTOUR_HPP
 
 #include <list>
-#include "point.hpp"
-#include "macro.hpp"
 
-using namespace std;
+class Contour {
+  public:
+    Contour() : points_(1, std::make_pair(0, 0)) {}
 
-class Contour
-{
-public:
-  Contour();
+    int FindMaxY(int x_begin, int x_end) const;
 
-  list<Point> points_;
+    void Update(int x, int width, int height);
 
-  int FindMaxY(int x_begin, int x_end);
-  void Update(Macro* macro_inserted);
-  void Print();
+  private:
+    std::list<std::pair<int, int>> points_;
 };
 
 #endif
