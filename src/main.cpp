@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
         },
         string(" :\t\r"));
 
-  cout << database << endl;
+  /* cout << database << endl; */
 
   Floorplanner floorplanner(database);
   floorplanner.Floorplan();

@@ -3,7 +3,11 @@
 using namespace std;
 
 Floorplanner::Floorplanner(const Database& database) : database_(database) {
-  // TODO: Initialize floorplan.
+  for (int i = 0; i < database.GetNumMacros(); ++i) {
+    floorplan_.AddNewNode(i);
+  }
+  floorplan_.Skew();
+  cout << floorplan_ << endl;
 }
 
 void Floorplanner::Floorplan() {

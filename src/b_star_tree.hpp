@@ -1,6 +1,7 @@
 #ifndef B_STAR_TREE_HPP
 #define B_STAR_TREE_HPP
 
+#include <iostream>
 #include <vector>
 
 class BStarTree {
@@ -18,15 +19,17 @@ class BStarTree {
   int GetNodeY(int idx) const;
   bool GetNodeIsRotated(int idx) const;
 
-  BStarTree Perturb() const;
-  int CalculateWidth() const;
   int CalculateHeight() const;
+  int CalculateChipWidth() const;
+  int CalculateChipHeight() const;
+  BStarTree Perturb() const;
 
-  void SetNodeX(int idx);
-  void SetNodeY(int idx);
+  void SetNodeX(int idx, int x);
+  void SetNodeY(int idx, int y);
 
   int AddNewNode(int macro_idx);
 
+  void Skew();
   void UpdateContour(int x, int width, int height);
 
  private:
@@ -51,6 +54,8 @@ class BStarTree {
     bool is_rotated_;
   };
 
+  int Height(int root_idx) const;
+
   void Rotate(int node_idx);
   void Swap(int node_a_idx, int node_b_idx);
   void Delete(int node_idx);
@@ -59,5 +64,7 @@ class BStarTree {
   int root_idx_;
   std::vector<Node> nodes_;
 };
+
+std::ostream& operator<<(std::ostream& os, const BStarTree& b_star_tree);
 
 #endif
