@@ -8,7 +8,7 @@ class BStarTree {
  public:
   BStarTree() : root_idx_(-1) {}
 
-  int GetRootIdx() const;
+  int GetRootNodeIdx() const;
 
   int GetNumNodes() const;
   int GetNodeMacroIdx(int idx) const;
@@ -56,10 +56,10 @@ class BStarTree {
 
   int Height(int root_idx) const;
 
-  void Rotate(int node_idx);
-  void Swap(int node_a_idx, int node_b_idx);
-  void Delete(int node_idx);
-  void Insert(int node_idx);
+  void RotateNode(int idx);
+  void SwapNodes(int idx_a, int idx_b);
+  void DeleteNode(int idx);
+  void InsertNode(int idx, int target_node_idx, bool to_left);
 
   int root_idx_;
   std::vector<Node> nodes_;

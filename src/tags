@@ -13,15 +13,15 @@ BStarTree	b_star_tree.hpp	/^  BStarTree() : root_idx_(-1) {}$/;"	f	class:BStarTr
 BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
 B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
 CONTOUR_HPP	contour.hpp	2;"	d
-CalculateChipHeight	b_star_tree.cpp	/^int BStarTree::CalculateChipHeight() const {$/;"	f	class:BStarTree
-CalculateChipWidth	b_star_tree.cpp	/^int BStarTree::CalculateChipWidth() const {$/;"	f	class:BStarTree
-CalculateHeight	b_star_tree.cpp	/^int BStarTree::CalculateHeight() const {$/;"	f	class:BStarTree
+CalculateChipHeight	b_star_tree.cpp	/^int BStarTree::CalculateChipHeight() const {}$/;"	f	class:BStarTree
+CalculateChipWidth	b_star_tree.cpp	/^int BStarTree::CalculateChipWidth() const {}$/;"	f	class:BStarTree
+CalculateHeight	b_star_tree.cpp	/^int BStarTree::CalculateHeight() const { return Height(root_idx_); }$/;"	f	class:BStarTree
 Contour	contour.hpp	/^    Contour() : points_(1, std::make_pair(0, 0)) {}$/;"	f	class:Contour
 Contour	contour.hpp	/^class Contour {$/;"	c
 DATABASE_HPP	database.hpp	2;"	d
 Database	database.hpp	/^  Database() : outline_width_(0), outline_height_(0) {}$/;"	f	class:Database
 Database	database.hpp	/^class Database {$/;"	c
-Delete	b_star_tree.cpp	/^void BStarTree::Delete(int node_idx) {$/;"	f	class:BStarTree
+DeleteNode	b_star_tree.cpp	/^void BStarTree::DeleteNode(int idx) {$/;"	f	class:BStarTree
 FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 Floorplan	floorplanner.cpp	/^void Floorplanner::Floorplan() {$/;"	f	class:Floorplanner
 Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database) : database_(database) {$/;"	f	class:Floorplanner
@@ -36,38 +36,38 @@ GetNodeLeftChildIdx	b_star_tree.cpp	/^int BStarTree::GetNodeLeftChildIdx(int idx
 GetNodeMacroIdx	b_star_tree.cpp	/^int BStarTree::GetNodeMacroIdx(int idx) const {$/;"	f	class:BStarTree
 GetNodeParentIdx	b_star_tree.cpp	/^int BStarTree::GetNodeParentIdx(int idx) const {$/;"	f	class:BStarTree
 GetNodeRightChildIdx	b_star_tree.cpp	/^int BStarTree::GetNodeRightChildIdx(int idx) const {$/;"	f	class:BStarTree
-GetNodeX	b_star_tree.cpp	/^int BStarTree::GetNodeX(int idx) const {$/;"	f	class:BStarTree
-GetNodeY	b_star_tree.cpp	/^int BStarTree::GetNodeY(int idx) const {$/;"	f	class:BStarTree
+GetNodeX	b_star_tree.cpp	/^int BStarTree::GetNodeX(int idx) const { return nodes_.at(idx).x_; }$/;"	f	class:BStarTree
+GetNodeY	b_star_tree.cpp	/^int BStarTree::GetNodeY(int idx) const { return nodes_.at(idx).y_; }$/;"	f	class:BStarTree
 GetNumMacros	database.cpp	/^int Database::GetNumMacros() const { return macros_.size(); }$/;"	f	class:Database
 GetNumNetTerminals	database.cpp	/^int Database::GetNumNetTerminals(int idx) const {$/;"	f	class:Database
 GetNumNets	database.cpp	/^int Database::GetNumNets() const { return nets_.size(); }$/;"	f	class:Database
-GetNumNodes	b_star_tree.cpp	/^int BStarTree::GetNumNodes() const {$/;"	f	class:BStarTree
+GetNumNodes	b_star_tree.cpp	/^int BStarTree::GetNumNodes() const { return nodes_.size(); }$/;"	f	class:BStarTree
 GetNumTerminals	database.cpp	/^int Database::GetNumTerminals() const { return terminals_.size(); }$/;"	f	class:Database
 GetOutlineHeight	database.cpp	/^int Database::GetOutlineHeight() const { return outline_height_; }$/;"	f	class:Database
 GetOutlineWidth	database.cpp	/^int Database::GetOutlineWidth() const { return outline_width_; }$/;"	f	class:Database
-GetRootIdx	b_star_tree.cpp	/^int BStarTree::GetRootIdx() const {$/;"	f	class:BStarTree
+GetRootNodeIdx	b_star_tree.cpp	/^int BStarTree::GetRootNodeIdx() const { return root_idx_; }$/;"	f	class:BStarTree
 GetTerminalIdx	database.cpp	/^int Database::GetTerminalIdx(const string& name) const {$/;"	f	class:Database
 GetTerminalName	database.cpp	/^string Database::GetTerminalName(int idx) const {$/;"	f	class:Database
 GetTerminalX	database.cpp	/^float Database::GetTerminalX(int idx) const { return terminals_.at(idx).x_; }$/;"	f	class:Database
 GetTerminalY	database.cpp	/^float Database::GetTerminalY(int idx) const { return terminals_.at(idx).y_; }$/;"	f	class:Database
 Height	b_star_tree.cpp	/^int BStarTree::Height(int root_idx) const {$/;"	f	class:BStarTree
-Insert	b_star_tree.cpp	/^void BStarTree::Insert(int node_idx) {$/;"	f	class:BStarTree
+InsertNode	b_star_tree.cpp	/^void BStarTree::InsertNode(int idx, int target_node_idx, bool to_left) {$/;"	f	class:BStarTree
 Macro	database.hpp	/^    Macro(const std::string& name, int width, int height)$/;"	f	class:Database::Macro
 Macro	database.hpp	/^  class Macro {$/;"	c	class:Database
 Net	database.hpp	/^  class Net {$/;"	c	class:Database
 Node	b_star_tree.hpp	/^    Node(int macro_idx)$/;"	f	class:BStarTree::Node
 Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
 Perturb	b_star_tree.cpp	/^BStarTree BStarTree::Perturb() const {$/;"	f	class:BStarTree
-Rotate	b_star_tree.cpp	/^void BStarTree::Rotate(int node_idx) {$/;"	f	class:BStarTree
-SetNodeX	b_star_tree.cpp	/^void BStarTree::SetNodeX(int idx, int x) {$/;"	f	class:BStarTree
-SetNodeY	b_star_tree.cpp	/^void BStarTree::SetNodeY(int idx, int y) {$/;"	f	class:BStarTree
+RotateNode	b_star_tree.cpp	/^void BStarTree::RotateNode(int idx) {$/;"	f	class:BStarTree
+SetNodeX	b_star_tree.cpp	/^void BStarTree::SetNodeX(int idx, int x) {}$/;"	f	class:BStarTree
+SetNodeY	b_star_tree.cpp	/^void BStarTree::SetNodeY(int idx, int y) {}$/;"	f	class:BStarTree
 SetOutlineHeight	database.cpp	/^void Database::SetOutlineHeight(int height) { outline_height_ = height; }$/;"	f	class:Database
 SetOutlineWidth	database.cpp	/^void Database::SetOutlineWidth(int width) { outline_width_ = width; }$/;"	f	class:Database
 Skew	b_star_tree.cpp	/^void BStarTree::Skew() {$/;"	f	class:BStarTree
-Swap	b_star_tree.cpp	/^void BStarTree::Swap(int node_a_idx, int node_b_idx) {$/;"	f	class:BStarTree
+SwapNodes	b_star_tree.cpp	/^void BStarTree::SwapNodes(int idx_a, int idx_b) {$/;"	f	class:BStarTree
 Terminal	database.hpp	/^    Terminal(const std::string& name, float x, float y) : name_(name), x_(x), y_(y) {}$/;"	f	class:Database::Terminal
 Terminal	database.hpp	/^  class Terminal {$/;"	c	class:Database
-UpdateContour	b_star_tree.cpp	/^void BStarTree::UpdateContour(int x, int width, int height) {$/;"	f	class:BStarTree
+UpdateContour	b_star_tree.cpp	/^void BStarTree::UpdateContour(int x, int width, int height) {}$/;"	f	class:BStarTree
 best_floorplan_	floorplanner.hpp	/^  BStarTree best_floorplan_;$/;"	m	class:Floorplanner
 database_	floorplanner.hpp	/^  const Database& database_;$/;"	m	class:Floorplanner
 floorplan_	floorplanner.hpp	/^  BStarTree floorplan_;$/;"	m	class:Floorplanner

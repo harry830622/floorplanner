@@ -7,7 +7,6 @@ Floorplanner::Floorplanner(const Database& database) : database_(database) {
     floorplan_.AddNewNode(i);
   }
   floorplan_.Skew();
-  cout << floorplan_ << endl;
 }
 
 void Floorplanner::Floorplan() {

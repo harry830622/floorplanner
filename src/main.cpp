@@ -94,6 +94,8 @@ int main(int argc, char* argv[]) {
   /* cout << database << endl; */
 
   Floorplanner floorplanner(database);
+
+  srand(time(0));
   floorplanner.Floorplan();
 
   ofstream output_file(argv[4]);
