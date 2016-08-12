@@ -39,6 +39,37 @@ int BStarTree::CalculateChipHeight() const {}
 BStarTree BStarTree::Perturb() const {
   BStarTree perturbed_b_star_tree(*this);
 
+  int op = rand() % 3;
+  switch (op) {
+    case 0: {
+      int idx = rand() % nodes_.size();
+      perturbed_b_star_tree.RotateNode(idx);
+      break;
+    }
+    case 1: {
+      int idx_a = rand() % nodes_.size();
+      int idx_b = rand() % nodes_.size();
+      while (idx_a == idx_b) {
+        idx_b = rand() % nodes_.size();
+      }
+      perturbed_b_star_tree.DeleteNode(idx_a);
+      perturbed_b_star_tree.InsertNode(idx_a, idx_b,
+                                       rand() % 100 < 50 ? 'L' : 'R');
+      break;
+    }
+    case 2: {
+      int idx_a = rand() % nodes_.size();
+      int idx_b = rand() % nodes_.size();
+      while (idx_a == idx_b) {
+        idx_b = rand() % nodes_.size();
+      }
+      perturbed_b_star_tree.SwapNodes(idx_a, idx_b);
+      break;
+    }
+    default:
+      break;
+  }
+
   return perturbed_b_star_tree;
 }
 
@@ -79,61 +110,6 @@ int BStarTree::Height(int root_idx) const {
 
 void BStarTree::RotateNode(int idx) {
   nodes_.at(idx).is_rotated_ = !nodes_.at(idx).is_rotated_;
-}
-
-void BStarTree::SwapNodes(int idx_a, int idx_b) {
-  Node& node_a = nodes_.at(idx_a);
-  Node& node_b = nodes_.at(idx_b);
-
-  int node_a_parent_idx = node_a.parent_idx_;
-  if (node_a_parent_idx == -1) {
-    root_idx_ = idx_b;
-  } else {
-    Node& node_a_parent = nodes_.at(node_a_parent_idx);
-    if (node_a_parent.left_child_idx_ == idx_a) {
-      node_a_parent.left_child_idx_ = idx_b;
-    } else {
-      node_a_parent.right_child_idx_ = idx_b;
-    }
-  }
-  int node_b_parent_idx = node_b.parent_idx_;
-  if (node_b_parent_idx == -1) {
-    root_idx_ = idx_a;
-  } else {
-    Node& node_b_parent = nodes_.at(node_b_parent_idx);
-    if (node_b_parent.left_child_idx_ == idx_b) {
-      node_b_parent.left_child_idx_ = idx_a;
-    } else {
-      node_b_parent.right_child_idx_ = idx_a;
-    }
-  }
-
-  int tmp_parent_idx = node_a.parent_idx_;
-  int tmp_left_child_idx = node_a.left_child_idx_;
-  int tmp_right_child_idx = node_a.right_child_idx_;
-  node_a.parent_idx_ = node_b.parent_idx_;
-  node_a.left_child_idx_ = node_b.left_child_idx_;
-  node_a.right_child_idx_ = node_b.right_child_idx_;
-  node_b.parent_idx_ = tmp_parent_idx;
-  node_b.left_child_idx_ = tmp_left_child_idx;
-  node_b.right_child_idx_ = tmp_right_child_idx;
-
-  int node_a_left_child_idx = node_a.left_child_idx_;
-  if (node_a_left_child_idx != -1) {
-    nodes_.at(node_a_left_child_idx).parent_idx_ = idx_a;
-  }
-  int node_a_right_child_idx = node_a.right_child_idx_;
-  if (node_a_right_child_idx != -1) {
-    nodes_.at(node_a_right_child_idx).parent_idx_ = idx_a;
-  }
-  int node_b_left_child_idx = node_b.left_child_idx_;
-  if (node_b_left_child_idx != -1) {
-    nodes_.at(node_b_left_child_idx).parent_idx_ = idx_b;
-  }
-  int node_b_right_child_idx = node_b.right_child_idx_;
-  if (node_b_right_child_idx != -1) {
-    nodes_.at(node_b_right_child_idx).parent_idx_ = idx_b;
-  }
 }
 
 void BStarTree::DeleteNode(int idx) {
@@ -189,26 +165,88 @@ void BStarTree::DeleteNode(int idx) {
 
   node.parent_idx_ = -1;
   node.left_child_idx_ = -1;
-  node.right_child_idx_= -1;
+  node.right_child_idx_ = -1;
 }
 
-void BStarTree::InsertNode(int idx, int target_node_idx, bool to_left) {
+void BStarTree::InsertNode(int idx, int target_node_idx, char position) {
   Node& node = nodes_.at(idx);
   Node& target_node = nodes_.at(target_node_idx);
 
   node.parent_idx_ = target_node_idx;
-  if (to_left) {
-    node.left_child_idx_ = target_node.left_child_idx_;
-    if (node.left_child_idx_ != -1) {
-      nodes_.at(node.left_child_idx_).parent_idx_ = idx;
+  switch (position) {
+    case 'L': {
+      node.left_child_idx_ = target_node.left_child_idx_;
+      if (node.left_child_idx_ != -1) {
+        nodes_.at(node.left_child_idx_).parent_idx_ = idx;
+      }
+      target_node.left_child_idx_ = idx;
+      break;
     }
-    target_node.left_child_idx_ = idx;
+    case 'R': {
+      node.right_child_idx_ = target_node.right_child_idx_;
+      if (node.right_child_idx_ != -1) {
+        nodes_.at(node.right_child_idx_).parent_idx_ = idx;
+      }
+      target_node.right_child_idx_ = idx;
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+void BStarTree::SwapNodes(int idx_a, int idx_b) {
+  Node& node_a = nodes_.at(idx_a);
+  Node& node_b = nodes_.at(idx_b);
+
+  int node_a_parent_idx = node_a.parent_idx_;
+  if (node_a_parent_idx == -1) {
+    root_idx_ = idx_b;
   } else {
-    node.right_child_idx_ = target_node.right_child_idx_;
-    if (node.right_child_idx_ != -1) {
-      nodes_.at(node.right_child_idx_).parent_idx_ = idx;
+    Node& node_a_parent = nodes_.at(node_a_parent_idx);
+    if (node_a_parent.left_child_idx_ == idx_a) {
+      node_a_parent.left_child_idx_ = idx_b;
+    } else {
+      node_a_parent.right_child_idx_ = idx_b;
     }
-    target_node.right_child_idx_ = idx;
+  }
+  int node_b_parent_idx = node_b.parent_idx_;
+  if (node_b_parent_idx == -1) {
+    root_idx_ = idx_a;
+  } else {
+    Node& node_b_parent = nodes_.at(node_b_parent_idx);
+    if (node_b_parent.left_child_idx_ == idx_b) {
+      node_b_parent.left_child_idx_ = idx_a;
+    } else {
+      node_b_parent.right_child_idx_ = idx_a;
+    }
+  }
+
+  int tmp_parent_idx = node_a.parent_idx_;
+  int tmp_left_child_idx = node_a.left_child_idx_;
+  int tmp_right_child_idx = node_a.right_child_idx_;
+  node_a.parent_idx_ = node_b.parent_idx_;
+  node_a.left_child_idx_ = node_b.left_child_idx_;
+  node_a.right_child_idx_ = node_b.right_child_idx_;
+  node_b.parent_idx_ = tmp_parent_idx;
+  node_b.left_child_idx_ = tmp_left_child_idx;
+  node_b.right_child_idx_ = tmp_right_child_idx;
+
+  int node_a_left_child_idx = node_a.left_child_idx_;
+  if (node_a_left_child_idx != -1) {
+    nodes_.at(node_a_left_child_idx).parent_idx_ = idx_a;
+  }
+  int node_a_right_child_idx = node_a.right_child_idx_;
+  if (node_a_right_child_idx != -1) {
+    nodes_.at(node_a_right_child_idx).parent_idx_ = idx_a;
+  }
+  int node_b_left_child_idx = node_b.left_child_idx_;
+  if (node_b_left_child_idx != -1) {
+    nodes_.at(node_b_left_child_idx).parent_idx_ = idx_b;
+  }
+  int node_b_right_child_idx = node_b.right_child_idx_;
+  if (node_b_right_child_idx != -1) {
+    nodes_.at(node_b_right_child_idx).parent_idx_ = idx_b;
   }
 }
 

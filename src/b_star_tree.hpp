@@ -57,9 +57,9 @@ class BStarTree {
   int Height(int root_idx) const;
 
   void RotateNode(int idx);
-  void SwapNodes(int idx_a, int idx_b);
   void DeleteNode(int idx);
-  void InsertNode(int idx, int target_node_idx, bool to_left);
+  void InsertNode(int idx, int target_node_idx, char position);
+  void SwapNodes(int idx_a, int idx_b);
 
   int root_idx_;
   std::vector<Node> nodes_;

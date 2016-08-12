@@ -51,7 +51,7 @@ GetTerminalName	database.cpp	/^string Database::GetTerminalName(int idx) const {
 GetTerminalX	database.cpp	/^float Database::GetTerminalX(int idx) const { return terminals_.at(idx).x_; }$/;"	f	class:Database
 GetTerminalY	database.cpp	/^float Database::GetTerminalY(int idx) const { return terminals_.at(idx).y_; }$/;"	f	class:Database
 Height	b_star_tree.cpp	/^int BStarTree::Height(int root_idx) const {$/;"	f	class:BStarTree
-InsertNode	b_star_tree.cpp	/^void BStarTree::InsertNode(int idx, int target_node_idx, bool to_left) {$/;"	f	class:BStarTree
+InsertNode	b_star_tree.cpp	/^void BStarTree::InsertNode(int idx, int target_node_idx, char position) {$/;"	f	class:BStarTree
 Macro	database.hpp	/^    Macro(const std::string& name, int width, int height)$/;"	f	class:Database::Macro
 Macro	database.hpp	/^  class Macro {$/;"	c	class:Database
 Net	database.hpp	/^  class Net {$/;"	c	class:Database
