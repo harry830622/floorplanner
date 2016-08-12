@@ -43,6 +43,8 @@ class Database {
    public:
     Macro(const std::string& name, int width, int height)
         : name_(name), width_(width), height_(height) {}
+    Macro(const Macro& macro) = default;
+    Macro& operator=(const Macro& macro) = default;
 
     std::string name_;
     int width_, height_;
@@ -50,7 +52,10 @@ class Database {
 
   class Terminal {
    public:
-    Terminal(const std::string& name, float x, float y) : name_(name), x_(x), y_(y) {}
+    Terminal(const std::string& name, float x, float y)
+        : name_(name), x_(x), y_(y) {}
+    Terminal(const Terminal& terminal) = default;
+    Terminal& operator=(const Terminal& terminal) = default;
 
     std::string name_;
     float x_, y_;
@@ -59,6 +64,8 @@ class Database {
   class Net {
    public:
     Net() = default;
+    Net(const Net& net) = default;
+    Net& operator=(const Net& net) = default;
 
     std::vector<int> terminal_idxs_;
   };

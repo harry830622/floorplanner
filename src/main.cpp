@@ -93,10 +93,10 @@ int main(int argc, char* argv[]) {
 
   /* cout << database << endl; */
 
-  Floorplanner floorplanner(database);
+  Floorplanner floorplanner(database, alpha);
 
   srand(time(0));
-  floorplanner.Floorplan();
+  floorplanner.Run();
 
   ofstream output_file(argv[4]);
   // TODO: Report.

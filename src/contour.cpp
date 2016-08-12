@@ -2,9 +2,7 @@
 
 using namespace std;
 
-int Contour::FindMaxX() const {
-  return points_.back().first;
-}
+int Contour::FindMaxX() const { return points_.back().first; }
 
 int Contour::FindMaxY() const {
   return FindMaxYBetween(0, points_.back().first);

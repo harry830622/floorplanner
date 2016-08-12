@@ -1,37 +1,34 @@
 #ifndef FLOORPLANNER_HPP
 #define FLOORPLANNER_HPP
 
-#include "b_star_tree.hpp"
 #include "database.hpp"
+#include "floorplan.hpp"
 
 #include <vector>
 
 class Floorplanner {
  public:
-  Floorplanner(const Database& database);
+  Floorplanner(const Database& database, float alpha)
+      : database_(database),
+        alpha_(alpha),
+        floorplan_(database.GetNumMacros()),
+        best_floorplan_(0) {}
 
-  int GetNumMacroInstances() const;
-  std::string GetMacroInstanceName(int idx) const;
-  int GetMacroInstanceX1(int idx) const;
-  int GetMacroInstanceY1(int idx) const;
-  int GetMacroInstanceX2(int idx) const;
-  int GetMacroInstanceY2(int idx) const;
+  const Floorplan& GetBestFloorPlan() const;
 
-  int CalculateBestWidth() const;
-  int CalculateBestHeight() const;
-  float CalculateBestWireLength() const;
-
-  void Floorplan();
+  void Run();
 
  private:
-  void Pack(BStarTree& floorplan);
-  float CalculateWireLength(const BStarTree& floorplan) const;
-  float Evaluate(const BStarTree& floorplan, float alpha) const;
+  float CalculateWireLength(const Floorplan& floorplan) const;
+  float Evaluate(const Floorplan& floorplan) const;
+
+  void Pack(Floorplan& floorplan);
   void SA();
 
   const Database& database_;
-  BStarTree floorplan_;
-  BStarTree best_floorplan_;
+  float alpha_;
+  Floorplan floorplan_;
+  Floorplan best_floorplan_;
 };
 
 #endif

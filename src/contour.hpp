@@ -4,19 +4,21 @@
 #include <list>
 
 class Contour {
-  public:
-    Contour() : points_(1, std::make_pair(0, 0)) {}
+ public:
+  Contour() : points_(1, std::make_pair(0, 0)) {}
+  Contour(const Contour& contour) = default;
+  Contour& operator=(const Contour& contour) = default;
 
-    int FindMaxX() const;
-    int FindMaxY() const;
+  int FindMaxX() const;
+  int FindMaxY() const;
 
-    void Reset();
-    void Update(int x, int width, int height);
+  void Reset();
+  void Update(int x, int width, int height);
 
-  private:
-    int FindMaxYBetween(int x_begin, int x_end) const;
+ private:
+  int FindMaxYBetween(int x_begin, int x_end) const;
 
-    std::list<std::pair<int, int>> points_;
+  std::list<std::pair<int, int>> points_;
 };
 
 #endif
