@@ -32,10 +32,6 @@ bool BStarTree::GetNodeIsRotated(int idx) const {
 
 int BStarTree::CalculateHeight() const { return Height(root_idx_); }
 
-int BStarTree::CalculateChipWidth() const {}
-
-int BStarTree::CalculateChipHeight() const {}
-
 BStarTree BStarTree::Perturb() const {
   BStarTree perturbed_b_star_tree(*this);
 
@@ -94,8 +90,6 @@ void BStarTree::Skew() {
     nodes_[i].parent_idx_ = i - 1;
   }
 }
-
-void BStarTree::UpdateContour(int x, int width, int height) {}
 
 int BStarTree::Height(int root_idx) const {
   if (root_idx == -1) {

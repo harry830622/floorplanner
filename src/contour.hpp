@@ -7,11 +7,15 @@ class Contour {
   public:
     Contour() : points_(1, std::make_pair(0, 0)) {}
 
-    int FindMaxY(int x_begin, int x_end) const;
+    int FindMaxX() const;
+    int FindMaxY() const;
 
+    void Reset();
     void Update(int x, int width, int height);
 
   private:
+    int FindMaxYBetween(int x_begin, int x_end) const;
+
     std::list<std::pair<int, int>> points_;
 };
 

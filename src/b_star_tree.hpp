@@ -20,17 +20,11 @@ class BStarTree {
   bool GetNodeIsRotated(int idx) const;
 
   int CalculateHeight() const;
-  int CalculateChipWidth() const;
-  int CalculateChipHeight() const;
   BStarTree Perturb() const;
-
-  void SetNodeX(int idx, int x);
-  void SetNodeY(int idx, int y);
 
   int AddNewNode(int macro_idx);
 
   void Skew();
-  void UpdateContour(int x, int width, int height);
 
  private:
   class Node {
