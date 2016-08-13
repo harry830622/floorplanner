@@ -2,6 +2,7 @@
 #include "contour.hpp"
 
 #include <cassert>
+#include <cmath>
 
 using namespace std;
 
@@ -10,11 +11,45 @@ const Floorplan& Floorplanner::GetBestFloorPlan() const {
 }
 
 void Floorplanner::Run() {
-  for (int i = 0; i < 1000; ++i) {
-    floorplan_ = floorplan_.Perturb();
-  }
-  Pack(floorplan_);
-  best_floorplan_ = floorplan_;
+  SA();
+}
+
+float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {
+}
+
+float Floorplanner::Evaluate(const Floorplan& floorplan) {
+  const int outline_width = database_.GetOutlineWidth();
+  const int outline_height = database_.GetOutlineHeight();
+  const int width = floorplan.GetWidth();
+  const int height = floorplan.GetHeight();
+
+  /* const float k = 1.0; */
+  /* const float c_width = */
+  /*     (width - outline_width) / static_cast<float>(outline_width); */
+  /* const float c_height = */
+  /*     (height - outline_height) / static_cast<float>(outline_height); */
+  /* float cost = width * height + */
+  /*              k / 2 * (c_width * c_width + c_height * c_height) - */
+  /*              (lambda_width_ * c_width + lambda_height_ * c_height); */
+  /* lambda_width_ = lambda_width_ - k * c_width; */
+  /* lambda_height_ = lambda_height_ - k * c_height; */
+
+  /* const float penalty = 10000; */
+  /* float cost = width * height + */
+  /*              penalty * (width - outline_width) * (width - outline_width) + */
+  /*              penalty * (height - outline_height) * (height - outline_height); */
+
+  /* const float outline_ratio = */
+  /*     outline_height / static_cast<float>(outline_width); */
+  /* const float ratio = height / static_cast<float>(width); */
+  /* float cost = width * height + */
+  /*              100000000 * (ratio - outline_ratio) * (ratio - outline_ratio); */
+
+  float cost = width * height +
+               (width - outline_width) * (width - outline_width) +
+               (height - outline_height) * (height - outline_height);
+
+  return cost;
 }
 
 void Floorplanner::Pack(Floorplan& floorplan) {
@@ -80,4 +115,35 @@ void Floorplanner::Pack(Floorplan& floorplan) {
   floorplan.SetHeight(contour.FindMaxY());
 }
 
-void Floorplanner::SA() {}
+void Floorplanner::SA() {
+  const float initial_temperature = 10000000.0;
+  const float r = 0.85;
+  const int num_perturbations = floorplan_.GetNumMacroInstances() * 100;
+
+  Pack(floorplan_);
+  best_floorplan_ = floorplan_;
+  /* lambda_width_ = 1.0; */
+  /* lambda_height_ = 1.0; */
+  float last_cost = Evaluate(floorplan_);
+  float temperature = initial_temperature;
+  while (temperature > 1) {
+    for (int i = 0; i < num_perturbations; ++i) {
+      Floorplan new_floorplan = floorplan_.Perturb();
+      Pack(new_floorplan);
+
+      float cost = Evaluate(new_floorplan);
+      float cost_delta = cost - last_cost;
+      if (cost_delta < 0 || (cost_delta > 0 &&
+                             rand() / static_cast<float>(RAND_MAX) <
+                                 exp(-1 * cost_delta / temperature))) {
+        floorplan_ = new_floorplan;
+        last_cost = cost;
+      }
+      if (cost < Evaluate(best_floorplan_)) {
+        best_floorplan_ = new_floorplan;
+      }
+    }
+
+    temperature *= r;
+  }
+}

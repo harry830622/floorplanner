@@ -14,6 +14,7 @@ BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
 B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
 CONTOUR_HPP	contour.hpp	2;"	d
 CalculateHeight	b_star_tree.cpp	/^int BStarTree::CalculateHeight() const { return Height(root_idx_); }$/;"	f	class:BStarTree
+CalculateWireLength	floorplanner.cpp	/^float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {$/;"	f	class:Floorplanner
 Contour	contour.hpp	/^  Contour() : points_(1, std::make_pair(0, 0)) {}$/;"	f	class:Contour
 Contour	contour.hpp	/^class Contour {$/;"	c
 DATABASE_HPP	database.hpp	2;"	d
@@ -21,6 +22,7 @@ Database	database.hpp	/^  Database() : outline_width_(0), outline_height_(0) {}$
 Database	database.hpp	/^class Database {$/;"	c
 DeleteNode	b_star_tree.cpp	/^void BStarTree::DeleteNode(int idx) {$/;"	f	class:BStarTree
 DfsBStarTree	floorplan.cpp	/^void Floorplan::DfsBStarTree($/;"	f	class:Floorplan
+Evaluate	floorplanner.cpp	/^float Floorplanner::Evaluate(const Floorplan& floorplan) {$/;"	f	class:Floorplanner
 FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 FLOORPLAN_HPP	floorplan.hpp	2;"	d
 FindMaxX	contour.cpp	/^int Contour::FindMaxX() const { return points_.back().first; }$/;"	f	class:Contour
@@ -77,7 +79,7 @@ Pack	floorplanner.cpp	/^void Floorplanner::Pack(Floorplan& floorplan) {$/;"	f	cl
 Perturb	floorplan.cpp	/^Floorplan Floorplan::Perturb() const {$/;"	f	class:Floorplan
 Reset	contour.cpp	/^void Contour::Reset() {$/;"	f	class:Contour
 Run	floorplanner.cpp	/^void Floorplanner::Run() {$/;"	f	class:Floorplanner
-SA	floorplanner.cpp	/^void Floorplanner::SA() {}$/;"	f	class:Floorplanner
+SA	floorplanner.cpp	/^void Floorplanner::SA() {$/;"	f	class:Floorplanner
 SetHeight	floorplan.cpp	/^void Floorplan::SetHeight(int height) { height_ = height; }$/;"	f	class:Floorplan
 SetMacroInstanceX	floorplan.cpp	/^void Floorplan::SetMacroInstanceX(int idx, int x) {$/;"	f	class:Floorplan
 SetMacroInstanceY	floorplan.cpp	/^void Floorplan::SetMacroInstanceY(int idx, int y) {$/;"	f	class:Floorplan

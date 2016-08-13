@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 
   float alpha = ConvertStringTo<float>(string(argv[1]));
 
-  const int num_files = 3;
+  const int num_files = 2;
   ifstream file_streams[num_files];
   for (int i = 0; i < num_files; ++i) {
     file_streams[i].open(argv[i + 2]);
