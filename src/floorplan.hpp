@@ -3,6 +3,7 @@
 
 #include "b_star_tree.hpp"
 
+#include <functional>
 #include <vector>
 
 class Floorplan {
@@ -10,6 +11,9 @@ class Floorplan {
   Floorplan(int num_macros);
   Floorplan(const Floorplan& floorplan) = default;
   Floorplan& operator=(const Floorplan& floorplan) = default;
+
+  int GetWidth() const;
+  int GetHeight() const;
 
   const BStarTree& GetBStarTree() const;
 
@@ -19,13 +23,17 @@ class Floorplan {
   int GetMacroInstanceY(int idx) const;
   int GetMacroInstanceIsRotated(int idx) const;
 
-  int CalculateBestWidth() const;
-  int CalculateBestHeight() const;
-
   Floorplan Perturb() const;
+
+  void SetWidth(int width);
+  void SetHeight(int height);
 
   void SetMacroInstanceX(int idx, int x);
   void SetMacroInstanceY(int idx, int y);
+
+  void DfsBStarTree(
+      std::function<void(int current_idx, int parent_idx, char position)>
+          handler);
 
  private:
   class MacroInstance {
@@ -41,6 +49,8 @@ class Floorplan {
     bool is_rotated_;
   };
 
+  int width_;
+  int height_;
   BStarTree b_star_tree_;
   std::vector<MacroInstance> macro_instances_;
 };

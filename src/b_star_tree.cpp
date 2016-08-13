@@ -22,7 +22,15 @@ int BStarTree::GetNodeRightChildIdx(int idx) const {
   return nodes_.at(idx).right_child_idx_;
 }
 
+int BStarTree::GetNodeIsVisited(int idx) const {
+  return nodes_.at(idx).is_visited_;
+}
+
 int BStarTree::CalculateHeight() const { return Height(root_idx_); }
+
+void BStarTree::SetNodeIsVisited(int idx, bool is_visited) {
+  nodes_.at(idx).is_visited_ = is_visited;
+}
 
 int BStarTree::AddNewNode(int macro_instance_idx) {
   int idx = nodes_.size();
@@ -195,20 +203,20 @@ int BStarTree::Height(int root_idx) const {
 
 ostream& operator<<(ostream& os, const BStarTree& b_star_tree) {
   const int indent = 2;
-  cout << string(indent, ' ') << "root_idx_: " << b_star_tree.GetRootNodeIdx()
-       << endl;
-  cout << string(indent, ' ') << "nodes_:" << endl;
+  os << string(indent, ' ') << "root_idx_: " << b_star_tree.GetRootNodeIdx()
+     << endl;
+  os << string(indent, ' ') << "nodes_:" << endl;
   for (int i = 0; i < b_star_tree.GetNumNodes(); ++i) {
-    cout << string(indent * 2, ' ') << "Node: " << i << endl;
-    cout << string(indent * 3, ' ')
-         << "macro_instance_idx_: " << b_star_tree.GetNodeMacroInstanceIdx(i)
-         << endl;
-    cout << string(indent * 3, ' ')
-         << "parent_idx_: " << b_star_tree.GetNodeParentIdx(i) << endl;
-    cout << string(indent * 3, ' ')
-         << "left_child_idx_: " << b_star_tree.GetNodeLeftChildIdx(i) << endl;
-    cout << string(indent * 3, ' ')
-         << "right_child_idx_: " << b_star_tree.GetNodeRightChildIdx(i) << endl;
+    os << string(indent * 2, ' ') << "Node: " << i << endl;
+    os << string(indent * 3, ' ')
+       << "macro_instance_idx_: " << b_star_tree.GetNodeMacroInstanceIdx(i)
+       << endl;
+    os << string(indent * 3, ' ')
+       << "parent_idx_: " << b_star_tree.GetNodeParentIdx(i) << endl;
+    os << string(indent * 3, ' ')
+       << "left_child_idx_: " << b_star_tree.GetNodeLeftChildIdx(i) << endl;
+    os << string(indent * 3, ' ')
+       << "right_child_idx_: " << b_star_tree.GetNodeRightChildIdx(i) << endl;
   }
 
   return os;

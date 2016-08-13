@@ -91,15 +91,32 @@ int main(int argc, char* argv[]) {
         },
         string(" :\t\r"));
 
-  /* cout << database << endl; */
-
   Floorplanner floorplanner(database, alpha);
 
   srand(time(0));
   floorplanner.Run();
 
   ofstream output_file(argv[4]);
-  // TODO: Report.
+  const Floorplan& floorplan = floorplanner.GetBestFloorPlan();
+  output_file << "cost" << endl;
+  output_file << "hpwl" << endl;
+  output_file << "area" << endl;
+  output_file << floorplan.GetWidth() << " " << floorplan.GetHeight() << endl;
+  output_file << "run time" << endl;
+  for (int i = 0; i < floorplan.GetNumMacroInstances(); ++i) {
+    int x = floorplan.GetMacroInstanceX(i);
+    int y = floorplan.GetMacroInstanceY(i);
+    bool is_rotated = floorplan.GetMacroInstanceIsRotated(i);
+    int macro_idx = floorplan.GetMacroInstanceMacroIdx(i);
+    string name = database.GetMacroName(macro_idx);
+    int width = database.GetMacroWidth(macro_idx);
+    int height = database.GetMacroHeight(macro_idx);
+    if (is_rotated) {
+      swap(width, height);
+    }
+    output_file << name << " " << x << " " << y << " " << x + width << " "
+                << y + height << endl;
+  }
 
   return 0;
 }

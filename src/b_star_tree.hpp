@@ -17,8 +17,11 @@ class BStarTree {
   int GetNodeParentIdx(int idx) const;
   int GetNodeLeftChildIdx(int idx) const;
   int GetNodeRightChildIdx(int idx) const;
+  int GetNodeIsVisited(int idx) const;
 
   int CalculateHeight() const;
+
+  void SetNodeIsVisited(int idx, bool is_visited);
 
   int AddNewNode(int macro_instance_idx);
 
@@ -34,7 +37,8 @@ class BStarTree {
         : macro_instance_idx_(macro_instance_idx),
           parent_idx_(-1),
           left_child_idx_(-1),
-          right_child_idx_(-1) {}
+          right_child_idx_(-1),
+          is_visited_(false) {}
     Node(const Node& node) = default;
     Node& operator=(const Node& node) = default;
 
@@ -42,6 +46,7 @@ class BStarTree {
     int parent_idx_;
     int left_child_idx_;
     int right_child_idx_;
+    bool is_visited_;
   };
 
   int Height(int root_idx) const;
