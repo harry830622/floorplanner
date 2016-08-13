@@ -10,11 +10,17 @@ const Floorplan& Floorplanner::GetBestFloorPlan() const {
   return best_floorplan_;
 }
 
+float Floorplanner::CalculateBestWireLength() const {
+  return CalculateWireLength(best_floorplan_);
+}
+
 void Floorplanner::Run() {
   SA();
 }
 
 float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {
+  // TODO:
+  return 0.0;
 }
 
 float Floorplanner::Evaluate(const Floorplan& floorplan) {

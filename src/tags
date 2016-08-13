@@ -13,6 +13,7 @@ BStarTree	b_star_tree.hpp	/^  BStarTree() : root_idx_(-1) {}$/;"	f	class:BStarTr
 BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
 B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
 CONTOUR_HPP	contour.hpp	2;"	d
+CalculateBestWireLength	floorplanner.cpp	/^float Floorplanner::CalculateBestWireLength() const {$/;"	f	class:Floorplanner
 CalculateHeight	b_star_tree.cpp	/^int BStarTree::CalculateHeight() const { return Height(root_idx_); }$/;"	f	class:BStarTree
 CalculateWireLength	floorplanner.cpp	/^float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {$/;"	f	class:Floorplanner
 Contour	contour.hpp	/^  Contour() : points_(1, std::make_pair(0, 0)) {}$/;"	f	class:Contour

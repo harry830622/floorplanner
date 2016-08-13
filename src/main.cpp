@@ -16,6 +16,8 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  clock_t begin_time = clock();
+
   float alpha = ConvertStringTo<float>(string(argv[1]));
 
   const int num_files = 2;
@@ -96,13 +98,19 @@ int main(int argc, char* argv[]) {
   srand(time(0));
   floorplanner.Run();
 
+  clock_t run_time = clock() - begin_time;
+
   ofstream output_file(argv[4]);
   const Floorplan& floorplan = floorplanner.GetBestFloorPlan();
-  output_file << "cost" << endl;
-  output_file << "hpwl" << endl;
-  output_file << "area" << endl;
+  int width = floorplan.GetWidth();
+  int height = floorplan.GetHeight();
+  int area = width * height;
+  float wire_length = floorplanner.CalculateBestWireLength();
+  output_file << alpha * area + (1 - alpha) * wire_length << endl;
+  output_file << wire_length << endl;
+  output_file << floorplan.GetWidth() * floorplan.GetHeight() << endl;
   output_file << floorplan.GetWidth() << " " << floorplan.GetHeight() << endl;
-  output_file << "run time" << endl;
+  output_file << run_time / static_cast<float>(CLOCKS_PER_SEC) << endl;
   for (int i = 0; i < floorplan.GetNumMacroInstances(); ++i) {
     int x = floorplan.GetMacroInstanceX(i);
     int y = floorplan.GetMacroInstanceY(i);

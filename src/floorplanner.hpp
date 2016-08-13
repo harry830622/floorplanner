@@ -18,6 +18,8 @@ class Floorplanner {
 
   const Floorplan& GetBestFloorPlan() const;
 
+  float CalculateBestWireLength() const;
+
   void Run();
 
  private:
