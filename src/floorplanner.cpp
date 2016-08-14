@@ -20,6 +20,7 @@ float Floorplanner::CalculateBestWireLength() const {
 void Floorplanner::Run() { SA(); }
 
 float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {
+  // TODO: Improve speed. No need to iterate all terminals of every net.
   float wire_length = 0.0;
 
   for (int i = 0; i < database_.GetNumNets(); ++i) {
@@ -66,34 +67,20 @@ float Floorplanner::Evaluate(const Floorplan& floorplan) {
   const int width = floorplan.GetWidth();
   const int height = floorplan.GetHeight();
 
-  /* const float k = 1.0; */
-  /* const float c_width = */
-  /*     (width - outline_width) / static_cast<float>(outline_width); */
-  /* const float c_height = */
-  /*     (height - outline_height) / static_cast<float>(outline_height); */
-  /* float cost = width * height + */
-  /*              k / 2 * (c_width * c_width + c_height * c_height) - */
-  /*              (lambda_width_ * c_width + lambda_height_ * c_height); */
-  /* lambda_width_ = lambda_width_ - k * c_width; */
-  /* lambda_height_ = lambda_height_ - k * c_height; */
+  // Is augmented Lagrangian method applicable?
 
-  /* const float penalty = 10000; */
-  /* float cost = width * height + */
-  /*              penalty * (width - outline_width) * (width - outline_width) +
-   */
-  /*              penalty * (height - outline_height) * (height -
-   * outline_height); */
-
+  /* const float penalty = 100000.0; */
   /* const float outline_ratio = */
   /*     outline_height / static_cast<float>(outline_width); */
   /* const float ratio = height / static_cast<float>(width); */
-  /* float cost = width * height + */
-  /*              100000000 * (ratio - outline_ratio) * (ratio - outline_ratio);
-   */
+  /* float cost = alpha_ * width * height + */
+  /*              penalty * (ratio - outline_ratio) * (ratio - outline_ratio); */
 
-  float cost = width * height +
-               (width - outline_width) * (width - outline_width) +
-               (height - outline_height) * (height - outline_height);
+  const float penalty = 10.0;
+  float cost =
+      alpha_ * width * height + // (1 - alpha_) * CalculateWireLength(floorplan) +
+      penalty * ((width - outline_width) * (width - outline_width) +
+                 (height - outline_height) * (height - outline_height));
 
   return cost;
 }
@@ -162,14 +149,12 @@ void Floorplanner::Pack(Floorplan& floorplan) {
 }
 
 void Floorplanner::SA() {
-  const float initial_temperature = 10000000.0;
+  const float initial_temperature = 100000000.0;
   const float r = 0.85;
-  const int num_perturbations = floorplan_.GetNumMacroInstances() * 100;
+  const int num_perturbations = floorplan_.GetNumMacroInstances() * 50;
 
   Pack(floorplan_);
   best_floorplan_ = floorplan_;
-  /* lambda_width_ = 1.0; */
-  /* lambda_height_ = 1.0; */
   float last_cost = Evaluate(floorplan_);
   float temperature = initial_temperature;
   while (temperature > 1) {
