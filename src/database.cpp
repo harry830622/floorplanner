@@ -42,6 +42,10 @@ float Database::GetTerminalX(int idx) const { return terminals_.at(idx).x_; }
 
 float Database::GetTerminalY(int idx) const { return terminals_.at(idx).y_; }
 
+bool Database::HasMacro(const string& name) const {
+  return macro_idxs_by_name_.count(name) == 1;
+}
+
 void Database::SetOutlineWidth(int width) { outline_width_ = width; }
 
 void Database::SetOutlineHeight(int height) { outline_height_ = height; }

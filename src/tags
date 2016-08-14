@@ -67,6 +67,7 @@ GetTerminalName	database.cpp	/^string Database::GetTerminalName(int idx) const {
 GetTerminalX	database.cpp	/^float Database::GetTerminalX(int idx) const { return terminals_.at(idx).x_; }$/;"	f	class:Database
 GetTerminalY	database.cpp	/^float Database::GetTerminalY(int idx) const { return terminals_.at(idx).y_; }$/;"	f	class:Database
 GetWidth	floorplan.cpp	/^int Floorplan::GetWidth() const { return width_; }$/;"	f	class:Floorplan
+HasMacro	database.cpp	/^bool Database::HasMacro(const string& name) const {$/;"	f	class:Database
 Height	b_star_tree.cpp	/^int BStarTree::Height(int root_idx) const {$/;"	f	class:BStarTree
 InsertNode	b_star_tree.cpp	/^void BStarTree::InsertNode(int idx, int target_node_idx, char position) {$/;"	f	class:BStarTree
 Macro	database.hpp	/^    Macro(const std::string& name, int width, int height)$/;"	f	class:Database::Macro
@@ -79,7 +80,7 @@ Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
 Pack	floorplanner.cpp	/^void Floorplanner::Pack(Floorplan& floorplan) {$/;"	f	class:Floorplanner
 Perturb	floorplan.cpp	/^Floorplan Floorplan::Perturb() const {$/;"	f	class:Floorplan
 Reset	contour.cpp	/^void Contour::Reset() {$/;"	f	class:Contour
-Run	floorplanner.cpp	/^void Floorplanner::Run() {$/;"	f	class:Floorplanner
+Run	floorplanner.cpp	/^void Floorplanner::Run() { SA(); }$/;"	f	class:Floorplanner
 SA	floorplanner.cpp	/^void Floorplanner::SA() {$/;"	f	class:Floorplanner
 SetHeight	floorplan.cpp	/^void Floorplan::SetHeight(int height) { height_ = height; }$/;"	f	class:Floorplan
 SetMacroInstanceX	floorplan.cpp	/^void Floorplan::SetMacroInstanceX(int idx, int x) {$/;"	f	class:Floorplan

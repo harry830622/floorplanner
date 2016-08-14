@@ -1,8 +1,11 @@
 #include "floorplanner.hpp"
 #include "contour.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <limits>
+#include <utility>
 
 using namespace std;
 
@@ -14,13 +17,47 @@ float Floorplanner::CalculateBestWireLength() const {
   return CalculateWireLength(best_floorplan_);
 }
 
-void Floorplanner::Run() {
-  SA();
-}
+void Floorplanner::Run() { SA(); }
 
 float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {
-  // TODO:
-  return 0.0;
+  float wire_length = 0.0;
+
+  for (int i = 0; i < database_.GetNumNets(); ++i) {
+    float x1 = numeric_limits<float>::max();
+    float y1 = numeric_limits<float>::max();
+    float x2 = 0.0;
+    float y2 = 0.0;
+    for (int j = 0; j < database_.GetNumNetTerminals(i); ++j) {
+      int terminal_idx = database_.GetNetTerminalIdx(i, j);
+      string terminal_name = database_.GetTerminalName(terminal_idx);
+      float x, y;
+      if (database_.HasMacro(terminal_name)) {
+        int macro_idx = database_.GetMacroIdx(terminal_name);
+        int macro_instance_width = database_.GetMacroWidth(macro_idx);
+        int macro_instance_height = database_.GetMacroHeight(macro_idx);
+        int macro_instance_idx = macro_idx;
+        int macro_instance_x = floorplan.GetMacroInstanceX(macro_instance_idx);
+        int macro_instance_y = floorplan.GetMacroInstanceY(macro_instance_idx);
+        bool is_macro_instance_rotated =
+            floorplan.GetMacroInstanceIsRotated(macro_instance_idx);
+        if (is_macro_instance_rotated) {
+          swap(macro_instance_width, macro_instance_height);
+        }
+        x = macro_instance_x + macro_instance_width / 2.0;
+        y = macro_instance_y + macro_instance_height / 2.0;
+      } else {
+        x = static_cast<float>(database_.GetTerminalX(terminal_idx));
+        y = static_cast<float>(database_.GetTerminalY(terminal_idx));
+      }
+      x1 = min(x1, x);
+      y1 = min(y1, y);
+      x2 = max(x2, x);
+      y2 = max(y2, y);
+    }
+    wire_length += (x2 - x1 + y2 - y1);
+  }
+
+  return wire_length;
 }
 
 float Floorplanner::Evaluate(const Floorplan& floorplan) {
@@ -42,14 +79,17 @@ float Floorplanner::Evaluate(const Floorplan& floorplan) {
 
   /* const float penalty = 10000; */
   /* float cost = width * height + */
-  /*              penalty * (width - outline_width) * (width - outline_width) + */
-  /*              penalty * (height - outline_height) * (height - outline_height); */
+  /*              penalty * (width - outline_width) * (width - outline_width) +
+   */
+  /*              penalty * (height - outline_height) * (height -
+   * outline_height); */
 
   /* const float outline_ratio = */
   /*     outline_height / static_cast<float>(outline_width); */
   /* const float ratio = height / static_cast<float>(width); */
   /* float cost = width * height + */
-  /*              100000000 * (ratio - outline_ratio) * (ratio - outline_ratio); */
+  /*              100000000 * (ratio - outline_ratio) * (ratio - outline_ratio);
+   */
 
   float cost = width * height +
                (width - outline_width) * (width - outline_width) +

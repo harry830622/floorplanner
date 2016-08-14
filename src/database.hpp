@@ -29,6 +29,8 @@ class Database {
   float GetTerminalX(int idx) const;
   float GetTerminalY(int idx) const;
 
+  bool HasMacro(const std::string& name) const;
+
   void SetOutlineWidth(int width);
   void SetOutlineHeight(int height);
 

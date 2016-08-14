@@ -108,8 +108,8 @@ int main(int argc, char* argv[]) {
   float wire_length = floorplanner.CalculateBestWireLength();
   output_file << alpha * area + (1 - alpha) * wire_length << endl;
   output_file << wire_length << endl;
-  output_file << floorplan.GetWidth() * floorplan.GetHeight() << endl;
-  output_file << floorplan.GetWidth() << " " << floorplan.GetHeight() << endl;
+  output_file << width * height << endl;
+  output_file << width << " " << height << endl;
   output_file << run_time / static_cast<float>(CLOCKS_PER_SEC) << endl;
   for (int i = 0; i < floorplan.GetNumMacroInstances(); ++i) {
     int x = floorplan.GetMacroInstanceX(i);
