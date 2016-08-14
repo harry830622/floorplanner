@@ -1,6 +1,6 @@
 EXE = fp
 CXX = clang++
-CXXFLAGS = -std=c++14 -O3 -Wall -g
+CXXFLAGS = -std=c++14 -O2 -Wall -g
 CPPS := $(wildcard src/*.cpp)
 OBJS := $(addprefix obj/,$(notdir $(CPPS:.cpp=.o)))
 

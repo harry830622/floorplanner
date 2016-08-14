@@ -1,0 +1,151 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AddNetTerminal	database.cpp	/^void Database::AddNetTerminal(int idx, int terminal_idx) {$/;"	f	class:Database
+AddNewMacro	database.cpp	/^int Database::AddNewMacro(const string& name, int width, int height) {$/;"	f	class:Database
+AddNewNet	database.cpp	/^int Database::AddNewNet() {$/;"	f	class:Database
+AddNewNode	b_star_tree.cpp	/^int BStarTree::AddNewNode(int macro_instance_idx) {$/;"	f	class:BStarTree
+AddNewTerminal	database.cpp	/^int Database::AddNewTerminal(const string& name, int x, int y) {$/;"	f	class:Database
+BStarTree	b_star_tree.hpp	/^  BStarTree() : root_idx_(-1) {}$/;"	f	class:BStarTree
+BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
+B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
+CONTOUR_HPP	contour.hpp	2;"	d
+CalculateBestWireLength	floorplanner.cpp	/^float Floorplanner::CalculateBestWireLength() const {$/;"	f	class:Floorplanner
+CalculateHeight	b_star_tree.cpp	/^int BStarTree::CalculateHeight() const { return Height(root_idx_); }$/;"	f	class:BStarTree
+CalculateWireLength	floorplanner.cpp	/^float Floorplanner::CalculateWireLength(const Floorplan& floorplan) const {$/;"	f	class:Floorplanner
+Contour	contour.hpp	/^  Contour() : points_(1, std::make_pair(0, 0)) {}$/;"	f	class:Contour
+Contour	contour.hpp	/^class Contour {$/;"	c
+DATABASE_HPP	database.hpp	2;"	d
+Database	database.hpp	/^  Database() : outline_width_(0), outline_height_(0) {}$/;"	f	class:Database
+Database	database.hpp	/^class Database {$/;"	c
+DeleteNode	b_star_tree.cpp	/^void BStarTree::DeleteNode(int idx) {$/;"	f	class:BStarTree
+DfsBStarTree	floorplan.cpp	/^void Floorplan::DfsBStarTree($/;"	f	class:Floorplan
+Evaluate	floorplanner.cpp	/^float Floorplanner::Evaluate(const Floorplan& floorplan) {$/;"	f	class:Floorplanner
+FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
+FLOORPLAN_HPP	floorplan.hpp	2;"	d
+FindMaxX	contour.cpp	/^int Contour::FindMaxX() const { return points_.back().first; }$/;"	f	class:Contour
+FindMaxY	contour.cpp	/^int Contour::FindMaxY() const {$/;"	f	class:Contour
+FindMaxYBetween	contour.cpp	/^int Contour::FindMaxYBetween(int x_begin, int x_end) const {$/;"	f	class:Contour
+Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros) : width_(0), height_(0) {$/;"	f	class:Floorplan
+Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
+Floorplanner	floorplanner.hpp	/^  Floorplanner(const Database& database, float alpha)$/;"	f	class:Floorplanner
+Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
+GetBStarTree	floorplan.cpp	/^const BStarTree& Floorplan::GetBStarTree() const { return b_star_tree_; }$/;"	f	class:Floorplan
+GetBestFloorPlan	floorplanner.cpp	/^const Floorplan& Floorplanner::GetBestFloorPlan() const {$/;"	f	class:Floorplanner
+GetHeight	floorplan.cpp	/^int Floorplan::GetHeight() const { return height_; }$/;"	f	class:Floorplan
+GetMacroHeight	database.cpp	/^int Database::GetMacroHeight(int idx) const { return macros_.at(idx).height_; }$/;"	f	class:Database
+GetMacroIdx	database.cpp	/^int Database::GetMacroIdx(const string& name) const {$/;"	f	class:Database
+GetMacroInstanceIsRotated	floorplan.cpp	/^int Floorplan::GetMacroInstanceIsRotated(int idx) const {$/;"	f	class:Floorplan
+GetMacroInstanceMacroIdx	floorplan.cpp	/^int Floorplan::GetMacroInstanceMacroIdx(int idx) const {$/;"	f	class:Floorplan
+GetMacroInstanceX	floorplan.cpp	/^int Floorplan::GetMacroInstanceX(int idx) const {$/;"	f	class:Floorplan
+GetMacroInstanceY	floorplan.cpp	/^int Floorplan::GetMacroInstanceY(int idx) const {$/;"	f	class:Floorplan
+GetMacroName	database.cpp	/^string Database::GetMacroName(int idx) const { return macros_.at(idx).name_; }$/;"	f	class:Database
+GetMacroWidth	database.cpp	/^int Database::GetMacroWidth(int idx) const { return macros_.at(idx).width_; }$/;"	f	class:Database
+GetNetTerminalIdx	database.cpp	/^int Database::GetNetTerminalIdx(int idx, int terminal_idx) const {$/;"	f	class:Database
+GetNodeIsVisited	b_star_tree.cpp	/^int BStarTree::GetNodeIsVisited(int idx) const {$/;"	f	class:BStarTree
+GetNodeLeftChildIdx	b_star_tree.cpp	/^int BStarTree::GetNodeLeftChildIdx(int idx) const {$/;"	f	class:BStarTree
+GetNodeMacroInstanceIdx	b_star_tree.cpp	/^int BStarTree::GetNodeMacroInstanceIdx(int idx) const {$/;"	f	class:BStarTree
+GetNodeParentIdx	b_star_tree.cpp	/^int BStarTree::GetNodeParentIdx(int idx) const {$/;"	f	class:BStarTree
+GetNodeRightChildIdx	b_star_tree.cpp	/^int BStarTree::GetNodeRightChildIdx(int idx) const {$/;"	f	class:BStarTree
+GetNumMacroInstances	floorplan.cpp	/^int Floorplan::GetNumMacroInstances() const { return macro_instances_.size(); }$/;"	f	class:Floorplan
+GetNumMacros	database.cpp	/^int Database::GetNumMacros() const { return macros_.size(); }$/;"	f	class:Database
+GetNumNetTerminals	database.cpp	/^int Database::GetNumNetTerminals(int idx) const {$/;"	f	class:Database
+GetNumNets	database.cpp	/^int Database::GetNumNets() const { return nets_.size(); }$/;"	f	class:Database
+GetNumNodes	b_star_tree.cpp	/^int BStarTree::GetNumNodes() const { return nodes_.size(); }$/;"	f	class:BStarTree
+GetNumPoints	contour.cpp	/^int Contour::GetNumPoints() const { return points_.size(); }$/;"	f	class:Contour
+GetNumTerminals	database.cpp	/^int Database::GetNumTerminals() const { return terminals_.size(); }$/;"	f	class:Database
+GetOutlineHeight	database.cpp	/^int Database::GetOutlineHeight() const { return outline_height_; }$/;"	f	class:Database
+GetOutlineWidth	database.cpp	/^int Database::GetOutlineWidth() const { return outline_width_; }$/;"	f	class:Database
+GetPointX	contour.cpp	/^int Contour::GetPointX(int idx) const {$/;"	f	class:Contour
+GetPointY	contour.cpp	/^int Contour::GetPointY(int idx) const {$/;"	f	class:Contour
+GetRootNodeIdx	b_star_tree.cpp	/^int BStarTree::GetRootNodeIdx() const { return root_idx_; }$/;"	f	class:BStarTree
+GetTerminalIdx	database.cpp	/^int Database::GetTerminalIdx(const string& name) const {$/;"	f	class:Database
+GetTerminalName	database.cpp	/^string Database::GetTerminalName(int idx) const {$/;"	f	class:Database
+GetTerminalX	database.cpp	/^float Database::GetTerminalX(int idx) const { return terminals_.at(idx).x_; }$/;"	f	class:Database
+GetTerminalY	database.cpp	/^float Database::GetTerminalY(int idx) const { return terminals_.at(idx).y_; }$/;"	f	class:Database
+GetWidth	floorplan.cpp	/^int Floorplan::GetWidth() const { return width_; }$/;"	f	class:Floorplan
+HasMacro	database.cpp	/^bool Database::HasMacro(const string& name) const {$/;"	f	class:Database
+Height	b_star_tree.cpp	/^int BStarTree::Height(int root_idx) const {$/;"	f	class:BStarTree
+InsertNode	b_star_tree.cpp	/^void BStarTree::InsertNode(int idx, int target_node_idx, char position) {$/;"	f	class:BStarTree
+Macro	database.hpp	/^    Macro(const std::string& name, int width, int height)$/;"	f	class:Database::Macro
+Macro	database.hpp	/^  class Macro {$/;"	c	class:Database
+MacroInstance	floorplan.hpp	/^    MacroInstance(int macro_idx)$/;"	f	class:Floorplan::MacroInstance
+MacroInstance	floorplan.hpp	/^  class MacroInstance {$/;"	c	class:Floorplan
+Net	database.hpp	/^  class Net {$/;"	c	class:Database
+Node	b_star_tree.hpp	/^    Node(int macro_instance_idx)$/;"	f	class:BStarTree::Node
+Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
+Pack	floorplanner.cpp	/^void Floorplanner::Pack(Floorplan& floorplan) {$/;"	f	class:Floorplanner
+Perturb	floorplan.cpp	/^Floorplan Floorplan::Perturb() const {$/;"	f	class:Floorplan
+Reset	contour.cpp	/^void Contour::Reset() {$/;"	f	class:Contour
+Run	floorplanner.cpp	/^void Floorplanner::Run() { SA(); }$/;"	f	class:Floorplanner
+SA	floorplanner.cpp	/^void Floorplanner::SA() {$/;"	f	class:Floorplanner
+SetHeight	floorplan.cpp	/^void Floorplan::SetHeight(int height) { height_ = height; }$/;"	f	class:Floorplan
+SetMacroInstanceX	floorplan.cpp	/^void Floorplan::SetMacroInstanceX(int idx, int x) {$/;"	f	class:Floorplan
+SetMacroInstanceY	floorplan.cpp	/^void Floorplan::SetMacroInstanceY(int idx, int y) {$/;"	f	class:Floorplan
+SetNodeIsVisited	b_star_tree.cpp	/^void BStarTree::SetNodeIsVisited(int idx, bool is_visited) {$/;"	f	class:BStarTree
+SetOutlineHeight	database.cpp	/^void Database::SetOutlineHeight(int height) { outline_height_ = height; }$/;"	f	class:Database
+SetOutlineWidth	database.cpp	/^void Database::SetOutlineWidth(int width) { outline_width_ = width; }$/;"	f	class:Database
+SetWidth	floorplan.cpp	/^void Floorplan::SetWidth(int width) { width_ = width; }$/;"	f	class:Floorplan
+Skew	b_star_tree.cpp	/^void BStarTree::Skew() {$/;"	f	class:BStarTree
+SwapNodes	b_star_tree.cpp	/^void BStarTree::SwapNodes(int idx_a, int idx_b) {$/;"	f	class:BStarTree
+Terminal	database.hpp	/^    Terminal(const std::string& name, float x, float y)$/;"	f	class:Database::Terminal
+Terminal	database.hpp	/^  class Terminal {$/;"	c	class:Database
+Update	contour.cpp	/^void Contour::Update(int x, int width, int height) {$/;"	f	class:Contour
+alpha_	floorplanner.hpp	/^  float alpha_;$/;"	m	class:Floorplanner
+b_star_tree	b_star_tree.hpp	/^  BStarTree& operator=(const BStarTree& b_star_tree) = default;$/;"	m	class:BStarTree
+b_star_tree	b_star_tree.hpp	/^  BStarTree(const BStarTree& b_star_tree) = default;$/;"	m	class:BStarTree
+b_star_tree_	floorplan.hpp	/^  BStarTree b_star_tree_;$/;"	m	class:Floorplan
+best_floorplan_	floorplanner.hpp	/^  Floorplan best_floorplan_;$/;"	m	class:Floorplanner
+contour	contour.hpp	/^  Contour& operator=(const Contour& contour) = default;$/;"	m	class:Contour
+contour	contour.hpp	/^  Contour(const Contour& contour) = default;$/;"	m	class:Contour
+database_	floorplanner.hpp	/^  const Database& database_;$/;"	m	class:Floorplanner
+floorplan	floorplan.hpp	/^  Floorplan& operator=(const Floorplan& floorplan) = default;$/;"	m	class:Floorplan
+floorplan	floorplan.hpp	/^  Floorplan(const Floorplan& floorplan) = default;$/;"	m	class:Floorplan
+floorplan_	floorplanner.hpp	/^  Floorplan floorplan_;$/;"	m	class:Floorplanner
+height_	database.hpp	/^    int width_, height_;$/;"	m	class:Database::Macro
+height_	floorplan.hpp	/^  int height_;$/;"	m	class:Floorplan
+is_rotated_	floorplan.hpp	/^    bool is_rotated_;$/;"	m	class:Floorplan::MacroInstance
+is_visited_	b_star_tree.hpp	/^    bool is_visited_;$/;"	m	class:BStarTree::Node
+left_child_idx_	b_star_tree.hpp	/^    int left_child_idx_;$/;"	m	class:BStarTree::Node
+macro	database.hpp	/^    Macro& operator=(const Macro& macro) = default;$/;"	m	class:Database::Macro
+macro	database.hpp	/^    Macro(const Macro& macro) = default;$/;"	m	class:Database::Macro
+macro_idx_	floorplan.hpp	/^    int macro_idx_;$/;"	m	class:Floorplan::MacroInstance
+macro_idxs_by_name_	database.hpp	/^  std::map<std::string, int> macro_idxs_by_name_;$/;"	m	class:Database
+macro_instance	floorplan.hpp	/^    MacroInstance& operator=(const MacroInstance& macro_instance) = default;$/;"	m	class:Floorplan::MacroInstance
+macro_instance	floorplan.hpp	/^    MacroInstance(const MacroInstance& macro_instance) = default;$/;"	m	class:Floorplan::MacroInstance
+macro_instance_idx_	b_star_tree.hpp	/^    int macro_instance_idx_;$/;"	m	class:BStarTree::Node
+macro_instances_	floorplan.hpp	/^  std::vector<MacroInstance> macro_instances_;$/;"	m	class:Floorplan
+macros_	database.hpp	/^  std::vector<Macro> macros_;$/;"	m	class:Database
+main	main.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+name_	database.hpp	/^    std::string name_;$/;"	m	class:Database::Macro
+name_	database.hpp	/^    std::string name_;$/;"	m	class:Database::Terminal
+net	database.hpp	/^    Net& operator=(const Net& net) = default;$/;"	m	class:Database::Net
+net	database.hpp	/^    Net(const Net& net) = default;$/;"	m	class:Database::Net
+nets_	database.hpp	/^  std::vector<Net> nets_;$/;"	m	class:Database
+node	b_star_tree.hpp	/^    Node& operator=(const Node& node) = default;$/;"	m	class:BStarTree::Node
+node	b_star_tree.hpp	/^    Node(const Node& node) = default;$/;"	m	class:BStarTree::Node
+nodes_	b_star_tree.hpp	/^  std::vector<Node> nodes_;$/;"	m	class:BStarTree
+operator <<	b_star_tree.cpp	/^ostream& operator<<(ostream& os, const BStarTree& b_star_tree) {$/;"	f
+operator <<	contour.cpp	/^ostream& operator<<(ostream& os, const Contour& contour) {$/;"	f
+operator <<	database.cpp	/^ostream& operator<<(ostream& os, const Database& database) {$/;"	f
+operator <<	floorplan.cpp	/^ostream& operator<<(ostream& os, const Floorplan& floorplan) {$/;"	f
+outline_height_	database.hpp	/^  int outline_width_, outline_height_;$/;"	m	class:Database
+outline_width_	database.hpp	/^  int outline_width_, outline_height_;$/;"	m	class:Database
+parent_idx_	b_star_tree.hpp	/^    int parent_idx_;$/;"	m	class:BStarTree::Node
+points_	contour.hpp	/^  std::list<std::pair<int, int>> points_;$/;"	m	class:Contour
+right_child_idx_	b_star_tree.hpp	/^    int right_child_idx_;$/;"	m	class:BStarTree::Node
+root_idx_	b_star_tree.hpp	/^  int root_idx_;$/;"	m	class:BStarTree
+terminal	database.hpp	/^    Terminal& operator=(const Terminal& terminal) = default;$/;"	m	class:Database::Terminal
+terminal	database.hpp	/^    Terminal(const Terminal& terminal) = default;$/;"	m	class:Database::Terminal
+terminal_idxs_	database.hpp	/^    std::vector<int> terminal_idxs_;$/;"	m	class:Database::Net
+terminal_idxs_by_name_	database.hpp	/^  std::map<std::string, int> terminal_idxs_by_name_;$/;"	m	class:Database
+terminals_	database.hpp	/^  std::vector<Terminal> terminals_;$/;"	m	class:Database
+width_	database.hpp	/^    int width_, height_;$/;"	m	class:Database::Macro
+width_	floorplan.hpp	/^  int width_;$/;"	m	class:Floorplan
+x_	database.hpp	/^    float x_, y_;$/;"	m	class:Database::Terminal
+x_	floorplan.hpp	/^    int x_;$/;"	m	class:Floorplan::MacroInstance
+y_	database.hpp	/^    float x_, y_;$/;"	m	class:Database::Terminal
+y_	floorplan.hpp	/^    int y_;$/;"	m	class:Floorplan::MacroInstance
