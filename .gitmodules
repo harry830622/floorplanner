@@ -4,3 +4,6 @@
 [submodule "lib/helpers"]
 	path = lib/helpers
 	url = git@github.com:harry830622/helpers.git
+[submodule "lib/uni-database"]
+	path = lib/uni-database
+	url = git@github.com:harry830622/uni-database.git
