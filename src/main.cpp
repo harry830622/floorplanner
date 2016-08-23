@@ -2,14 +2,17 @@
 #include "../lib/uni-database/uni_database.hpp"
 #include "../lib/uni-parser/uni_parser.hpp"
 
-#include <boost/any.hpp>
+#include "floorplanner.hpp"
+
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <iostream>
+#include <string>
 
-using helpers::ConvertStringTo;
 using uni_parser::UniParser;
 using uni_database::UniDatabase;
-using boost::any_cast;
+using uni_database::Keys;
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -20,7 +23,7 @@ int main(int argc, char* argv[]) {
 
   clock_t begin_time = clock();
 
-  float alpha = ConvertStringTo<float>(string(argv[1]));
+  double alpha = stod(string(argv[1]));
 
   const int num_files = 2;
   ifstream file_streams[num_files];
@@ -32,7 +35,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  UniDatabase datebase;
+  UniDatabase database;
   UniParser parser;
 
   ifstream blocks_input(argv[2]);
@@ -42,30 +45,30 @@ int main(int argc, char* argv[]) {
       blocks_input,
       [&](const vector<string>& tokens) {
         if (!tokens.empty()) {
-          string first_word = tokens.at(0);
-          if (first_word == "Outline") {
-            int outline_width = ConvertStringTo<int>(tokens.at(1));
-            int outline_height = ConvertStringTo<int>(tokens.at(2));
-            datebase.Set({"outline", "width"}, outline_width);
-            datebase.Set({"outline", "height"}, outline_height);
-          } else if (first_word == "NumBlocks") {
-            num_macros = ConvertStringTo<int>(tokens.at(1));
-          } else if (first_word == "NumTerminals") {
-            num_terminals = ConvertStringTo<int>(tokens.at(1));
+          string keyword = tokens.at(0);
+          if (keyword == "Outline") {
+            int outline_width = stoi(tokens.at(1));
+            int outline_height = stoi(tokens.at(2));
+            database.Set(Keys{"outline", "width"}, outline_width);
+            database.Set(Keys{"outline", "height"}, outline_height);
+          } else if (keyword == "NumBlocks") {
+            num_macros = stoi(tokens.at(1));
+          } else if (keyword == "NumTerminals") {
+            num_terminals = stoi(tokens.at(1));
           } else {
             if (num_macros != 0) {
               string macro_name = tokens.at(0);
-              int macro_width = ConvertStringTo<int>(tokens.at(1));
-              int macro_height = ConvertStringTo<int>(tokens.at(2));
-              datebase.Set({"macros", macro_name, "width"}, macro_width);
-              datebase.Set({"macros", macro_name, "height"}, macro_height);
+              int macro_width = stoi(tokens.at(1));
+              int macro_height = stoi(tokens.at(2));
+              database.Set(Keys{"macros", macro_name, "width"}, macro_width);
+              database.Set(Keys{"macros", macro_name, "height"}, macro_height);
               --num_macros;
             } else if (num_terminals != 0) {
               string terminal_name = tokens.at(0);
-              int terminal_x = ConvertStringTo<int>(tokens.at(2));
-              int terminal_y = ConvertStringTo<int>(tokens.at(3));
-              datebase.Set({"terminals", terminal_name, "x"}, terminal_x);
-              datebase.Set({"terminals", terminal_name, "y"}, terminal_y);
+              int terminal_x = stoi(tokens.at(2));
+              int terminal_y = stoi(tokens.at(3));
+              database.Set(Keys{"terminals", terminal_name, "x"}, terminal_x);
+              database.Set(Keys{"terminals", terminal_name, "y"}, terminal_y);
               --num_terminals;
             }
           }
@@ -78,37 +81,49 @@ int main(int argc, char* argv[]) {
       nets_input,
       [&](const vector<string>& tokens) {
         if (!tokens.empty()) {
-          string first_word = tokens.at(0);
-          if (first_word == "NumNets") {
-            int num_nets = ConvertStringTo<int>(tokens.at(1));
+          string keyword = tokens.at(0);
+          if (keyword == "NumNets") {
+            int num_nets = stoi(tokens.at(1));
             auto begin_handler = [](const vector<string>& tokens) {};
             auto handler = [&](const vector<string>& tokens) {
-              string first_word = tokens.at(0);
-              if (first_word == "NetDegree") {
-                int net_degree = ConvertStringTo<int>(tokens.at(1));
+              string keyword = tokens.at(0);
+              if (keyword == "NetDegree") {
+                int net_degree = stoi(tokens.at(1));
                 auto begin_handler = [](const vector<string>& tokens) {};
                 int i = 0;
                 auto handler = [&](const vector<string>& tokens) {
-                  datebase.Set({"nets", string("N") + to_string(i++),
-                                "terminals", tokens.at(0)},
-                               'X');
+                  if (database.Id(Keys{"macros", tokens.at(0)}) != -1) {
+                    database.Set({"nets", string("N") + to_string(i), "macros",
+                                  tokens.at(0)},
+                                 database.Id(Keys{"macros", tokens.at(0)}));
+                  } else if (database.Id(Keys{"terminals", tokens.at(0)}) !=
+                             -1) {
+                    database.Set({"nets", string("N") + to_string(i),
+                                  "terminals", tokens.at(0)},
+                                 database.Id(Keys{"terminals", tokens.at(0)}));
+                  }
+                  ++i;
                 };
                 auto end_handler = []() {};
-                parser.Parse(nets_input, tokens, first_word, net_degree,
+                parser.Parse(nets_input, tokens, keyword, net_degree,
                              begin_handler, handler, end_handler, string(":"));
               };
             };
             auto end_handler = []() {};
-            parser.Parse(nets_input, tokens, first_word, num_nets,
-                         begin_handler, handler, end_handler, string(":"));
+            parser.Parse(nets_input, tokens, keyword, num_nets, begin_handler,
+                         handler, end_handler, string(":"));
           }
         }
       },
       string(":"));
 
-  // TODO:
+  Floorplanner floorplanner(database, alpha);
 
-  clock_t run_time = clock() - begin_time;
+  srand(time(0));
+  floorplanner.Run();
+
+  double run_time =
+      (clock() - begin_time) / static_cast<double>(CLOCKS_PER_SEC);
 
   ofstream output_file(argv[4]);
 
