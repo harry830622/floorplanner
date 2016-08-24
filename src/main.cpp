@@ -1,14 +1,20 @@
 #include "../lib/helpers/helpers.hpp"
+#include "../lib/uni-database/uni_database.hpp"
 #include "../lib/uni-parser/uni_parser.hpp"
-#include "database.hpp"
+
 #include "floorplanner.hpp"
 
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <iostream>
+#include <string>
 
+using helpers::Point;
+using uni_parser::UniParser;
+using uni_database::UniDatabase;
+using uni_database::Keys;
 using namespace std;
-using helpers::ConvertStringTo;
-using uni_parser::Parse;
 
 int main(int argc, char* argv[]) {
   if (argc != 5) {
@@ -18,7 +24,7 @@ int main(int argc, char* argv[]) {
 
   clock_t begin_time = clock();
 
-  float alpha = ConvertStringTo<float>(string(argv[1]));
+  double alpha = stod(string(argv[1]));
 
   const int num_files = 2;
   ifstream file_streams[num_files];
@@ -30,101 +36,123 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  Database database;
+  UniDatabase database;
+  UniParser parser;
 
   ifstream blocks_input(argv[2]);
-  int num_blocks = 0;
+  int num_macros = 0;
   int num_terminals = 0;
-  Parse(blocks_input,
-        [&database, &num_blocks, &num_terminals](const vector<string>& tokens) {
-          if (!tokens.empty()) {
-            string first_word = tokens.at(0);
-            if (first_word == "Outline") {
-              database.SetOutlineWidth(ConvertStringTo<int>(tokens.at(1)));
-              database.SetOutlineHeight(ConvertStringTo<int>(tokens.at(2)));
-            } else if (first_word == "NumBlocks") {
-              num_blocks = ConvertStringTo<int>(tokens.at(1));
-            } else if (first_word == "NumTerminals") {
-              num_terminals = ConvertStringTo<int>(tokens.at(1));
-            } else {
-              if (num_blocks != 0) {
-                database.AddNewMacro(tokens.at(0),
-                                     ConvertStringTo<int>(tokens.at(1)),
-                                     ConvertStringTo<int>(tokens.at(2)));
-                --num_blocks;
-              } else if (num_terminals != 0) {
-                database.AddNewTerminal(tokens.at(0),
-                                        ConvertStringTo<int>(tokens.at(2)),
-                                        ConvertStringTo<int>(tokens.at(3)));
-                --num_terminals;
-              }
+  parser.Parse(
+      blocks_input,
+      [&](const vector<string>& tokens) {
+        if (!tokens.empty()) {
+          string keyword = tokens.at(0);
+          if (keyword == "Outline") {
+            int outline_width = stoi(tokens.at(1));
+            int outline_height = stoi(tokens.at(2));
+            database.Set(Keys{"outline", "width"}, outline_width);
+            database.Set(Keys{"outline", "height"}, outline_height);
+          } else if (keyword == "NumBlocks") {
+            num_macros = stoi(tokens.at(1));
+          } else if (keyword == "NumTerminals") {
+            num_terminals = stoi(tokens.at(1));
+          } else {
+            if (num_macros != 0) {
+              string macro_name = tokens.at(0);
+              int macro_width = stoi(tokens.at(1));
+              int macro_height = stoi(tokens.at(2));
+              database.Set(Keys{"macros", macro_name, "name"}, macro_name);
+              database.Set(Keys{"macros", macro_name, "width"}, macro_width);
+              database.Set(Keys{"macros", macro_name, "height"}, macro_height);
+              --num_macros;
+            } else if (num_terminals != 0) {
+              string terminal_name = tokens.at(0);
+              int terminal_x = stoi(tokens.at(2));
+              int terminal_y = stoi(tokens.at(3));
+              database.Set(Keys{"terminals", terminal_name, "name"},
+                           terminal_name);
+              database.Set(Keys{"terminals", terminal_name, "x"}, terminal_x);
+              database.Set(Keys{"terminals", terminal_name, "y"}, terminal_y);
+              --num_terminals;
             }
           }
-        },
-        string(" :\t\r"));
+        }
+      },
+      string(":"));
 
   ifstream nets_input(argv[3]);
-  int num_nets = 0;
-  int net_degree = 0;
-  int net_idx;
-  Parse(nets_input,
-        [&database, &num_nets, &net_degree,
-         &net_idx](const vector<string>& tokens) {
-          if (!tokens.empty()) {
-            string first_word = tokens.at(0);
-            if (first_word == "NumNets") {
-              num_nets = ConvertStringTo<int>(tokens.at(1));
-            } else if (first_word == "NetDegree") {
-              net_degree = ConvertStringTo<int>(tokens.at(1));
-              net_idx = database.AddNewNet();
-            } else {
-              if (num_nets != 0) {
-                if (net_degree != 0) {
-                  int terminal_idx = database.GetTerminalIdx(tokens.at(0));
-                  database.AddNetTerminal(net_idx, terminal_idx);
-                  --net_degree;
-                  if (net_degree == 0) {
-                    --num_nets;
+  parser.Parse(
+      nets_input,
+      [&](const vector<string>& tokens) {
+        if (!tokens.empty()) {
+          string keyword = tokens.at(0);
+          if (keyword == "NumNets") {
+            int num_nets = stoi(tokens.at(1));
+            auto begin_handler = [](const vector<string>& tokens) {};
+            int i = 0;
+            auto handler = [&](const vector<string>& tokens) {
+              string keyword = tokens.at(0);
+              if (keyword == "NetDegree") {
+                int net_degree = stoi(tokens.at(1));
+                auto begin_handler = [](const vector<string>& tokens) {};
+                auto handler = [&](const vector<string>& tokens) {
+                  if (database.Id(Keys{"macros", tokens.at(0)}) != -1) {
+                    database.Set({"nets", string("N") + to_string(i), "macros",
+                                  tokens.at(0)},
+                                 database.Id(Keys{"macros", tokens.at(0)}));
+                  } else if (database.Id(Keys{"terminals", tokens.at(0)}) !=
+                             -1) {
+                    database.Set({"nets", string("N") + to_string(i),
+                                  "terminals", tokens.at(0)},
+                                 database.Id(Keys{"terminals", tokens.at(0)}));
                   }
-                }
-              }
-            }
+                };
+                auto end_handler = []() {};
+                parser.Parse(nets_input, tokens, keyword, net_degree,
+                             begin_handler, handler, end_handler, string(":"));
+                ++i;
+              };
+            };
+            auto end_handler = []() {};
+            parser.Parse(nets_input, tokens, keyword, num_nets, begin_handler,
+                         handler, end_handler, string(":"));
           }
-        },
-        string(" :\t\r"));
+        }
+      },
+      string(":"));
 
   Floorplanner floorplanner(database, alpha);
 
   srand(time(0));
   floorplanner.Run();
 
-  clock_t run_time = clock() - begin_time;
+  double run_time =
+      (clock() - begin_time) / static_cast<double>(CLOCKS_PER_SEC);
 
   ofstream output_file(argv[4]);
-  const Floorplan& floorplan = floorplanner.GetBestFloorPlan();
-  int width = floorplan.GetWidth();
-  int height = floorplan.GetHeight();
-  int area = width * height;
-  float wire_length = floorplanner.CalculateBestWireLength();
-  output_file << alpha * area + (1 - alpha) * wire_length << endl;
+  const Floorplan& best_floorplan = floorplanner.best_floorplan();
+  int chip_width = best_floorplan.width();
+  int child_height = best_floorplan.height();
+  int chip_area = chip_width * child_height;
+  double wire_length = best_floorplan.WireLength(database);
+  output_file << alpha * chip_area + (1 - alpha) * wire_length << endl;
   output_file << wire_length << endl;
-  output_file << width * height << endl;
-  output_file << width << " " << height << endl;
-  output_file << run_time / static_cast<float>(CLOCKS_PER_SEC) << endl;
-  for (int i = 0; i < floorplan.GetNumMacroInstances(); ++i) {
-    int x = floorplan.GetMacroInstanceX(i);
-    int y = floorplan.GetMacroInstanceY(i);
-    bool is_rotated = floorplan.GetMacroInstanceIsRotated(i);
-    int macro_idx = floorplan.GetMacroInstanceMacroIdx(i);
-    string name = database.GetMacroName(macro_idx);
-    int width = database.GetMacroWidth(macro_idx);
-    int height = database.GetMacroHeight(macro_idx);
-    if (is_rotated) {
-      swap(width, height);
-    }
-    output_file << name << " " << x << " " << y << " " << x + width << " "
-                << y + height << endl;
-  }
+  output_file << chip_area << endl;
+  output_file << chip_width << " " << child_height << endl;
+  output_file << run_time << endl;
+  best_floorplan.IterateMacros(
+      [&](int data_id, const Point<int>& coordinate, bool is_rotated) {
+        string name = database.Data<string>(data_id, "name");
+        int x = coordinate.x();
+        int y = coordinate.y();
+        int width = database.Data<int>(data_id, "width");
+        int height = database.Data<int>(data_id, "height");
+        if (is_rotated) {
+          swap(width, height);
+        }
+        output_file << name << " " << x << " " << y << " " << x + width << " "
+                    << y + height << endl;
+      });
 
   return 0;
 }

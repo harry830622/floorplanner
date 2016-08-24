@@ -1,6 +1,8 @@
 #ifndef FLOORPLAN_HPP
 #define FLOORPLAN_HPP
 
+#include "../lib/helpers/helpers.hpp"
+#include "../lib/uni-database/uni_database.hpp"
 #include "b_star_tree.hpp"
 
 #include <functional>
@@ -8,53 +10,49 @@
 
 class Floorplan {
  public:
-  Floorplan(int num_macros);
-  Floorplan(const Floorplan& floorplan) = default;
-  Floorplan& operator=(const Floorplan& floorplan) = default;
+  Floorplan(const uni_database::UniDatabase& database);
 
-  int GetWidth() const;
-  int GetHeight() const;
+  int width() const;
+  int height() const;
+  int num_macros() const;
 
-  const BStarTree& GetBStarTree() const;
+  void Print(int indent = 0) const;
 
-  int GetNumMacroInstances() const;
-  int GetMacroInstanceMacroIdx(int idx) const;
-  int GetMacroInstanceX(int idx) const;
-  int GetMacroInstanceY(int idx) const;
-  int GetMacroInstanceIsRotated(int idx) const;
+  int IterateMacros(
+      std::function<void(int data_id, const helpers::Point<int>& coordinate,
+                         bool is_rotated)>
+          handler) const;
+  double WireLength(const uni_database::UniDatabase& database) const;
+  double Cost(const uni_database::UniDatabase& database,
+              double alpha = 0.5) const;
 
-  Floorplan Perturb() const;
-
-  void SetWidth(int width);
-  void SetHeight(int height);
-
-  void SetMacroInstanceX(int idx, int x);
-  void SetMacroInstanceY(int idx, int y);
-
-  void DfsBStarTree(
-      std::function<void(int current_idx, int parent_idx, char position)>
-          handler);
+  void Perturb();
+  void Pack(const uni_database::UniDatabase& database);
 
  private:
-  class MacroInstance {
+  class Macro {
    public:
-    MacroInstance(int macro_idx)
-        : macro_idx_(macro_idx), x_(0), y_(0), is_rotated_(false) {}
-    MacroInstance(const MacroInstance& macro_instance) = default;
-    MacroInstance& operator=(const MacroInstance& macro_instance) = default;
+    Macro(int data_id);
 
-    int macro_idx_;
-    int x_;
-    int y_;
+    int data_id_;
+    helpers::Point<int> coordinate_;
     bool is_rotated_;
+  };
+
+  class Net {
+   public:
+    Net(int data_id);
+
+    int data_id_;
+    helpers::Rect<int> bounding_box_;
+    std::vector<int> macro_ids_;
   };
 
   int width_;
   int height_;
+  std::vector<Macro> macros_;
+  std::vector<Net> nets_;
   BStarTree b_star_tree_;
-  std::vector<MacroInstance> macro_instances_;
 };
-
-std::ostream& operator<<(std::ostream& os, const Floorplan& floorplan);
 
 #endif

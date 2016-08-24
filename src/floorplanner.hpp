@@ -1,35 +1,23 @@
 #ifndef FLOORPLANNER_HPP
 #define FLOORPLANNER_HPP
 
-#include "database.hpp"
+#include "../lib/uni-database/uni_database.hpp"
 #include "floorplan.hpp"
-
-#include <vector>
 
 class Floorplanner {
  public:
-  Floorplanner(const Database& database, float alpha)
-      : database_(database),
-        alpha_(alpha),
-        floorplan_(database.GetNumMacros()),
-        best_floorplan_(0) {}
+  Floorplanner(const uni_database::UniDatabase& database, double alpha);
+  Floorplanner& operator=(const Floorplanner& other) = delete;
 
-  const Floorplan& GetBestFloorPlan() const;
-
-  float CalculateBestWireLength() const;
+  const Floorplan& best_floorplan() const;
 
   void Run();
 
  private:
-  float CalculateWireLength(const Floorplan& floorplan) const;
-  float Evaluate(const Floorplan& floorplan);
-
-  void Pack(Floorplan& floorplan);
   void SA();
 
-  const Database& database_;
-  float alpha_;
-  Floorplan floorplan_;
+  const uni_database::UniDatabase& database_;
+  double alpha_;
   Floorplan best_floorplan_;
 };
 

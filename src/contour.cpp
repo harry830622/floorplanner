@@ -1,37 +1,23 @@
 #include "contour.hpp"
 
-using namespace std;
+using helpers::Point;
 
-int Contour::GetNumPoints() const { return points_.size(); }
+Contour::Contour() : points_(1, Point<int>(0, 0)) {}
 
-int Contour::GetPointX(int idx) const {
-  auto it = points_.begin();
-  for (int i = 0; i < idx; ++i) {
-    ++it;
-  }
-  return it->first;
-}
+int Contour::max_x() const { return points_.back().x(); }
 
-int Contour::GetPointY(int idx) const {
-  auto it = points_.begin();
-  for (int i = 0; i < idx; ++i) {
-    ++it;
-  }
-  return it->second;
-}
-
-int Contour::FindMaxYBetween(int x_begin, int x_end) const {
+int Contour::MaxYBetween(int x_begin, int x_end) const {
   auto it = points_.begin();
 
-  while (it->first <= x_begin && it != points_.end()) {
+  while (it->x() <= x_begin && it != points_.end()) {
     ++it;
   }
   --it;
 
   int max_y = 0;
-  while (it->first < x_end && it != points_.end()) {
-    if (it->second > max_y) {
-      max_y = it->second;
+  while (it->x() < x_end && it != points_.end()) {
+    if (it->y() > max_y) {
+      max_y = it->y();
     }
     ++it;
   }
@@ -39,62 +25,41 @@ int Contour::FindMaxYBetween(int x_begin, int x_end) const {
   return max_y;
 }
 
-int Contour::FindMaxX() const { return points_.back().first; }
-
-int Contour::FindMaxY() const {
-  return FindMaxYBetween(0, points_.back().first);
-}
-
-void Contour::Reset() {
-  points_.clear();
-  points_.push_back(make_pair(0, 0));
-}
+int Contour::MaxY() const { return MaxYBetween(0, max_x()); }
 
 void Contour::Update(int x, int width, int height) {
-  int y = FindMaxYBetween(x, x + width);
+  int y = MaxYBetween(x, x + width);
 
   auto it = points_.begin();
-  while (it->first < x && it != points_.end()) {
+  while (it->x() < x && it != points_.end()) {
     ++it;
   }
   auto it_begin = it;
 
-  int last_y = 0;
   bool is_equal = true;
-  while (it->first < x + width && it != points_.end()) {
+  int last_y = 0;
+  while (it->x() < x + width && it != points_.end()) {
     ++it;
   }
-  if (it == points_.end() || it->first != x + width) {
+  if (it == points_.end() || it->x() != x + width) {
     is_equal = false;
-    last_y = (--it)->second;
+    last_y = (--it)->y();
     ++it;
   }
 
   points_.erase(it_begin, it);
-  points_.insert(it, make_pair(x, y + height));
+  points_.insert(it, Point<int>(x, y + height));
   if (!is_equal) {
-    points_.insert(it, make_pair(x + width, last_y));
+    points_.insert(it, Point<int>(x + width, last_y));
   }
 
   last_y = -1;
   for (it = points_.begin(); it != points_.end(); ++it) {
-    if (it->second == last_y) {
+    if (it->y() == last_y) {
       it = points_.erase(it);
       --it;
     } else {
-      last_y = it->second;
+      last_y = it->y();
     }
   }
-}
-
-ostream& operator<<(ostream& os, const Contour& contour) {
-  const int indent = 2;
-  os << "Contour:" << endl;
-  os << string(indent, ' ') << "points_: ";
-  for (int i = 0; i < contour.GetNumPoints(); ++i) {
-    os << "(" << contour.GetPointX(i) << ", " << contour.GetPointY(i) << ") ";
-  }
-  os << endl;
-
-  return os;
 }

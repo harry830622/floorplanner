@@ -1,223 +1,176 @@
 #include "b_star_tree.hpp"
 
+#include <cassert>
+#include <cstdlib>
+#include <iostream>
+#include <stack>
+#include <string>
+#include <utility>
+
 using namespace std;
 
-int BStarTree::GetRootNodeIdx() const { return root_idx_; }
+BStarTree::Node::Node(int macro_id)
+    : macro_id_(macro_id),
+      parent_id_(-1),
+      left_child_id_(-1),
+      right_child_id_(-1),
+      is_visited_(false) {}
 
-int BStarTree::GetNumNodes() const { return nodes_.size(); }
-
-int BStarTree::GetNodeMacroInstanceIdx(int idx) const {
-  return nodes_.at(idx).macro_instance_idx_;
+BStarTree::BStarTree(int num_nodes)
+    : nodes_(num_nodes, Node(-1)), root_id_(-1) {
+  assert(nodes_.size() == num_nodes);
+  for (int i = 0; i < nodes_.size(); ++i) {
+    nodes_[i].macro_id_ = i;
+  }
+  Skew();
 }
 
-int BStarTree::GetNodeParentIdx(int idx) const {
-  return nodes_.at(idx).parent_idx_;
+int BStarTree::num_nodes() const { return nodes_.size(); }
+
+int BStarTree::node_macro_id(int node_id) const {
+  return nodes_.at(node_id).macro_id_;
 }
 
-int BStarTree::GetNodeLeftChildIdx(int idx) const {
-  return nodes_.at(idx).left_child_idx_;
+void BStarTree::Print(int indent) const {
+  const int num_spaces = 2;
+  cout << string(num_spaces * indent, ' ') << "BStarTree:" << endl;
+  cout << string(num_spaces * (indent + 1), ' ') << "root_id_: " << root_id_
+       << endl;
+  cout << string(num_spaces * (indent + 1), ' ') << "nodes_:" << endl;
+  for (int i = 0; i < nodes_.size(); ++i) {
+    cout << string(num_spaces * (indent + 2), ' ') << "Node: " << i << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "macro_id_: " << nodes_[i].macro_id_ << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "parent_id_: " << nodes_[i].parent_id_ << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "left_child_id_: " << nodes_[i].left_child_id_ << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "right_child_id_: " << nodes_[i].right_child_id_ << endl;
+  }
 }
 
-int BStarTree::GetNodeRightChildIdx(int idx) const {
-  return nodes_.at(idx).right_child_idx_;
+void BStarTree::Dfs(
+    function<void(int current_node_id, int parent_id, bool is_from_left)>
+        handler) {
+  for (Node& node : nodes_) {
+    node.is_visited_ = false;
+  }
+  stack<int> s;
+  s.push(root_id_);
+  handler(root_id_, -1, false);
+  while (!s.empty()) {
+    int current_node_id = s.top();
+    Node& current_node = nodes_.at(current_node_id);
+    int left_child_id = current_node.left_child_id_;
+    int right_child_id = current_node.right_child_id_;
+    if (left_child_id != -1 && !nodes_.at(left_child_id).is_visited_) {
+      s.push(left_child_id);
+      handler(left_child_id, current_node_id, true);
+    } else if (right_child_id != -1 && !nodes_.at(right_child_id).is_visited_) {
+      s.push(right_child_id);
+      handler(right_child_id, current_node_id, false);
+    } else {
+      current_node.is_visited_ = true;
+      s.pop();
+    }
+  }
 }
 
-int BStarTree::GetNodeIsVisited(int idx) const {
-  return nodes_.at(idx).is_visited_;
+void BStarTree::DeleteThenInsertNode(int node_id, int target_node_id) {
+  DeleteNode(node_id);
+  InsertNode(node_id, target_node_id);
 }
 
-int BStarTree::CalculateHeight() const { return Height(root_idx_); }
-
-void BStarTree::SetNodeIsVisited(int idx, bool is_visited) {
-  nodes_.at(idx).is_visited_ = is_visited;
-}
-
-int BStarTree::AddNewNode(int macro_instance_idx) {
-  int idx = nodes_.size();
-
-  nodes_.push_back(Node(macro_instance_idx));
-
-  return idx;
+void BStarTree::SwapNodes(int node_a_id, int node_b_id) {
+  swap(nodes_.at(node_a_id).macro_id_, nodes_.at(node_b_id).macro_id_);
 }
 
 void BStarTree::Skew() {
   if (!nodes_.empty()) {
-    root_idx_ = 0;
+    root_id_ = 0;
     for (int i = 0; i < nodes_.size() - 1; ++i) {
-      nodes_[i].left_child_idx_ = i + 1;
+      nodes_[i].left_child_id_ = i + 1;
     }
     for (int i = 1; i < nodes_.size(); ++i) {
-      nodes_[i].parent_idx_ = i - 1;
+      nodes_[i].parent_id_ = i - 1;
     }
   }
 }
 
-void BStarTree::DeleteNode(int idx) {
-  Node& node = nodes_.at(idx);
-  int parent_idx = node.parent_idx_;
-  int left_child_idx = node.left_child_idx_;
-  int right_child_idx = node.right_child_idx_;
+void BStarTree::DeleteNode(int node_id) {
+  Node& node = nodes_.at(node_id);
+  int parent_id = node.parent_id_;
+  int left_child_id = node.left_child_id_;
+  int right_child_id = node.right_child_id_;
 
-  int child_idx = -1;
-  if (left_child_idx != -1 && right_child_idx != -1) {
-    child_idx = left_child_idx;
+  int child_id = -1;
+  if (left_child_id != -1 && right_child_id != -1) {
+    child_id = left_child_id;
 
-    int current_idx = child_idx;
-    while (nodes_.at(current_idx).left_child_idx_ != -1 &&
-           nodes_.at(current_idx).right_child_idx_ != -1) {
-      current_idx = nodes_.at(current_idx).left_child_idx_;
+    int current_id = child_id;
+    while (nodes_.at(current_id).left_child_id_ != -1 &&
+           nodes_.at(current_id).right_child_id_ != -1) {
+      current_id = nodes_.at(current_id).left_child_id_;
     }
-    Node& current_node = nodes_.at(current_idx);
-    if (current_node.right_child_idx_ != -1) {
-      current_node.left_child_idx_ = current_node.right_child_idx_;
-      current_node.right_child_idx_ = -1;
+    Node& current_node = nodes_.at(current_id);
+    if (current_node.right_child_id_ != -1) {
+      current_node.left_child_id_ = current_node.right_child_id_;
+      current_node.right_child_id_ = -1;
     }
 
-    while (current_idx != idx) {
-      Node& current_node = nodes_.at(current_idx);
-      Node& current_node_parent = nodes_.at(current_node.parent_idx_);
-      Node& current_node_parent_right_child =
-          nodes_.at(current_node_parent.right_child_idx_);
-      current_node.right_child_idx_ = current_node_parent.right_child_idx_;
-      current_node_parent_right_child.parent_idx_ = current_idx;
-      current_idx = current_node.parent_idx_;
+    while (current_id != node_id) {
+      Node& current_node = nodes_.at(current_id);
+      Node& current_parent = nodes_.at(current_node.parent_id_);
+      Node& current_parent_right_child =
+          nodes_.at(current_parent.right_child_id_);
+      current_node.right_child_id_ = current_parent.right_child_id_;
+      current_parent_right_child.parent_id_ = current_id;
+      current_id = current_node.parent_id_;
     }
-  } else if (left_child_idx != -1) {
-    child_idx = left_child_idx;
-  } else if (right_child_idx != -1) {
-    child_idx = right_child_idx;
+  } else if (left_child_id != -1) {
+    child_id = left_child_id;
+  } else if (right_child_id != -1) {
+    child_id = right_child_id;
   }
 
-  if (child_idx != -1) {
-    nodes_.at(child_idx).parent_idx_ = parent_idx;
+  if (child_id != -1) {
+    nodes_.at(child_id).parent_id_ = parent_id;
   }
 
-  if (parent_idx == -1) {
-    root_idx_ = child_idx;
+  if (parent_id == -1) {
+    root_id_ = child_id;
   } else {
-    Node& parent = nodes_.at(parent_idx);
-    if (parent.left_child_idx_ == idx) {
-      parent.left_child_idx_ = child_idx;
+    Node& parent = nodes_.at(parent_id);
+    if (parent.left_child_id_ == node_id) {
+      parent.left_child_id_ = child_id;
     } else {
-      parent.right_child_idx_ = child_idx;
+      parent.right_child_id_ = child_id;
     }
   }
 
-  node.parent_idx_ = -1;
-  node.left_child_idx_ = -1;
-  node.right_child_idx_ = -1;
+  node.parent_id_ = -1;
+  node.left_child_id_ = -1;
+  node.right_child_id_ = -1;
 }
 
-void BStarTree::InsertNode(int idx, int target_node_idx, char position) {
-  Node& node = nodes_.at(idx);
-  Node& target_node = nodes_.at(target_node_idx);
+// TODO: Let client decide where to insert.
+void BStarTree::InsertNode(int node_id, int target_node_id) {
+  Node& node = nodes_.at(node_id);
+  Node& target_node = nodes_.at(target_node_id);
 
-  node.parent_idx_ = target_node_idx;
-  switch (position) {
-    case 'L': {
-      node.left_child_idx_ = target_node.left_child_idx_;
-      if (node.left_child_idx_ != -1) {
-        nodes_.at(node.left_child_idx_).parent_idx_ = idx;
-      }
-      target_node.left_child_idx_ = idx;
-      break;
+  node.parent_id_ = target_node_id;
+  if (rand() % 2 == 0) {
+    node.left_child_id_ = target_node.left_child_id_;
+    if (node.left_child_id_ != -1) {
+      nodes_.at(node.left_child_id_).parent_id_ = node_id;
     }
-    case 'R': {
-      node.right_child_idx_ = target_node.right_child_idx_;
-      if (node.right_child_idx_ != -1) {
-        nodes_.at(node.right_child_idx_).parent_idx_ = idx;
-      }
-      target_node.right_child_idx_ = idx;
-      break;
-    }
-    default:
-      break;
-  }
-}
-
-void BStarTree::SwapNodes(int idx_a, int idx_b) {
-  Node& node_a = nodes_.at(idx_a);
-  Node& node_b = nodes_.at(idx_b);
-
-  int node_a_parent_idx = node_a.parent_idx_;
-  if (node_a_parent_idx == -1) {
-    root_idx_ = idx_b;
+    target_node.left_child_id_ = node_id;
   } else {
-    Node& node_a_parent = nodes_.at(node_a_parent_idx);
-    if (node_a_parent.left_child_idx_ == idx_a) {
-      node_a_parent.left_child_idx_ = idx_b;
-    } else {
-      node_a_parent.right_child_idx_ = idx_b;
+    node.right_child_id_ = target_node.right_child_id_;
+    if (node.right_child_id_ != -1) {
+      nodes_.at(node.right_child_id_).parent_id_ = node_id;
     }
+    target_node.right_child_id_ = node_id;
   }
-  int node_b_parent_idx = node_b.parent_idx_;
-  if (node_b_parent_idx == -1) {
-    root_idx_ = idx_a;
-  } else {
-    Node& node_b_parent = nodes_.at(node_b_parent_idx);
-    if (node_b_parent.left_child_idx_ == idx_b) {
-      node_b_parent.left_child_idx_ = idx_a;
-    } else {
-      node_b_parent.right_child_idx_ = idx_a;
-    }
-  }
-
-  int tmp_parent_idx = node_a.parent_idx_;
-  int tmp_left_child_idx = node_a.left_child_idx_;
-  int tmp_right_child_idx = node_a.right_child_idx_;
-  node_a.parent_idx_ = node_b.parent_idx_;
-  node_a.left_child_idx_ = node_b.left_child_idx_;
-  node_a.right_child_idx_ = node_b.right_child_idx_;
-  node_b.parent_idx_ = tmp_parent_idx;
-  node_b.left_child_idx_ = tmp_left_child_idx;
-  node_b.right_child_idx_ = tmp_right_child_idx;
-
-  int node_a_left_child_idx = node_a.left_child_idx_;
-  if (node_a_left_child_idx != -1) {
-    nodes_.at(node_a_left_child_idx).parent_idx_ = idx_a;
-  }
-  int node_a_right_child_idx = node_a.right_child_idx_;
-  if (node_a_right_child_idx != -1) {
-    nodes_.at(node_a_right_child_idx).parent_idx_ = idx_a;
-  }
-  int node_b_left_child_idx = node_b.left_child_idx_;
-  if (node_b_left_child_idx != -1) {
-    nodes_.at(node_b_left_child_idx).parent_idx_ = idx_b;
-  }
-  int node_b_right_child_idx = node_b.right_child_idx_;
-  if (node_b_right_child_idx != -1) {
-    nodes_.at(node_b_right_child_idx).parent_idx_ = idx_b;
-  }
-}
-
-int BStarTree::Height(int root_idx) const {
-  if (root_idx == -1) {
-    return 0;
-  }
-
-  int left_child_idx = nodes_.at(root_idx).left_child_idx_;
-  int right_child_idx = nodes_.at(root_idx).right_child_idx_;
-
-  return 1 + max(Height(left_child_idx), Height(right_child_idx));
-}
-
-ostream& operator<<(ostream& os, const BStarTree& b_star_tree) {
-  const int indent = 2;
-  os << string(indent, ' ') << "root_idx_: " << b_star_tree.GetRootNodeIdx()
-     << endl;
-  os << string(indent, ' ') << "nodes_:" << endl;
-  for (int i = 0; i < b_star_tree.GetNumNodes(); ++i) {
-    os << string(indent * 2, ' ') << "Node: " << i << endl;
-    os << string(indent * 3, ' ')
-       << "macro_instance_idx_: " << b_star_tree.GetNodeMacroInstanceIdx(i)
-       << endl;
-    os << string(indent * 3, ' ')
-       << "parent_idx_: " << b_star_tree.GetNodeParentIdx(i) << endl;
-    os << string(indent * 3, ' ')
-       << "left_child_idx_: " << b_star_tree.GetNodeLeftChildIdx(i) << endl;
-    os << string(indent * 3, ' ')
-       << "right_child_idx_: " << b_star_tree.GetNodeRightChildIdx(i) << endl;
-  }
-
-  return os;
 }

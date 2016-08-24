@@ -1,60 +1,43 @@
 #ifndef B_STAR_TREE_HPP
 #define B_STAR_TREE_HPP
 
-#include <iostream>
+#include <functional>
 #include <vector>
 
 class BStarTree {
  public:
-  BStarTree() : root_idx_(-1) {}
-  BStarTree(const BStarTree& b_star_tree) = default;
-  BStarTree& operator=(const BStarTree& b_star_tree) = default;
+  BStarTree(int num_nodes = 0);
 
-  int GetRootNodeIdx() const;
+  int num_nodes() const;
+  int node_macro_id(int node_id) const;
 
-  int GetNumNodes() const;
-  int GetNodeMacroInstanceIdx(int idx) const;
-  int GetNodeParentIdx(int idx) const;
-  int GetNodeLeftChildIdx(int idx) const;
-  int GetNodeRightChildIdx(int idx) const;
-  int GetNodeIsVisited(int idx) const;
+  void Print(int indent = 0) const;
 
-  int CalculateHeight() const;
+  void Dfs(
+      std::function<void(int current_node_id, int parent_id, bool is_from_left)>
+          handler);
 
-  void SetNodeIsVisited(int idx, bool is_visited);
-
-  int AddNewNode(int macro_instance_idx);
-
-  void Skew();
-  void DeleteNode(int idx);
-  void InsertNode(int idx, int target_node_idx, char position);
-  void SwapNodes(int idx_a, int idx_b);
+  void DeleteThenInsertNode(int node_id, int target_node_id);
+  void SwapNodes(int node_a_id, int node_b_id);
 
  private:
   class Node {
    public:
-    Node(int macro_instance_idx)
-        : macro_instance_idx_(macro_instance_idx),
-          parent_idx_(-1),
-          left_child_idx_(-1),
-          right_child_idx_(-1),
-          is_visited_(false) {}
-    Node(const Node& node) = default;
-    Node& operator=(const Node& node) = default;
+    Node(int macro_id);
 
-    int macro_instance_idx_;
-    int parent_idx_;
-    int left_child_idx_;
-    int right_child_idx_;
+    int macro_id_;
+    int parent_id_;
+    int left_child_id_;
+    int right_child_id_;
     bool is_visited_;
   };
 
-  int Height(int root_idx) const;
+  void Skew();
+  void DeleteNode(int node_id);
+  void InsertNode(int node_id, int target_node_id);
 
-  int root_idx_;
   std::vector<Node> nodes_;
+  int root_id_;
 };
-
-std::ostream& operator<<(std::ostream& os, const BStarTree& b_star_tree);
 
 #endif
