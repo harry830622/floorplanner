@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <stack>
 #include <string>
 #include <utility>
 
@@ -26,6 +27,10 @@ BStarTree::BStarTree(int num_nodes)
 
 int BStarTree::num_nodes() const { return nodes_.size(); }
 
+int BStarTree::node_macro_id(int node_id) const {
+  return nodes_.at(node_id).macro_id_;
+}
+
 void BStarTree::Print(int indent) const {
   const int num_spaces = 2;
   cout << string(num_spaces * indent, ' ') << "BStarTree:" << endl;
@@ -42,6 +47,33 @@ void BStarTree::Print(int indent) const {
          << "left_child_id_: " << nodes_[i].left_child_id_ << endl;
     cout << string(num_spaces * (indent + 3), ' ')
          << "right_child_id_: " << nodes_[i].right_child_id_ << endl;
+  }
+}
+
+void BStarTree::Dfs(
+    function<void(int current_node_id, int parent_id, bool is_from_left)>
+        handler) {
+  for (Node& node : nodes_) {
+    node.is_visited_ = false;
+  }
+  stack<int> s;
+  s.push(root_id_);
+  handler(root_id_, -1, false);
+  while (!s.empty()) {
+    int current_node_id = s.top();
+    Node& current_node = nodes_.at(current_node_id);
+    int left_child_id = current_node.left_child_id_;
+    int right_child_id = current_node.right_child_id_;
+    if (left_child_id != -1 && !nodes_.at(left_child_id).is_visited_) {
+      s.push(left_child_id);
+      handler(left_child_id, current_node_id, true);
+    } else if (right_child_id != -1 && !nodes_.at(right_child_id).is_visited_) {
+      s.push(right_child_id);
+      handler(right_child_id, current_node_id, false);
+    } else {
+      current_node.is_visited_ = true;
+      s.pop();
+    }
   }
 }
 

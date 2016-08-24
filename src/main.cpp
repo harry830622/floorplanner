@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 
+using helpers::Point;
 using uni_parser::UniParser;
 using uni_database::UniDatabase;
 using uni_database::Keys;
@@ -60,6 +61,7 @@ int main(int argc, char* argv[]) {
               string macro_name = tokens.at(0);
               int macro_width = stoi(tokens.at(1));
               int macro_height = stoi(tokens.at(2));
+              database.Set(Keys{"macros", macro_name, "name"}, macro_name);
               database.Set(Keys{"macros", macro_name, "width"}, macro_width);
               database.Set(Keys{"macros", macro_name, "height"}, macro_height);
               --num_macros;
@@ -67,6 +69,8 @@ int main(int argc, char* argv[]) {
               string terminal_name = tokens.at(0);
               int terminal_x = stoi(tokens.at(2));
               int terminal_y = stoi(tokens.at(3));
+              database.Set(Keys{"terminals", terminal_name, "name"},
+                           terminal_name);
               database.Set(Keys{"terminals", terminal_name, "x"}, terminal_x);
               database.Set(Keys{"terminals", terminal_name, "y"}, terminal_y);
               --num_terminals;
@@ -85,12 +89,12 @@ int main(int argc, char* argv[]) {
           if (keyword == "NumNets") {
             int num_nets = stoi(tokens.at(1));
             auto begin_handler = [](const vector<string>& tokens) {};
+            int i = 0;
             auto handler = [&](const vector<string>& tokens) {
               string keyword = tokens.at(0);
               if (keyword == "NetDegree") {
                 int net_degree = stoi(tokens.at(1));
                 auto begin_handler = [](const vector<string>& tokens) {};
-                int i = 0;
                 auto handler = [&](const vector<string>& tokens) {
                   if (database.Id(Keys{"macros", tokens.at(0)}) != -1) {
                     database.Set({"nets", string("N") + to_string(i), "macros",
@@ -102,11 +106,11 @@ int main(int argc, char* argv[]) {
                                   "terminals", tokens.at(0)},
                                  database.Id(Keys{"terminals", tokens.at(0)}));
                   }
-                  ++i;
                 };
                 auto end_handler = []() {};
                 parser.Parse(nets_input, tokens, keyword, net_degree,
                              begin_handler, handler, end_handler, string(":"));
+                ++i;
               };
             };
             auto end_handler = []() {};
@@ -126,6 +130,29 @@ int main(int argc, char* argv[]) {
       (clock() - begin_time) / static_cast<double>(CLOCKS_PER_SEC);
 
   ofstream output_file(argv[4]);
+  const Floorplan& best_floorplan = floorplanner.best_floorplan();
+  int chip_width = best_floorplan.width();
+  int child_height = best_floorplan.height();
+  int chip_area = chip_width * child_height;
+  double wire_length = best_floorplan.WireLength(database);
+  output_file << alpha * chip_area + (1 - alpha) * wire_length << endl;
+  output_file << wire_length << endl;
+  output_file << chip_area << endl;
+  output_file << chip_width << " " << child_height << endl;
+  output_file << run_time << endl;
+  best_floorplan.IterateMacros(
+      [&](int data_id, const Point<int>& coordinate, bool is_rotated) {
+        string name = database.Data<string>(data_id, "name");
+        int x = coordinate.x();
+        int y = coordinate.y();
+        int width = database.Data<int>(data_id, "width");
+        int height = database.Data<int>(data_id, "height");
+        if (is_rotated) {
+          swap(width, height);
+        }
+        output_file << name << " " << x << " " << y << " " << x + width << " "
+                    << y + height << endl;
+      });
 
   return 0;
 }

@@ -5,6 +5,7 @@
 #include "../lib/uni-database/uni_database.hpp"
 #include "b_star_tree.hpp"
 
+#include <functional>
 #include <vector>
 
 class Floorplan {
@@ -13,10 +14,17 @@ class Floorplan {
 
   int width() const;
   int height() const;
-
-  double WireLength(const uni_database::UniDatabase& database) const;
+  int num_macros() const;
 
   void Print(int indent = 0) const;
+
+  int IterateMacros(
+      std::function<void(int data_id, const helpers::Point<int>& coordinate,
+                         bool is_rotated)>
+          handler) const;
+  double WireLength(const uni_database::UniDatabase& database) const;
+  double Cost(const uni_database::UniDatabase& database,
+              double alpha = 0.5) const;
 
   void Perturb();
   void Pack(const uni_database::UniDatabase& database);

@@ -1,5 +1,7 @@
 #include "floorplan.hpp"
 
+#include "contour.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
@@ -72,6 +74,53 @@ int Floorplan::width() const { return width_; }
 
 int Floorplan::height() const { return height_; }
 
+int Floorplan::num_macros() const { return macros_.size(); }
+
+void Floorplan::Print(int indent) const {
+  const int num_spaces = 2;
+  cout << string(num_spaces * indent, ' ') << "Floorplan:" << endl;
+  cout << string(num_spaces * (indent + 1), ' ') << "macros_:" << endl;
+  for (int i = 0; i < macros_.size(); ++i) {
+    cout << string(num_spaces * (indent + 2), ' ') << "Macro: " << i << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "data_id_: " << macros_[i].data_id_ << endl;
+    cout << string(num_spaces * (indent + 3), ' ') << "coordinate_: "
+         << "(" << macros_[i].coordinate_.x() << ", "
+         << macros_[i].coordinate_.y() << ")" << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "is_rotated_: " << macros_[i].is_rotated_ << endl;
+  }
+  cout << string(num_spaces * (indent + 1), ' ') << "nets_:" << endl;
+  for (int i = 0; i < nets_.size(); ++i) {
+    cout << string(num_spaces * (indent + 2), ' ') << "Net: " << i << endl;
+    cout << string(num_spaces * (indent + 3), ' ')
+         << "data_id_: " << nets_[i].data_id_ << endl;
+    cout << string(num_spaces * (indent + 3), ' ') << "bounding_box_:" << endl;
+    cout << string(num_spaces * (indent + 4), ' ') << "lower_left_: "
+         << "(" << nets_[i].bounding_box_.lower_left().x() << ", "
+         << nets_[i].bounding_box_.lower_left().y() << ")" << endl;
+    cout << string(num_spaces * (indent + 4), ' ') << "upper_right: "
+         << "(" << nets_[i].bounding_box_.upper_right().x() << ", "
+         << nets_[i].bounding_box_.upper_right().y() << ")" << endl;
+    cout << string(num_spaces * (indent + 3), ' ') << "macro_ids_: ";
+    for (int macro_id : nets_[i].macro_ids_) {
+      cout << macro_id << " ";
+    }
+    cout << endl;
+  }
+  b_star_tree_.Print(indent + 1);
+}
+
+int Floorplan::IterateMacros(
+    function<void(int data_id, const Point<int>& coordinate, bool is_rotated)>
+        handler) const {
+  for (const Macro& macro : macros_) {
+    handler(macro.data_id_, macro.coordinate_, macro.is_rotated_);
+  }
+  return macros_.size();
+}
+
+// TODO: Sort macros in every net.
 double Floorplan::WireLength(const UniDatabase& database) const {
   double wire_length = 0.0;
   for (const Net& net : nets_) {
@@ -99,19 +148,28 @@ double Floorplan::WireLength(const UniDatabase& database) const {
   return wire_length;
 }
 
-void Floorplan::Print(int indent) const {
-  const int num_spaces = 2;
-  cout << string(num_spaces * indent, ' ') << "Floorplan:" << endl;
-  cout << string(num_spaces * (indent + 1), ' ') << "macros_:" << endl;
-  for (int i = 0; i < macros_.size(); ++i) {
-    cout << string(num_spaces * (indent + 2), ' ') << "Macro: " << i << endl;
-    cout << string(num_spaces * (indent + 3), ' ') << "data_id_: " << macros_[i].data_id_ << endl;
-    cout << string(num_spaces * (indent + 3), ' ') << "coordinate_: "
-         << "(" << macros_[i].coordinate_.x() << ", "
-         << macros_[i].coordinate_.y() << ")" << endl;
-    cout << string(num_spaces * (indent + 3), ' ') << "is_rotated_: " << macros_[i].is_rotated_ << endl;
+double Floorplan::Cost(const UniDatabase& database, double alpha) const {
+  const int outline_width = database.Data<int>(Keys{"outline", "width"});
+  const int outline_height = database.Data<int>(Keys{"outline", "height"});
+
+  double penalty = 0.0;
+  if (width_ > outline_width && height_ > outline_height) {
+    penalty += (width_ * height_ - outline_width * outline_height);
+  } else if (width_ > outline_width) {
+    penalty += ((width_ - outline_width) * height_ +
+                outline_width * (outline_height - height_));
+  } else if (height_ > outline_height) {
+    penalty += (width_ * (height_ - outline_height) +
+                (outline_width - width_) * outline_height);
   }
-  b_star_tree_.Print(indent + 1);
+  penalty *= 10;
+  /* penalty += (10.0 * ((width_ - outline_width) * (width_ - outline_width) + */
+  /*                     (height_ - outline_height) * (height_ - outline_height))); */
+
+  double cost =
+      alpha * width_ * height_ + (1 - alpha) * WireLength(database) + penalty;
+
+  return cost;
 }
 
 void Floorplan::Perturb() {
@@ -151,4 +209,47 @@ void Floorplan::Perturb() {
   }
 }
 
-void Floorplan::Pack(const UniDatabase& database) {}
+void Floorplan::Pack(const UniDatabase& database) {
+  Contour contour;
+  b_star_tree_.Dfs([&](int current_node_id, int parent_id, bool is_from_left) {
+    int macro_id = b_star_tree_.node_macro_id(current_node_id);
+    Macro& macro = macros_.at(macro_id);
+    int macro_data_id = macro.data_id_;
+    int macro_width = database.Data<int>(macro_data_id, "width");
+    int macro_height = database.Data<int>(macro_data_id, "height");
+    bool is_macro_rotated = macro.is_rotated_;
+    if (is_macro_rotated) {
+      swap(macro_width, macro_height);
+    }
+
+    if (parent_id == -1) {
+      macro.coordinate_.set_x(0);
+      macro.coordinate_.set_y(0);
+      contour.Update(0, macro_width, macro_height);
+    } else {
+      int parent_macro_id = b_star_tree_.node_macro_id(parent_id);
+      const Macro& parent_macro = macros_.at(parent_macro_id);
+      int parent_macro_data_id = parent_macro.data_id_;
+      int parent_macro_x = parent_macro.coordinate_.x();
+      int parent_macro_width =
+          database.Data<int>(parent_macro_data_id, "width");
+      bool is_parent_macro_rotated = parent_macro.is_rotated_;
+      if (is_parent_macro_rotated) {
+        parent_macro_width = database.Data<int>(parent_macro_data_id, "height");
+      }
+      if (is_from_left) {
+        int x = parent_macro_x + parent_macro_width;
+        macro.coordinate_.set_x(x);
+        macro.coordinate_.set_y(contour.MaxYBetween(x, x + macro_width));
+        contour.Update(x, macro_width, macro_height);
+      } else {
+        int x = parent_macro_x;
+        macro.coordinate_.set_x(x);
+        macro.coordinate_.set_y(contour.MaxYBetween(x, x + macro_width));
+        contour.Update(x, macro_width, macro_height);
+      }
+    }
+  });
+  width_ = contour.max_x();
+  height_ = contour.MaxY();
+}

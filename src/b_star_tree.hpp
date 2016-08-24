@@ -1,6 +1,7 @@
 #ifndef B_STAR_TREE_HPP
 #define B_STAR_TREE_HPP
 
+#include <functional>
 #include <vector>
 
 class BStarTree {
@@ -8,8 +9,13 @@ class BStarTree {
   BStarTree(int num_nodes = 0);
 
   int num_nodes() const;
+  int node_macro_id(int node_id) const;
 
   void Print(int indent = 0) const;
+
+  void Dfs(
+      std::function<void(int current_node_id, int parent_id, bool is_from_left)>
+          handler);
 
   void DeleteThenInsertNode(int node_id, int target_node_id);
   void SwapNodes(int node_a_id, int node_b_id);
