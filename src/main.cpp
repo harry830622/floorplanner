@@ -22,6 +22,8 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  srand(time(0));
+
   clock_t begin_time = clock();
 
   double alpha = stod(string(argv[1]));
@@ -123,7 +125,6 @@ int main(int argc, char* argv[]) {
 
   Floorplanner floorplanner(database, alpha);
 
-  srand(time(0));
   floorplanner.Run();
 
   double run_time =

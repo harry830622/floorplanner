@@ -68,6 +68,18 @@ Floorplan::Floorplan(const UniDatabase& database) : width_(0), height_(0) {
           });
     }
   }
+
+  const int num_perturbations = 10000;
+  long long total_area = 0;
+  double total_wire_length = 0.0;
+  for (int i = 0; i < num_perturbations; ++i) {
+    Perturb();
+    Pack(database);
+    total_area += (width_ * height_);
+    total_wire_length += WireLength(database);
+  }
+  average_area_ = total_area / static_cast<double>(num_perturbations);
+  average_wire_length_ = total_wire_length / num_perturbations;
 }
 
 int Floorplan::width() const { return width_; }
@@ -153,21 +165,35 @@ double Floorplan::Cost(const UniDatabase& database, double alpha) const {
   const int outline_height = database.Data<int>(Keys{"outline", "height"});
 
   double penalty = 0.0;
-  if (width_ > outline_width && height_ > outline_height) {
-    penalty += (width_ * height_ - outline_width * outline_height);
-  } else if (width_ > outline_width) {
-    penalty += ((width_ - outline_width) * height_ +
-                outline_width * (outline_height - height_));
-  } else if (height_ > outline_height) {
-    penalty += (width_ * (height_ - outline_height) +
-                (outline_width - width_) * outline_height);
+  if (width_ > outline_width || height_ > outline_height) {
+    /* if (width_ > outline_width && height_ > outline_height) { */
+    /*   penalty += (width_ * height_ - outline_width * outline_height); */
+    /* } else if (width_ > outline_width) { */
+    /*   penalty += ((width_ - outline_width) * height_); */
+    /*   /1* penalty += ((width_ - outline_width) * height_ + *1/ */
+    /*   /1*             outline_width * (outline_height - height_)); *1/ */
+    /* } else if (height_ > outline_height) { */
+    /*   penalty += (width_ * (height_ - outline_height)); */
+    /*   /1* penalty += (width_ * (height_ - outline_height) + *1/ */
+    /*   /1*             (outline_width - width_) * outline_height); *1/ */
+    /* } */
+    /* penalty += ((width_ - outline_width) * (width_ - outline_width) + */
+    /*             (height_ - outline_height) * (height_ - outline_height)); */
+    double ratio = height_ / static_cast<double>(width_);
+    double outline_ratio = outline_height / static_cast<double>(outline_width);
+    penalty += ((ratio - outline_ratio) * (ratio - outline_ratio));
   }
-  penalty *= 10;
-  /* penalty += (10.0 * ((width_ - outline_width) * (width_ - outline_width) + */
-  /*                     (height_ - outline_height) * (height_ - outline_height))); */
 
-  double cost =
-      alpha * width_ * height_ + (1 - alpha) * WireLength(database) + penalty;
+  const int area = width_ * height_;
+  const double wire_length = WireLength(database);
+  const int penalty_weight = 10;
+  double cost = alpha * area / average_area_ +
+                (1 - alpha) * wire_length / average_wire_length_ +
+                penalty_weight * penalty;
+
+  /* cout << alpha * area / average_area_ << " " */
+  /*      << (1 - alpha) * wire_length / average_wire_length_ << " " */
+  /*      << penalty_weight * penalty << endl; */
 
   return cost;
 }

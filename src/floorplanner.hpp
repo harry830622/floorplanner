@@ -14,7 +14,7 @@ class Floorplanner {
   void Run();
 
  private:
-  void SA();
+  void SA(double initial_temperature = 10000.0, double r = 0.85);
 
   const uni_database::UniDatabase& database_;
   double alpha_;
