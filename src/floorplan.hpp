@@ -50,6 +50,8 @@ class Floorplan {
 
   int width_;
   int height_;
+  int average_area_;
+  double average_wire_length_;
   std::vector<Macro> macros_;
   std::vector<Net> nets_;
   BStarTree b_star_tree_;
