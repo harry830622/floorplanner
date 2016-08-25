@@ -17,7 +17,8 @@ void Floorplanner::Run() { SA(); }
 void Floorplanner::SA() {
   const double initial_temperature = 10000.0;
   const double r = 0.85;
-  const int num_perturbations = best_floorplan_.num_macros() * 50;
+  const int num_perturbations =
+      best_floorplan_.num_macros() * best_floorplan_.num_macros() * 3;
 
   Floorplan& floorplan(best_floorplan_);
   floorplan.Pack(database_);

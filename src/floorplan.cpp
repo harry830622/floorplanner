@@ -153,18 +153,19 @@ double Floorplan::Cost(const UniDatabase& database, double alpha) const {
   const int outline_height = database.Data<int>(Keys{"outline", "height"});
 
   double penalty = 0.0;
-  if (width_ > outline_width && height_ > outline_height) {
-    penalty += (width_ * height_ - outline_width * outline_height);
-  } else if (width_ > outline_width) {
-    penalty += ((width_ - outline_width) * height_ +
-                outline_width * (outline_height - height_));
-  } else if (height_ > outline_height) {
-    penalty += (width_ * (height_ - outline_height) +
-                (outline_width - width_) * outline_height);
+  if (width_ > outline_width || height_ > outline_height) {
+    if (width_ > outline_width && height_ > outline_height) {
+      penalty += (width_ * height_ - outline_width * outline_height);
+    } else if (width_ > outline_width) {
+      penalty += ((width_ - outline_width) * height_ +
+                  outline_width * (outline_height - height_));
+    } else if (height_ > outline_height) {
+      penalty += (width_ * (height_ - outline_height) +
+                  (outline_width - width_) * outline_height);
+    }
+    penalty += ((width_ - outline_width) * (width_ - outline_width) +
+                (height_ - outline_height) * (height_ - outline_height));
   }
-  penalty *= 10;
-  /* penalty += (10.0 * ((width_ - outline_width) * (width_ - outline_width) + */
-  /*                     (height_ - outline_height) * (height_ - outline_height))); */
 
   double cost =
       alpha * width_ * height_ + (1 - alpha) * WireLength(database) + penalty;
