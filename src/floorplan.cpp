@@ -154,7 +154,6 @@ int Floorplan::IterateMacros(
   return macros_.size();
 }
 
-// TODO: Sort macros in every net.
 double Floorplan::WireLength(const UniDatabase& database) const {
   double wire_length = 0.0;
   for (const Net& net : nets_) {
