@@ -23,16 +23,21 @@ void Floorplanner::Run() {
   cout << best_floorplan_.width() << " " << best_floorplan_.height() << endl;
 }
 
-void Floorplanner::SA(double initial_temperature, double r) {
+void Floorplanner::SA() {
+  const double initial_p = 0.99;
+  const double r = 0.85;
+  const double initial_temperature =
+      best_floorplan_.average_uphill_cost() / -1 * log(initial_p);
+  const double frozen_temperature = initial_temperature / 1000;
   const int num_perturbations =
-      best_floorplan_.num_macros() * best_floorplan_.num_macros() * 10;
+      best_floorplan_.num_macros() * best_floorplan_.num_macros() * 3;
 
   Floorplan floorplan(best_floorplan_);
   floorplan.Pack(database_);
   double best_cost = floorplan.Cost(database_, alpha_);
   double last_cost = best_cost;
   double temperature = initial_temperature;
-  while (temperature > 0.001) {
+  while (temperature > frozen_temperature) {
     for (int i = 0; i < num_perturbations; ++i) {
       Floorplan new_floorplan(floorplan);
       new_floorplan.Perturb();
@@ -64,4 +69,7 @@ void Floorplanner::SA(double initial_temperature, double r) {
 
     temperature *= r;
   }
+}
+
+void Floorplanner::FastSA() {
 }
