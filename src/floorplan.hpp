@@ -38,6 +38,7 @@ class Floorplan {
     int data_id_;
     helpers::Point<int> coordinate_;
     bool is_rotated_;
+    // TODO: Add is_rotatable_.
   };
 
   class Net {
