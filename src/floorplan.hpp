@@ -15,6 +15,7 @@ class Floorplan {
   int width() const;
   int height() const;
   int num_macros() const;
+  double average_uphill_cost() const;
 
   void Print(int indent = 0) const;
 
@@ -37,6 +38,7 @@ class Floorplan {
     int data_id_;
     helpers::Point<int> coordinate_;
     bool is_rotated_;
+    // TODO: Add is_rotatable_.
   };
 
   class Net {
@@ -50,8 +52,9 @@ class Floorplan {
 
   int width_;
   int height_;
-  int average_area_;
+  double average_area_;
   double average_wire_length_;
+  double average_uphill_cost_;
   std::vector<Macro> macros_;
   std::vector<Net> nets_;
   BStarTree b_star_tree_;

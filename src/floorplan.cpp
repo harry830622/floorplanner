@@ -26,7 +26,12 @@ Floorplan::Net::Net(int data_id)
                                         std::numeric_limits<int>::max()),
                     helpers::Point<int>(0, 0)) {}
 
-Floorplan::Floorplan(const UniDatabase& database) : width_(0), height_(0) {
+Floorplan::Floorplan(const UniDatabase& database)
+    : width_(0),
+      height_(0),
+      average_area_(0.0),
+      average_wire_length_(0.0),
+      average_uphill_cost_(0.0) {
   map<int, int> macro_ids;
   int num_macros = database.Iterate(
       Keys{"macros"},
@@ -69,6 +74,7 @@ Floorplan::Floorplan(const UniDatabase& database) : width_(0), height_(0) {
     }
   }
 
+  Pack(database);
   const int num_perturbations = 10000;
   long long total_area = 0;
   double total_wire_length = 0.0;
@@ -80,6 +86,20 @@ Floorplan::Floorplan(const UniDatabase& database) : width_(0), height_(0) {
   }
   average_area_ = total_area / static_cast<double>(num_perturbations);
   average_wire_length_ = total_wire_length / num_perturbations;
+
+  double total_uphill_cost = 0.0;
+  double last_cost = Cost(database);
+  for (int i = 0; i < num_perturbations; ++i) {
+    Perturb();
+    Pack(database);
+    double cost = Cost(database);
+    double cost_delta = cost - last_cost;
+    if (cost_delta > 0) {
+      total_uphill_cost += cost;
+    }
+    last_cost = cost;
+  }
+  average_uphill_cost_ = total_uphill_cost / num_perturbations;
 }
 
 int Floorplan::width() const { return width_; }
@@ -87,6 +107,8 @@ int Floorplan::width() const { return width_; }
 int Floorplan::height() const { return height_; }
 
 int Floorplan::num_macros() const { return macros_.size(); }
+
+double Floorplan::average_uphill_cost() const { return average_uphill_cost_; }
 
 void Floorplan::Print(int indent) const {
   const int num_spaces = 2;
@@ -132,7 +154,6 @@ int Floorplan::IterateMacros(
   return macros_.size();
 }
 
-// TODO: Sort macros in every net.
 double Floorplan::WireLength(const UniDatabase& database) const {
   double wire_length = 0.0;
   for (const Net& net : nets_) {
@@ -166,22 +187,22 @@ double Floorplan::Cost(const UniDatabase& database, double alpha) const {
 
   double penalty = 0.0;
   if (width_ > outline_width || height_ > outline_height) {
-    /* if (width_ > outline_width && height_ > outline_height) { */
-    /*   penalty += (width_ * height_ - outline_width * outline_height); */
-    /* } else if (width_ > outline_width) { */
-    /*   penalty += ((width_ - outline_width) * height_); */
-    /*   /1* penalty += ((width_ - outline_width) * height_ + *1/ */
-    /*   /1*             outline_width * (outline_height - height_)); *1/ */
-    /* } else if (height_ > outline_height) { */
-    /*   penalty += (width_ * (height_ - outline_height)); */
-    /*   /1* penalty += (width_ * (height_ - outline_height) + *1/ */
-    /*   /1*             (outline_width - width_) * outline_height); *1/ */
-    /* } */
-    /* penalty += ((width_ - outline_width) * (width_ - outline_width) + */
-    /*             (height_ - outline_height) * (height_ - outline_height)); */
-    double ratio = height_ / static_cast<double>(width_);
-    double outline_ratio = outline_height / static_cast<double>(outline_width);
-    penalty += ((ratio - outline_ratio) * (ratio - outline_ratio));
+    if (width_ > outline_width && height_ > outline_height) {
+      penalty += (width_ * height_ - outline_width * outline_height);
+    } else if (width_ > outline_width) {
+      penalty += ((width_ - outline_width) * height_);
+      /* penalty += ((width_ - outline_width) * height_ + */
+      /*             outline_width * (outline_height - height_)); */
+    } else if (height_ > outline_height) {
+      penalty += (width_ * (height_ - outline_height));
+      /* penalty += (width_ * (height_ - outline_height) + */
+      /*             (outline_width - width_) * outline_height); */
+    }
+    penalty += ((width_ - outline_width) * (width_ - outline_width) +
+                (height_ - outline_height) * (height_ - outline_height));
+    /* double ratio = height_ / static_cast<double>(width_); */
+    /* double outline_ratio = outline_height / static_cast<double>(outline_width); */
+    /* penalty += ((ratio - outline_ratio) * (ratio - outline_ratio)); */
   }
 
   const int area = width_ * height_;
@@ -189,7 +210,7 @@ double Floorplan::Cost(const UniDatabase& database, double alpha) const {
   const int penalty_weight = 10;
   double cost = alpha * area / average_area_ +
                 (1 - alpha) * wire_length / average_wire_length_ +
-                penalty_weight * penalty;
+                penalty_weight * penalty / average_area_;
 
   /* cout << alpha * area / average_area_ << " " */
   /*      << (1 - alpha) * wire_length / average_wire_length_ << " " */
