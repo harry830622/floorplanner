@@ -5,16 +5,16 @@
 
 class Point {
  public:
-  Point(int x, int y);
+  Point(double x, double y);
 
   void Print(std::ostream& os = std::cout, int indent_level = 0) const;
 
-  int x() const;
-  int y() const;
+  double x() const;
+  double y() const;
 
  private:
-  int x_;
-  int y_;
+  double x_;
+  double y_;
 };
 
 #endif

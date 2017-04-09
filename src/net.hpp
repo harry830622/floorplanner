@@ -1,14 +1,14 @@
 #ifndef NET_HPP
 #define NET_HPP
 
-#include "./terminal.hpp"
+#include "./point.hpp"
 
 #include <vector>
 
 class Net {
  public:
   Net(const std::vector<int>& macro_ids,
-      const std::vector<Terminal>& terminals);
+      const std::vector<Point>& terminal_coordinates);
 
   void Print(std::ostream& os = std::cout, int indent_level = 0) const;
 
@@ -16,10 +16,10 @@ class Net {
   int macro_id(int nth_macro) const;
 
  private:
-  int min_x_;
-  int min_y_;
-  int max_x_;
-  int max_y_;
+  double min_x_;
+  double min_y_;
+  double max_x_;
+  double max_y_;
   std::vector<int> macro_ids_;
 };
 

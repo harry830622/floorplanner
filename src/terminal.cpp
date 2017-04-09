@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Terminal::Terminal(const string& name, int x, int y)
+Terminal::Terminal(const string& name, double x, double y)
     : name_(name), coordinates_(x, y) {}
 
 void Terminal::Print(ostream& os, int indent_level) const {
@@ -18,6 +18,6 @@ const string& Terminal::name() const { return name_; }
 
 const Point& Terminal::coordinates() const { return coordinates_; }
 
-int Terminal::x() const { return coordinates_.x(); }
+double Terminal::x() const { return coordinates_.x(); }
 
-int Terminal::y() const { return coordinates_.y(); }
+double Terminal::y() const { return coordinates_.y(); }

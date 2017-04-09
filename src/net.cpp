@@ -4,15 +4,16 @@
 
 using namespace std;
 
-Net::Net(const vector<int>& macro_ids, const vector<Terminal>& terminals)
-    : min_x_(numeric_limits<int>::max()),
-      min_y_(numeric_limits<int>::max()),
-      max_x_(numeric_limits<int>::min()),
-      max_y_(numeric_limits<int>::min()),
+Net::Net(const vector<int>& macro_ids,
+         const vector<Point>& terminal_coordinates)
+    : min_x_(numeric_limits<double>::max()),
+      min_y_(numeric_limits<double>::max()),
+      max_x_(numeric_limits<double>::lowest()),
+      max_y_(numeric_limits<double>::lowest()),
       macro_ids_(macro_ids) {
-  for (const Terminal& terminal : terminals) {
-    const int terminal_x = terminal.x();
-    const int terminal_y = terminal.y();
+  for (const Point& terminal_coordinate : terminal_coordinates) {
+    const double terminal_x = terminal_coordinate.x();
+    const double terminal_y = terminal_coordinate.y();
     if (terminal_x < min_x_) {
       min_x_ = terminal_x;
     }

@@ -1,0 +1,127 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BStarTree	b_star_tree.cpp	/^BStarTree::BStarTree(int num_macros)$/;"	f	class:BStarTree
+BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
+B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
+CONTOUR_HPP	contour.hpp	2;"	d
+Contour	contour.cpp	/^Contour::Contour() : max_y_(0.0), coordinates_(1, Point(0.0, 0.0)) {}$/;"	f	class:Contour
+Contour	contour.hpp	/^class Contour {$/;"	c
+DATABASE_HPP	database.hpp	2;"	d
+Database	database.cpp	/^Database::Database(istream& block_input, istream& net_input)$/;"	f	class:Database
+Database	database.hpp	/^class Database {$/;"	c
+Delete	b_star_tree.cpp	/^void BStarTree::Delete(int deleted_node_id) {$/;"	f	class:BStarTree
+DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,$/;"	f	class:BStarTree
+FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
+FLOORPLAN_HPP	floorplan.hpp	2;"	d
+FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end) const {$/;"	f	class:Contour
+Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros)$/;"	f	class:Floorplan
+Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
+Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha)$/;"	f	class:Floorplanner
+Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
+Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id,$/;"	f	class:BStarTree
+IsDelimiter	simple_parser.hpp	/^  bool IsDelimiter(char c) { return delimiters_.find(c) != std::string::npos; }$/;"	f	class:simple_parser::Parser
+MACRO_HPP	macro.hpp	2;"	d
+Macro	macro.cpp	/^Macro::Macro(const string& name, double width, double height)$/;"	f	class:Macro
+Macro	macro.hpp	/^class Macro {$/;"	c
+NET_HPP	net.hpp	2;"	d
+Net	net.cpp	/^Net::Net(const vector<int>& macro_ids,$/;"	f	class:Net
+Net	net.hpp	/^class Net {$/;"	c
+Node	b_star_tree.cpp	/^BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)$/;"	f	class:BStarTree::Node
+Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
+POINT_HPP	point.hpp	2;"	d
+Pack	floorplan.cpp	/^void Floorplan::Pack(const Database& database) {}$/;"	f	class:Floorplan
+Parse	simple_parser.hpp	/^  void Parse(Handler handler) {$/;"	f	class:simple_parser::Parser
+ParseBlocks	database.cpp	/^void Database::ParseBlocks(istream& block_input) {$/;"	f	class:Database
+ParseNets	database.cpp	/^void Database::ParseNets(istream& net_input) {$/;"	f	class:Database
+Parser	simple_parser.hpp	/^  Parser(std::istream& input, const Delimiters& extra_delimiters = "")$/;"	f	class:simple_parser::Parser
+Parser	simple_parser.hpp	/^class Parser {$/;"	c	namespace:simple_parser
+Perturb	floorplan.cpp	/^void Floorplan::Perturb() {$/;"	f	class:Floorplan
+Point	point.cpp	/^Point::Point(double x, double y) : x_(x), y_(y) {}$/;"	f	class:Point
+Point	point.hpp	/^class Point {$/;"	c
+Print	database.cpp	/^void Database::Print(ostream& os, int indent_level) const {$/;"	f	class:Database
+Print	macro.cpp	/^void Macro::Print(ostream& os, int indent_level) const {$/;"	f	class:Macro
+Print	net.cpp	/^void Net::Print(ostream& os, int indent_level) const {$/;"	f	class:Net
+Print	point.cpp	/^void Point::Print(ostream& os, int indent_level) const {$/;"	f	class:Point
+Print	terminal.cpp	/^void Terminal::Print(ostream& os, int indent_level) const {$/;"	f	class:Terminal
+Run	floorplanner.cpp	/^void Floorplanner::Run() {$/;"	f	class:Floorplanner
+SIMPLE_PARSER_HPP	simple_parser.hpp	2;"	d
+TERMINAL_HPP	terminal.hpp	2;"	d
+Terminal	terminal.cpp	/^Terminal::Terminal(const string& name, double x, double y)$/;"	f	class:Terminal
+Terminal	terminal.hpp	/^class Terminal {$/;"	c
+Tokenize	simple_parser.hpp	/^  Tokens Tokenize(const std::string& str) {$/;"	f	class:simple_parser::Parser
+Update	contour.cpp	/^void Contour::Update(double x, double width, double height) {$/;"	f	class:Contour
+alpha_	floorplanner.hpp	/^  double alpha_;$/;"	m	class:Floorplanner
+area	floorplan.cpp	/^double Floorplan::area() const { return area_; }$/;"	f	class:Floorplan
+area_	floorplan.hpp	/^  double area_;$/;"	m	class:Floorplan
+b_star_tree_	floorplan.hpp	/^  BStarTree b_star_tree_;$/;"	m	class:Floorplan
+best_floorplan_	floorplanner.hpp	/^  Floorplan best_floorplan_;$/;"	m	class:Floorplanner
+contour_	floorplan.hpp	/^  Contour contour_;$/;"	m	class:Floorplan
+coordinates	terminal.cpp	/^const Point& Terminal::coordinates() const { return coordinates_; }$/;"	f	class:Terminal
+coordinates_	contour.hpp	/^  std::list<Point> coordinates_;$/;"	m	class:Contour
+coordinates_	terminal.hpp	/^  Point coordinates_;$/;"	m	class:Terminal
+database_	floorplanner.hpp	/^  const Database& database_;$/;"	m	class:Floorplanner
+delimiters_	simple_parser.hpp	/^  Delimiters delimiters_;$/;"	m	class:simple_parser::Parser
+height	macro.cpp	/^double Macro::height() const { return height_; }$/;"	f	class:Macro
+height_	macro.hpp	/^  double height_;$/;"	m	class:Macro
+input_	simple_parser.hpp	/^  std::istream& input_;$/;"	m	class:simple_parser::Parser
+is_macro_existed	database.cpp	/^bool Database::is_macro_existed(const string& macro_name) const {$/;"	f	class:Database
+is_rotated_from_macro_id_	floorplan.hpp	/^  std::vector<bool> is_rotated_from_macro_id_;$/;"	m	class:Floorplan
+is_terminal_existed	database.cpp	/^bool Database::is_terminal_existed(const string& terminal_name) const {$/;"	f	class:Database
+left_child_id	b_star_tree.cpp	/^int BStarTree::left_child_id(int node_id) const {$/;"	f	class:BStarTree
+left_child_id_	b_star_tree.hpp	/^    int left_child_id_;$/;"	m	class:BStarTree::Node
+macro	database.cpp	/^const Macro& Database::macro(int macro_id) const {$/;"	f	class:Database
+macro_coordinates_from_macro_id_	floorplan.hpp	/^  std::vector<std::pair<Point, Point>> macro_coordinates_from_macro_id_;$/;"	m	class:Floorplan
+macro_id	net.cpp	/^int Net::macro_id(int nth_macro) const { return macro_ids_.at(nth_macro); }$/;"	f	class:Net
+macro_id_from_name	database.cpp	/^int Database::macro_id_from_name(const string& macro_name) const {$/;"	f	class:Database
+macro_id_from_name_	database.hpp	/^  std::map<std::string, int> macro_id_from_name_;$/;"	m	class:Database
+macro_id_from_node_id_	floorplan.hpp	/^  std::vector<int> macro_id_from_node_id_;$/;"	m	class:Floorplan
+macro_ids_	net.hpp	/^  std::vector<int> macro_ids_;$/;"	m	class:Net
+macros_	database.hpp	/^  std::vector<Macro> macros_;$/;"	m	class:Database
+main	main.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+max_x	contour.cpp	/^double Contour::max_x() const { return coordinates_.back().x(); }$/;"	f	class:Contour
+max_x_	net.hpp	/^  double max_x_;$/;"	m	class:Net
+max_y	contour.cpp	/^double Contour::max_y() const { return max_y_; }$/;"	f	class:Contour
+max_y_	contour.hpp	/^  double max_y_;$/;"	m	class:Contour
+max_y_	net.hpp	/^  double max_y_;$/;"	m	class:Net
+min_x_	net.hpp	/^  double min_x_;$/;"	m	class:Net
+min_y_	net.hpp	/^  double min_y_;$/;"	m	class:Net
+name	macro.cpp	/^const string& Macro::name() const { return name_; }$/;"	f	class:Macro
+name	terminal.cpp	/^const string& Terminal::name() const { return name_; }$/;"	f	class:Terminal
+name_	macro.hpp	/^  std::string name_;$/;"	m	class:Macro
+name_	terminal.hpp	/^  std::string name_;$/;"	m	class:Terminal
+nets_	database.hpp	/^  std::vector<Net> nets_;$/;"	m	class:Database
+node	b_star_tree.cpp	/^BStarTree::Node& BStarTree::node(int node_id) { return nodes_.at(node_id); }$/;"	f	class:BStarTree
+nodes_	b_star_tree.hpp	/^  std::vector<Node> nodes_;$/;"	m	class:BStarTree
+num_macros	database.cpp	/^int Database::num_macros() const { return macros_.size(); }$/;"	f	class:Database
+num_macros	net.cpp	/^int Net::num_macros() const { return macro_ids_.size(); }$/;"	f	class:Net
+num_terminals	database.cpp	/^int Database::num_terminals() const { return terminals_.size(); }$/;"	f	class:Database
+other	simple_parser.hpp	/^  Parser& operator=(const Parser& other) = delete;$/;"	m	class:simple_parser::Parser
+outline_height	database.cpp	/^double Database::outline_height() const { return outline_height_; }$/;"	f	class:Database
+outline_height_	database.hpp	/^  double outline_height_;$/;"	m	class:Database
+outline_width	database.cpp	/^double Database::outline_width() const { return outline_width_; }$/;"	f	class:Database
+outline_width_	database.hpp	/^  double outline_width_;$/;"	m	class:Database
+parent_id	b_star_tree.cpp	/^int BStarTree::parent_id(int node_id) const {$/;"	f	class:BStarTree
+parent_id_	b_star_tree.hpp	/^    int parent_id_;$/;"	m	class:BStarTree::Node
+right_child_id	b_star_tree.cpp	/^int BStarTree::right_child_id(int node_id) const {$/;"	f	class:BStarTree
+right_child_id_	b_star_tree.hpp	/^    int right_child_id_;$/;"	m	class:BStarTree::Node
+root_id	b_star_tree.cpp	/^int BStarTree::root_id() const { return root_id_; }$/;"	f	class:BStarTree
+root_id_	b_star_tree.hpp	/^  int root_id_;$/;"	m	class:BStarTree
+simple_parser	simple_parser.hpp	/^namespace simple_parser {$/;"	n
+terminal	database.cpp	/^const Terminal& Database::terminal(int terminal_id) const {$/;"	f	class:Database
+terminal_id_from_name	database.cpp	/^int Database::terminal_id_from_name(const string& terminal_name) const {$/;"	f	class:Database
+terminal_id_from_name_	database.hpp	/^  std::map<std::string, int> terminal_id_from_name_;$/;"	m	class:Database
+terminals_	database.hpp	/^  std::vector<Terminal> terminals_;$/;"	m	class:Database
+width	macro.cpp	/^double Macro::width() const { return width_; }$/;"	f	class:Macro
+width_	macro.hpp	/^  double width_;$/;"	m	class:Macro
+wirelength	floorplan.cpp	/^double Floorplan::wirelength() const { return wirelength_; }$/;"	f	class:Floorplan
+wirelength_	floorplan.hpp	/^  double wirelength_;$/;"	m	class:Floorplan
+x	point.cpp	/^double Point::x() const { return x_; }$/;"	f	class:Point
+x	terminal.cpp	/^double Terminal::x() const { return coordinates_.x(); }$/;"	f	class:Terminal
+x_	point.hpp	/^  double x_;$/;"	m	class:Point
+y	point.cpp	/^double Point::y() const { return y_; }$/;"	f	class:Point
+y	terminal.cpp	/^double Terminal::y() const { return coordinates_.y(); }$/;"	f	class:Terminal
+y_	point.hpp	/^  double y_;$/;"	m	class:Point

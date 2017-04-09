@@ -1,6 +1,7 @@
-#include "./database.hpp"
+#include "./floorplanner.hpp"
 
 #include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -17,11 +18,16 @@ int main(int argc, char* argv[]) {
     return 2;
   }
 
+  srand(time(NULL));
+
   ifstream block_input(argv[2]);
   ifstream net_input(argv[3]);
 
   Database database(block_input, net_input);
   database.Print();
+
+  Floorplanner floorplanner(database, alpha);
+  floorplanner.Run();
 
   return 0;
 }

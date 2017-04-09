@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Point::Point(int x, int y) : x_(x), y_(y) {}
+Point::Point(double x, double y) : x_(x), y_(y) {}
 
 void Point::Print(ostream& os, int indent_level) const {
   const int indent_size = 2;
@@ -12,6 +12,6 @@ void Point::Print(ostream& os, int indent_level) const {
   os << string(indent_level * indent_size, ' ') << "y_: " << y_ << endl;
 }
 
-int Point::x() const { return x_; }
+double Point::x() const { return x_; }
 
-int Point::y() const { return y_; }
+double Point::y() const { return y_; }

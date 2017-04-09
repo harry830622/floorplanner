@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Macro::Macro(const string& name, int width, int height)
+Macro::Macro(const string& name, double width, double height)
     : name_(name), width_(width), height_(height) {}
 
 void Macro::Print(ostream& os, int indent_level) const {
@@ -17,6 +17,6 @@ void Macro::Print(ostream& os, int indent_level) const {
 
 const string& Macro::name() const { return name_; }
 
-int Macro::width() const { return width_; }
+double Macro::width() const { return width_; }
 
-int Macro::height() const { return height_; }
+double Macro::height() const { return height_; }

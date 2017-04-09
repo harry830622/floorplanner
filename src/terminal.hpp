@@ -7,14 +7,14 @@
 
 class Terminal {
  public:
-  Terminal(const std::string& name, int x, int y);
+  Terminal(const std::string& name, double x, double y);
 
   void Print(std::ostream& os = std::cout, int indent_level = 0) const;
 
   const std::string& name() const;
   const Point& coordinates() const;
-  int x() const;
-  int y() const;
+  double x() const;
+  double y() const;
 
  private:
   std::string name_;

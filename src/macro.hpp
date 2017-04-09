@@ -6,18 +6,18 @@
 
 class Macro {
  public:
-  Macro(const std::string& name, int width, int height);
+  Macro(const std::string& name, double width, double height);
 
   void Print(std::ostream& os = std::cout, int indent_level = 0) const;
 
   const std::string& name() const;
-  int width() const;
-  int height() const;
+  double width() const;
+  double height() const;
 
  private:
   std::string name_;
-  int width_;
-  int height_;
+  double width_;
+  double height_;
 };
 
 #endif

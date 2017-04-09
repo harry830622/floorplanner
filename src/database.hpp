@@ -4,6 +4,7 @@
 #include "./macro.hpp"
 #include "./net.hpp"
 #include "./simple_parser.hpp"
+#include "./terminal.hpp"
 
 #include <map>
 
@@ -13,8 +14,8 @@ class Database {
 
   void Print(std::ostream& os = std::cout, int indent_level = 0) const;
 
-  int outline_width() const;
-  int outline_height() const;
+  double outline_width() const;
+  double outline_height() const;
   bool is_macro_existed(const std::string& macro_name) const;
   bool is_terminal_existed(const std::string& terminal_name) const;
   int num_macros() const;
@@ -30,8 +31,8 @@ class Database {
   void ParseBlocks(std::istream& block_input);
   void ParseNets(std::istream& net_input);
 
-  int outline_width_;
-  int outline_height_;
+  double outline_width_;
+  double outline_height_;
   std::vector<Macro> macros_;
   std::vector<Terminal> terminals_;
   std::vector<Net> nets_;

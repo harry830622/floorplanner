@@ -2,7 +2,8 @@
 
 using namespace std;
 
-Database::Database(istream& block_input, istream& net_input) {
+Database::Database(istream& block_input, istream& net_input)
+    : outline_width_(0.0), outline_height_(0.0) {
   ParseBlocks(block_input);
   ParseNets(net_input);
 }
@@ -34,9 +35,9 @@ void Database::Print(ostream& os, int indent_level) const {
   }
 }
 
-int Database::outline_width() const { return outline_width_; }
+double Database::outline_width() const { return outline_width_; }
 
-int Database::outline_height() const { return outline_height_; }
+double Database::outline_height() const { return outline_height_; }
 
 bool Database::is_macro_existed(const string& macro_name) const {
   return macro_id_from_name_.count(macro_name) == 1;
@@ -76,8 +77,8 @@ void Database::ParseBlocks(istream& block_input) {
     if (!tokens.empty()) {
       string first_word = tokens[0];
       if (first_word == "Outline") {
-        outline_width_ = stoi(tokens[1]);
-        outline_height_ = stoi(tokens[2]);
+        outline_width_ = stod(tokens[1]);
+        outline_height_ = stod(tokens[2]);
       } else if (first_word == "NumBlocks") {
         num_macros = stoi(tokens[1]);
       } else if (first_word == "NumTerminals") {
@@ -86,16 +87,16 @@ void Database::ParseBlocks(istream& block_input) {
         if (nth_macro < num_macros) {
           ++nth_macro;
           const string macro_name = tokens[0];
-          const int macro_width = stoi(tokens[1]);
-          const int macro_height = stoi(tokens[2]);
+          const double macro_width = stod(tokens[1]);
+          const double macro_height = stod(tokens[2]);
           macros_.push_back(Macro(macro_name, macro_width, macro_height));
           const int macro_id = macros_.size() - 1;
           macro_id_from_name_.insert({macro_name, macro_id});
         } else if (nth_terminal < num_terminals) {
           ++nth_terminal;
           const string terminal_name = tokens[0];
-          const int terminal_x = stoi(tokens[2]);
-          const int terminal_y = stoi(tokens[3]);
+          const double terminal_x = stod(tokens[2]);
+          const double terminal_y = stod(tokens[3]);
           terminals_.push_back(Terminal(terminal_name, terminal_x, terminal_y));
           const int terminal_id = terminals_.size() - 1;
           terminal_id_from_name_.insert({terminal_name, terminal_id});
@@ -119,13 +120,15 @@ void Database::ParseNets(istream& net_input) {
         const int num_terminals = stoi(tokens[1]);
         int nth_terminal = 0;
         vector<int> net_macro_ids;
-        vector<Terminal> net_terminals;
+        vector<Point> net_terminal_coordinates;
         net_parser.Parse([&](const simple_parser::Tokens& tokens) -> bool {
           if (!tokens.empty()) {
             ++nth_terminal;
             const string name = tokens[0];
             if (is_terminal_existed(name)) {
-              net_terminals.push_back(terminal(terminal_id_from_name(name)));
+              const int terminal_id = terminal_id_from_name(name);
+              net_terminal_coordinates.push_back(
+                  terminal(terminal_id).coordinates());
             } else {
               net_macro_ids.push_back(macro_id_from_name(name));
             }
@@ -135,7 +138,7 @@ void Database::ParseNets(istream& net_input) {
           }
           return true;
         });
-        nets_.push_back(Net(net_macro_ids, net_terminals));
+        nets_.push_back(Net(net_macro_ids, net_terminal_coordinates));
         if (nth_net == num_nets) {
           return false;
         }
