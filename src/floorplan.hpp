@@ -2,13 +2,14 @@
 #define FLOORPLAN_HPP
 
 #include "./b_star_tree.hpp"
-#include "./contour.hpp"
 #include "./database.hpp"
 
 class Floorplan {
  public:
   Floorplan(int num_macros);
 
+  double width() const;
+  double height() const;
   double area() const;
   double wirelength() const;
 
@@ -16,12 +17,12 @@ class Floorplan {
   void Pack(const Database& database);
 
  private:
-  double area_;
+  double width_;
+  double height_;
   double wirelength_;
   BStarTree b_star_tree_;
   std::vector<int> macro_id_from_node_id_;
   std::vector<bool> is_rotated_from_macro_id_;
-  Contour contour_;
   std::vector<std::pair<Point, Point>> macro_coordinates_from_macro_id_;
 };
 

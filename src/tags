@@ -17,7 +17,7 @@ Delete	b_star_tree.cpp	/^void BStarTree::Delete(int deleted_node_id) {$/;"	f	cla
 DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,$/;"	f	class:BStarTree
 FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 FLOORPLAN_HPP	floorplan.hpp	2;"	d
-FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end) const {$/;"	f	class:Contour
+FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end,$/;"	f	class:Contour
 Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros)$/;"	f	class:Floorplan
 Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
 Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha)$/;"	f	class:Floorplanner
@@ -33,7 +33,7 @@ Net	net.hpp	/^class Net {$/;"	c
 Node	b_star_tree.cpp	/^BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)$/;"	f	class:BStarTree::Node
 Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
 POINT_HPP	point.hpp	2;"	d
-Pack	floorplan.cpp	/^void Floorplan::Pack(const Database& database) {}$/;"	f	class:Floorplan
+Pack	floorplan.cpp	/^void Floorplan::Pack(const Database& database) {$/;"	f	class:Floorplan
 Parse	simple_parser.hpp	/^  void Parse(Handler handler) {$/;"	f	class:simple_parser::Parser
 ParseBlocks	database.cpp	/^void Database::ParseBlocks(istream& block_input) {$/;"	f	class:Database
 ParseNets	database.cpp	/^void Database::ParseNets(istream& net_input) {$/;"	f	class:Database
@@ -42,6 +42,8 @@ Parser	simple_parser.hpp	/^class Parser {$/;"	c	namespace:simple_parser
 Perturb	floorplan.cpp	/^void Floorplan::Perturb() {$/;"	f	class:Floorplan
 Point	point.cpp	/^Point::Point(double x, double y) : x_(x), y_(y) {}$/;"	f	class:Point
 Point	point.hpp	/^class Point {$/;"	c
+Print	b_star_tree.cpp	/^void BStarTree::Print(ostream& os, int indent_level) const {$/;"	f	class:BStarTree
+Print	contour.cpp	/^void Contour::Print(ostream& os, int indent_level) const {$/;"	f	class:Contour
 Print	database.cpp	/^void Database::Print(ostream& os, int indent_level) const {$/;"	f	class:Database
 Print	macro.cpp	/^void Macro::Print(ostream& os, int indent_level) const {$/;"	f	class:Macro
 Print	net.cpp	/^void Net::Print(ostream& os, int indent_level) const {$/;"	f	class:Net
@@ -53,24 +55,30 @@ TERMINAL_HPP	terminal.hpp	2;"	d
 Terminal	terminal.cpp	/^Terminal::Terminal(const string& name, double x, double y)$/;"	f	class:Terminal
 Terminal	terminal.hpp	/^class Terminal {$/;"	c
 Tokenize	simple_parser.hpp	/^  Tokens Tokenize(const std::string& str) {$/;"	f	class:simple_parser::Parser
-Update	contour.cpp	/^void Contour::Update(double x, double width, double height) {$/;"	f	class:Contour
+UnvisitAll	b_star_tree.cpp	/^void BStarTree::UnvisitAll() {$/;"	f	class:BStarTree
+Update	contour.cpp	/^tuple<Point, Point, list<Point>::iterator> Contour::Update($/;"	f	class:Contour
+Visit	b_star_tree.cpp	/^void BStarTree::Visit(int node_id) { node(node_id).is_visited_ = true; }$/;"	f	class:BStarTree
 alpha_	floorplanner.hpp	/^  double alpha_;$/;"	m	class:Floorplanner
-area	floorplan.cpp	/^double Floorplan::area() const { return area_; }$/;"	f	class:Floorplan
-area_	floorplan.hpp	/^  double area_;$/;"	m	class:Floorplan
+area	floorplan.cpp	/^double Floorplan::area() const { return width_ * height_; }$/;"	f	class:Floorplan
 b_star_tree_	floorplan.hpp	/^  BStarTree b_star_tree_;$/;"	m	class:Floorplan
 best_floorplan_	floorplanner.hpp	/^  Floorplan best_floorplan_;$/;"	m	class:Floorplanner
-contour_	floorplan.hpp	/^  Contour contour_;$/;"	m	class:Floorplan
 coordinates	terminal.cpp	/^const Point& Terminal::coordinates() const { return coordinates_; }$/;"	f	class:Terminal
 coordinates_	contour.hpp	/^  std::list<Point> coordinates_;$/;"	m	class:Contour
 coordinates_	terminal.hpp	/^  Point coordinates_;$/;"	m	class:Terminal
 database_	floorplanner.hpp	/^  const Database& database_;$/;"	m	class:Floorplanner
 delimiters_	simple_parser.hpp	/^  Delimiters delimiters_;$/;"	m	class:simple_parser::Parser
+height	floorplan.cpp	/^double Floorplan::height() const { return height_; }$/;"	f	class:Floorplan
 height	macro.cpp	/^double Macro::height() const { return height_; }$/;"	f	class:Macro
+height_	floorplan.hpp	/^  double height_;$/;"	m	class:Floorplan
 height_	macro.hpp	/^  double height_;$/;"	m	class:Macro
 input_	simple_parser.hpp	/^  std::istream& input_;$/;"	m	class:simple_parser::Parser
+invalid_list_	contour.cpp	/^list<Point> Contour::invalid_list_;$/;"	m	class:Contour	file:
+invalid_list_	contour.hpp	/^  static std::list<Point> invalid_list_;$/;"	m	class:Contour
 is_macro_existed	database.cpp	/^bool Database::is_macro_existed(const string& macro_name) const {$/;"	f	class:Database
 is_rotated_from_macro_id_	floorplan.hpp	/^  std::vector<bool> is_rotated_from_macro_id_;$/;"	m	class:Floorplan
 is_terminal_existed	database.cpp	/^bool Database::is_terminal_existed(const string& terminal_name) const {$/;"	f	class:Database
+is_visited	b_star_tree.cpp	/^bool BStarTree::is_visited(int node_id) const {$/;"	f	class:BStarTree
+is_visited_	b_star_tree.hpp	/^    bool is_visited_;$/;"	m	class:BStarTree::Node
 left_child_id	b_star_tree.cpp	/^int BStarTree::left_child_id(int node_id) const {$/;"	f	class:BStarTree
 left_child_id_	b_star_tree.hpp	/^    int left_child_id_;$/;"	m	class:BStarTree::Node
 macro	database.cpp	/^const Macro& Database::macro(int macro_id) const {$/;"	f	class:Database
@@ -95,6 +103,7 @@ name_	macro.hpp	/^  std::string name_;$/;"	m	class:Macro
 name_	terminal.hpp	/^  std::string name_;$/;"	m	class:Terminal
 nets_	database.hpp	/^  std::vector<Net> nets_;$/;"	m	class:Database
 node	b_star_tree.cpp	/^BStarTree::Node& BStarTree::node(int node_id) { return nodes_.at(node_id); }$/;"	f	class:BStarTree
+node	b_star_tree.cpp	/^const BStarTree::Node& BStarTree::node(int node_id) const {$/;"	f	class:BStarTree
 nodes_	b_star_tree.hpp	/^  std::vector<Node> nodes_;$/;"	m	class:BStarTree
 num_macros	database.cpp	/^int Database::num_macros() const { return macros_.size(); }$/;"	f	class:Database
 num_macros	net.cpp	/^int Net::num_macros() const { return macro_ids_.size(); }$/;"	f	class:Net
@@ -104,7 +113,7 @@ outline_height	database.cpp	/^double Database::outline_height() const { return o
 outline_height_	database.hpp	/^  double outline_height_;$/;"	m	class:Database
 outline_width	database.cpp	/^double Database::outline_width() const { return outline_width_; }$/;"	f	class:Database
 outline_width_	database.hpp	/^  double outline_width_;$/;"	m	class:Database
-parent_id	b_star_tree.cpp	/^int BStarTree::parent_id(int node_id) const {$/;"	f	class:BStarTree
+parent_id	b_star_tree.cpp	/^int BStarTree::parent_id(int node_id) const { return node(node_id).parent_id_; }$/;"	f	class:BStarTree
 parent_id_	b_star_tree.hpp	/^    int parent_id_;$/;"	m	class:BStarTree::Node
 right_child_id	b_star_tree.cpp	/^int BStarTree::right_child_id(int node_id) const {$/;"	f	class:BStarTree
 right_child_id_	b_star_tree.hpp	/^    int right_child_id_;$/;"	m	class:BStarTree::Node
@@ -115,7 +124,9 @@ terminal	database.cpp	/^const Terminal& Database::terminal(int terminal_id) cons
 terminal_id_from_name	database.cpp	/^int Database::terminal_id_from_name(const string& terminal_name) const {$/;"	f	class:Database
 terminal_id_from_name_	database.hpp	/^  std::map<std::string, int> terminal_id_from_name_;$/;"	m	class:Database
 terminals_	database.hpp	/^  std::vector<Terminal> terminals_;$/;"	m	class:Database
+width	floorplan.cpp	/^double Floorplan::width() const { return width_; }$/;"	f	class:Floorplan
 width	macro.cpp	/^double Macro::width() const { return width_; }$/;"	f	class:Macro
+width_	floorplan.hpp	/^  double width_;$/;"	m	class:Floorplan
 width_	macro.hpp	/^  double width_;$/;"	m	class:Macro
 wirelength	floorplan.cpp	/^double Floorplan::wirelength() const { return wirelength_; }$/;"	f	class:Floorplan
 wirelength_	floorplan.hpp	/^  double wirelength_;$/;"	m	class:Floorplan

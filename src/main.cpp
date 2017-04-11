@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
   ifstream net_input(argv[3]);
 
   Database database(block_input, net_input);
-  database.Print();
+  /* database.Print(); */
 
   Floorplanner floorplanner(database, alpha);
   floorplanner.Run();

@@ -14,17 +14,49 @@ BStarTree::BStarTree(int num_macros)
   }
 }
 
+void BStarTree::Print(ostream& os, int indent_level) const {
+  const int indent_size = 2;
+  os << string(indent_level * indent_size, ' ') << "BStarTree:" << endl;
+  ++indent_level;
+  os << string(indent_level * indent_size, ' ') << "root_id_:" << root_id_
+     << endl;
+  os << string(indent_level * indent_size, ' ') << "nodes_:" << endl;
+  ++indent_level;
+  for (int i = 0; i < nodes_.size(); ++i) {
+    const Node& node = nodes_[i];
+    os << string(indent_level * indent_size, ' ') << "Node: " << i << endl;
+    ++indent_level;
+    os << string(indent_level * indent_size, ' ')
+       << "parent_id_: " << node.parent_id_ << endl;
+    os << string(indent_level * indent_size, ' ')
+       << "left_child_id_: " << node.left_child_id_ << endl;
+    os << string(indent_level * indent_size, ' ')
+       << "right_child_id_: " << node.right_child_id_ << endl;
+    --indent_level;
+  }
+}
+
 int BStarTree::root_id() const { return root_id_; }
 
-int BStarTree::parent_id(int node_id) const {
-  return nodes_.at(node_id).parent_id_;
-}
+int BStarTree::parent_id(int node_id) const { return node(node_id).parent_id_; }
 
 int BStarTree::left_child_id(int node_id) const {
-  return nodes_.at(node_id).left_child_id_;
+  return node(node_id).left_child_id_;
 }
 int BStarTree::right_child_id(int node_id) const {
-  return nodes_.at(node_id).right_child_id_;
+  return node(node_id).right_child_id_;
+}
+
+bool BStarTree::is_visited(int node_id) const {
+  return node(node_id).is_visited_;
+}
+
+void BStarTree::Visit(int node_id) { node(node_id).is_visited_ = true; }
+
+void BStarTree::UnvisitAll() {
+  for (Node& node : nodes_) {
+    node.is_visited_ = false;
+  }
 }
 
 void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,
@@ -38,16 +70,20 @@ void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,
 BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)
     : parent_id_(parent_id),
       left_child_id_(left_child_id),
-      right_child_id_(right_child_id) {}
+      right_child_id_(right_child_id),
+      is_visited_(false) {}
 
 BStarTree::Node& BStarTree::node(int node_id) { return nodes_.at(node_id); }
+
+const BStarTree::Node& BStarTree::node(int node_id) const {
+  return nodes_.at(node_id);
+}
 
 void BStarTree::Delete(int deleted_node_id) {
   Node& deleted_node = node(deleted_node_id);
 
   int child_id = -1;
-  if (deleted_node.left_child_id_ != -1 &&
-      deleted_node.right_child_id_ != -1) {
+  if (deleted_node.left_child_id_ != -1 && deleted_node.right_child_id_ != -1) {
     child_id = deleted_node.left_child_id_;
     int current_node_id = child_id;
     while (left_child_id(current_node_id) != -1 &&

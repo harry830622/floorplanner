@@ -7,7 +7,8 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
 
 void Floorplanner::Run() {
   Floorplan floorplan(best_floorplan_);
-  for (int i = 0; i < 1000000; ++i) {
+  for (int i = 0; i < 1000; ++i) {
     floorplan.Perturb();
+    floorplan.Pack(database_);
   }
 }
