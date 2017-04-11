@@ -47,3 +47,30 @@ void Net::Print(ostream& os, int indent_level) const {
 int Net::num_macros() const { return macro_ids_.size(); }
 
 int Net::macro_id(int nth_macro) const { return macro_ids_.at(nth_macro); }
+
+double Net::ComputeWirelength(std::vector<std::pair<Point, Point>>
+    macro_bounding_box_from_macro_id) const {
+  double min_x = min_x_;
+  double min_y = min_y_;
+  double max_x = max_x_;
+  double max_y = max_y_;
+  for (int macro_id : macro_ids_) {
+    auto bounding_box = macro_bounding_box_from_macro_id.at(macro_id);
+    Point center = Point::Center(bounding_box.first, bounding_box.second);
+    double x = center.x();
+    double y = center.y();
+    if (x < min_x) {
+      min_x = x;
+    }
+    if (x > max_x) {
+      max_x = x;
+    }
+    if (y < min_y) {
+      min_y = y;
+    }
+    if (y > max_y) {
+      max_y = y;
+    }
+  }
+  return Point::HPWL(Point(min_x, min_y), Point(max_x, max_y));
+}

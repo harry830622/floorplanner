@@ -51,6 +51,8 @@ int Database::num_macros() const { return macros_.size(); }
 
 int Database::num_terminals() const { return terminals_.size(); }
 
+int Database::num_nets() const { return nets_.size(); }
+
 const Macro& Database::macro(int macro_id) const {
   return macros_.at(macro_id);
 }
@@ -58,6 +60,8 @@ const Macro& Database::macro(int macro_id) const {
 const Terminal& Database::terminal(int terminal_id) const {
   return terminals_.at(terminal_id);
 }
+
+const Net& Database::net(int net_id) const { return nets_.at(net_id); }
 
 int Database::macro_id_from_name(const string& macro_name) const {
   return macro_id_from_name_.at(macro_name);

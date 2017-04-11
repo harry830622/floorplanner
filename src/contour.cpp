@@ -62,9 +62,24 @@ tuple<Point, Point, list<Point>::iterator> Contour::Update(
     coordinates_.insert(it_end, Point(upper_right_x, last_y));
   }
 
-  if (it_end->y() == prev(it_end)->y()) {
-    coordinates_.erase(it_end);
+  double previous_y = -1;
+  for (it = coordinates_.begin(); it != coordinates_.end(); ++it) {
+    if (it->y() == previous_y) {
+      it = coordinates_.erase(it);
+      --it;
+    } else {
+      previous_y = it->y();
+    }
   }
+
+  /* it = prev(it_end); */
+  /* while (it->y() == it_end->y()) { */
+  /*   coordinates_.erase(it); */
+  /*   if (it_end == coordinates_.begin()) { */
+  /*     break; */
+  /*   } */
+  /*   it = prev(it_end); */
+  /* } */
 
   return make_tuple(Point(bottom_left_x, bottom_left_y),
                     Point(upper_right_x, upper_right_y), new_it_hint);

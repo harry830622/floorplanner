@@ -23,7 +23,7 @@ class Floorplan {
   BStarTree b_star_tree_;
   std::vector<int> macro_id_from_node_id_;
   std::vector<bool> is_rotated_from_macro_id_;
-  std::vector<std::pair<Point, Point>> macro_coordinates_from_macro_id_;
+  std::vector<std::pair<Point, Point>> macro_bounding_box_from_macro_id_;
 };
 
 #endif
