@@ -1,176 +1,150 @@
-#include "b_star_tree.hpp"
+#include "./b_star_tree.hpp"
 
-#include <cassert>
-#include <cstdlib>
-#include <iostream>
 #include <stack>
-#include <string>
-#include <utility>
 
 using namespace std;
 
-BStarTree::Node::Node(int macro_id)
-    : macro_id_(macro_id),
-      parent_id_(-1),
-      left_child_id_(-1),
-      right_child_id_(-1),
-      is_visited_(false) {}
-
-BStarTree::BStarTree(int num_nodes)
-    : nodes_(num_nodes, Node(-1)), root_id_(-1) {
-  assert(nodes_.size() == num_nodes);
-  for (int i = 0; i < nodes_.size(); ++i) {
-    nodes_[i].macro_id_ = i;
+BStarTree::BStarTree(int num_macros)
+    : root_id_(0), nodes_(num_macros, Node(-1, -1, -1)) {
+  for (int i = 0; i < nodes_.size() - 1; ++i) {
+    nodes_[i].left_child_id_ = i + 1;
   }
-  Skew();
-}
-
-int BStarTree::num_nodes() const { return nodes_.size(); }
-
-int BStarTree::node_macro_id(int node_id) const {
-  return nodes_.at(node_id).macro_id_;
-}
-
-void BStarTree::Print(int indent) const {
-  const int num_spaces = 2;
-  cout << string(num_spaces * indent, ' ') << "BStarTree:" << endl;
-  cout << string(num_spaces * (indent + 1), ' ') << "root_id_: " << root_id_
-       << endl;
-  cout << string(num_spaces * (indent + 1), ' ') << "nodes_:" << endl;
-  for (int i = 0; i < nodes_.size(); ++i) {
-    cout << string(num_spaces * (indent + 2), ' ') << "Node: " << i << endl;
-    cout << string(num_spaces * (indent + 3), ' ')
-         << "macro_id_: " << nodes_[i].macro_id_ << endl;
-    cout << string(num_spaces * (indent + 3), ' ')
-         << "parent_id_: " << nodes_[i].parent_id_ << endl;
-    cout << string(num_spaces * (indent + 3), ' ')
-         << "left_child_id_: " << nodes_[i].left_child_id_ << endl;
-    cout << string(num_spaces * (indent + 3), ' ')
-         << "right_child_id_: " << nodes_[i].right_child_id_ << endl;
+  for (int i = 1; i < nodes_.size(); ++i) {
+    nodes_[i].parent_id_ = i - 1;
   }
 }
 
-void BStarTree::Dfs(
-    function<void(int current_node_id, int parent_id, bool is_from_left)>
-        handler) {
+void BStarTree::Print(ostream& os, int indent_level) const {
+  const int indent_size = 2;
+  os << string(indent_level * indent_size, ' ') << "BStarTree:" << endl;
+  ++indent_level;
+  os << string(indent_level * indent_size, ' ') << "root_id_:" << root_id_
+     << endl;
+  os << string(indent_level * indent_size, ' ') << "nodes_:" << endl;
+  ++indent_level;
+  for (int i = 0; i < nodes_.size(); ++i) {
+    const Node& node = nodes_[i];
+    os << string(indent_level * indent_size, ' ') << "Node: " << i << endl;
+    ++indent_level;
+    os << string(indent_level * indent_size, ' ')
+       << "parent_id_: " << node.parent_id_ << endl;
+    os << string(indent_level * indent_size, ' ')
+       << "left_child_id_: " << node.left_child_id_ << endl;
+    os << string(indent_level * indent_size, ' ')
+       << "right_child_id_: " << node.right_child_id_ << endl;
+    --indent_level;
+  }
+}
+
+int BStarTree::root_id() const { return root_id_; }
+
+int BStarTree::parent_id(int node_id) const { return node(node_id).parent_id_; }
+
+int BStarTree::left_child_id(int node_id) const {
+  return node(node_id).left_child_id_;
+}
+int BStarTree::right_child_id(int node_id) const {
+  return node(node_id).right_child_id_;
+}
+
+bool BStarTree::is_visited(int node_id) const {
+  return node(node_id).is_visited_;
+}
+
+void BStarTree::Visit(int node_id) { node(node_id).is_visited_ = true; }
+
+void BStarTree::UnvisitAll() {
   for (Node& node : nodes_) {
     node.is_visited_ = false;
   }
-  stack<int> s;
-  s.push(root_id_);
-  handler(root_id_, -1, false);
-  while (!s.empty()) {
-    int current_node_id = s.top();
-    Node& current_node = nodes_.at(current_node_id);
-    int left_child_id = current_node.left_child_id_;
-    int right_child_id = current_node.right_child_id_;
-    if (left_child_id != -1 && !nodes_.at(left_child_id).is_visited_) {
-      s.push(left_child_id);
-      handler(left_child_id, current_node_id, true);
-    } else if (right_child_id != -1 && !nodes_.at(right_child_id).is_visited_) {
-      s.push(right_child_id);
-      handler(right_child_id, current_node_id, false);
-    } else {
-      current_node.is_visited_ = true;
-      s.pop();
-    }
-  }
 }
 
-void BStarTree::DeleteThenInsertNode(int node_id, int target_node_id) {
-  DeleteNode(node_id);
-  InsertNode(node_id, target_node_id);
+void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,
+                                bool is_inserted_left) {
+  Delete(deleted_node_id);
+  Insert(deleted_node_id, target_node_id, is_inserted_left);
 }
 
-void BStarTree::SwapNodes(int node_a_id, int node_b_id) {
-  swap(nodes_.at(node_a_id).macro_id_, nodes_.at(node_b_id).macro_id_);
+// Private
+
+BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)
+    : parent_id_(parent_id),
+      left_child_id_(left_child_id),
+      right_child_id_(right_child_id),
+      is_visited_(false) {}
+
+BStarTree::Node& BStarTree::node(int node_id) { return nodes_.at(node_id); }
+
+const BStarTree::Node& BStarTree::node(int node_id) const {
+  return nodes_.at(node_id);
 }
 
-void BStarTree::Skew() {
-  if (!nodes_.empty()) {
-    root_id_ = 0;
-    for (int i = 0; i < nodes_.size() - 1; ++i) {
-      nodes_[i].left_child_id_ = i + 1;
-    }
-    for (int i = 1; i < nodes_.size(); ++i) {
-      nodes_[i].parent_id_ = i - 1;
-    }
-  }
-}
-
-void BStarTree::DeleteNode(int node_id) {
-  Node& node = nodes_.at(node_id);
-  int parent_id = node.parent_id_;
-  int left_child_id = node.left_child_id_;
-  int right_child_id = node.right_child_id_;
+void BStarTree::Delete(int deleted_node_id) {
+  Node& deleted_node = node(deleted_node_id);
 
   int child_id = -1;
-  if (left_child_id != -1 && right_child_id != -1) {
-    child_id = left_child_id;
-
-    int current_id = child_id;
-    while (nodes_.at(current_id).left_child_id_ != -1 &&
-           nodes_.at(current_id).right_child_id_ != -1) {
-      current_id = nodes_.at(current_id).left_child_id_;
+  if (deleted_node.left_child_id_ != -1 && deleted_node.right_child_id_ != -1) {
+    child_id = deleted_node.left_child_id_;
+    int current_node_id = child_id;
+    while (left_child_id(current_node_id) != -1 &&
+           right_child_id(current_node_id) != -1) {
+      current_node_id = left_child_id(current_node_id);
     }
-    Node& current_node = nodes_.at(current_id);
-    if (current_node.right_child_id_ != -1) {
+    if (right_child_id(current_node_id) != -1) {
+      Node& current_node = node(current_node_id);
       current_node.left_child_id_ = current_node.right_child_id_;
       current_node.right_child_id_ = -1;
     }
-
-    while (current_id != node_id) {
-      Node& current_node = nodes_.at(current_id);
-      Node& current_parent = nodes_.at(current_node.parent_id_);
-      Node& current_parent_right_child =
-          nodes_.at(current_parent.right_child_id_);
+    while (current_node_id != deleted_node_id) {
+      Node& current_node = node(current_node_id);
+      Node& current_parent = node(current_node.parent_id_);
+      Node& current_parent_right_child = node(current_parent.right_child_id_);
       current_node.right_child_id_ = current_parent.right_child_id_;
-      current_parent_right_child.parent_id_ = current_id;
-      current_id = current_node.parent_id_;
+      current_parent_right_child.parent_id_ = current_node_id;
+      current_node_id = current_node.parent_id_;
     }
-  } else if (left_child_id != -1) {
-    child_id = left_child_id;
-  } else if (right_child_id != -1) {
-    child_id = right_child_id;
+  } else if (deleted_node.left_child_id_ != -1) {
+    child_id = deleted_node.left_child_id_;
+  } else if (deleted_node.right_child_id_ != -1) {
+    child_id = deleted_node.right_child_id_;
   }
 
   if (child_id != -1) {
-    nodes_.at(child_id).parent_id_ = parent_id;
+    node(child_id).parent_id_ = deleted_node.parent_id_;
   }
 
-  if (parent_id == -1) {
+  if (deleted_node.parent_id_ == -1) {
     root_id_ = child_id;
   } else {
-    Node& parent = nodes_.at(parent_id);
-    if (parent.left_child_id_ == node_id) {
+    Node& parent = node(deleted_node.parent_id_);
+    if (parent.left_child_id_ == deleted_node_id) {
       parent.left_child_id_ = child_id;
     } else {
       parent.right_child_id_ = child_id;
     }
   }
 
-  node.parent_id_ = -1;
-  node.left_child_id_ = -1;
-  node.right_child_id_ = -1;
+  deleted_node.parent_id_ = -1;
+  deleted_node.left_child_id_ = -1;
+  deleted_node.right_child_id_ = -1;
 }
 
-// TODO: Let client decide where to insert.
-void BStarTree::InsertNode(int node_id, int target_node_id) {
-  Node& node = nodes_.at(node_id);
-  Node& target_node = nodes_.at(target_node_id);
-
-  node.parent_id_ = target_node_id;
-  if (rand() % 2 == 0) {
-    node.left_child_id_ = target_node.left_child_id_;
-    if (node.left_child_id_ != -1) {
-      nodes_.at(node.left_child_id_).parent_id_ = node_id;
+void BStarTree::Insert(int inserted_node_id, int target_node_id,
+                       bool is_inserted_left) {
+  Node& inserted_node = node(inserted_node_id);
+  Node& target_node = node(target_node_id);
+  inserted_node.parent_id_ = target_node_id;
+  if (is_inserted_left) {
+    inserted_node.left_child_id_ = target_node.left_child_id_;
+    if (inserted_node.left_child_id_ != -1) {
+      node(inserted_node.left_child_id_).parent_id_ = inserted_node_id;
     }
-    target_node.left_child_id_ = node_id;
+    target_node.left_child_id_ = inserted_node_id;
   } else {
-    node.right_child_id_ = target_node.right_child_id_;
-    if (node.right_child_id_ != -1) {
-      nodes_.at(node.right_child_id_).parent_id_ = node_id;
+    inserted_node.right_child_id_ = target_node.right_child_id_;
+    if (inserted_node.right_child_id_ != -1) {
+      node(inserted_node.right_child_id_).parent_id_ = inserted_node_id;
     }
-    target_node.right_child_id_ = node_id;
+    target_node.right_child_id_ = inserted_node_id;
   }
 }

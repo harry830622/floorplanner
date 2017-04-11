@@ -1,16 +1,21 @@
 EXE = fp
 CXX = clang++
-CXXFLAGS = -std=c++11 -O2 -Wall
+CXXFLAGS = -std=c++11 -O3 -Wall
 CPPS := $(wildcard src/*.cpp)
 OBJS := $(addprefix obj/,$(notdir $(CPPS:.cpp=.o)))
+
+.PHONY: all clean
+
+all: obj $(EXE)
+
+obj:
+	mkdir $@
 
 $(EXE): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 obj/%.o: src/%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $^
-
-.PHONY: clean
+	$(CXX) $(CXXFLAGS) -o $@ -c $^
 
 clean:
 	rm $(EXE) $(OBJS)

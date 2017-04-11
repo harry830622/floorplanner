@@ -1,24 +1,23 @@
 #ifndef FLOORPLANNER_HPP
 #define FLOORPLANNER_HPP
 
-#include "../lib/uni-database/uni_database.hpp"
-#include "floorplan.hpp"
+#include "./floorplan.hpp"
 
 class Floorplanner {
  public:
-  Floorplanner(const uni_database::UniDatabase& database, double alpha);
-  Floorplanner& operator=(const Floorplanner& other) = delete;
-
-  const Floorplan& best_floorplan() const;
+  Floorplanner(const Database& database, double alpha);
 
   void Run();
 
  private:
   void SA();
-  void FastSA();
+  double ComputeCost(const Floorplan& floorplan) const;
 
-  const uni_database::UniDatabase& database_;
+  const Database& database_;
   double alpha_;
+  double average_area_;
+  double average_wirelength_;
+  double average_uphill_cost_;
   Floorplan best_floorplan_;
 };
 

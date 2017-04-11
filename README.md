@@ -1,2 +1,7 @@
 # fixed-outline-floorplanning
-Physical Design for Nanometer ICs Programming Assignment 2
+
+## How to build
+
+```sh
+make
+```

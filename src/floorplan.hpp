@@ -1,63 +1,29 @@
 #ifndef FLOORPLAN_HPP
 #define FLOORPLAN_HPP
 
-#include "../lib/helpers/helpers.hpp"
-#include "../lib/uni-database/uni_database.hpp"
-#include "b_star_tree.hpp"
-
-#include <functional>
-#include <vector>
+#include "./b_star_tree.hpp"
+#include "./database.hpp"
 
 class Floorplan {
  public:
-  Floorplan(const uni_database::UniDatabase& database);
+  Floorplan(int num_macros);
 
-  int width() const;
-  int height() const;
-  int num_macros() const;
-  double average_uphill_cost() const;
-
-  void Print(int indent = 0) const;
-
-  int IterateMacros(
-      std::function<void(int data_id, const helpers::Point<int>& coordinate,
-                         bool is_rotated)>
-          handler) const;
-  double WireLength(const uni_database::UniDatabase& database) const;
-  double Cost(const uni_database::UniDatabase& database,
-              double alpha = 0.5) const;
+  double width() const;
+  double height() const;
+  double area() const;
+  double wirelength() const;
 
   void Perturb();
-  void Pack(const uni_database::UniDatabase& database);
+  void Pack(const Database& database);
 
  private:
-  class Macro {
-   public:
-    Macro(int data_id);
-
-    int data_id_;
-    helpers::Point<int> coordinate_;
-    bool is_rotated_;
-    // TODO: Add is_rotatable_.
-  };
-
-  class Net {
-   public:
-    Net(int data_id);
-
-    int data_id_;
-    helpers::Rect<int> bounding_box_;
-    std::vector<int> macro_ids_;
-  };
-
-  int width_;
-  int height_;
-  double average_area_;
-  double average_wire_length_;
-  double average_uphill_cost_;
-  std::vector<Macro> macros_;
-  std::vector<Net> nets_;
+  double width_;
+  double height_;
+  double wirelength_;
   BStarTree b_star_tree_;
+  std::vector<int> macro_id_from_node_id_;
+  std::vector<bool> is_rotated_from_macro_id_;
+  std::vector<std::pair<Point, Point>> macro_bounding_box_from_macro_id_;
 };
 
 #endif
