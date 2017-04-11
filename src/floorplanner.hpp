@@ -10,8 +10,14 @@ class Floorplanner {
   void Run();
 
  private:
+  void SA();
+  double ComputeCost(const Floorplan& floorplan) const;
+
   const Database& database_;
   double alpha_;
+  double average_area_;
+  double average_wirelength_;
+  double average_uphill_cost_;
   Floorplan best_floorplan_;
 };
 

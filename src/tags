@@ -8,6 +8,9 @@ BStarTree	b_star_tree.cpp	/^BStarTree::BStarTree(int num_macros)$/;"	f	class:BSt
 BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
 B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
 CONTOUR_HPP	contour.hpp	2;"	d
+Center	point.cpp	/^Point Point::Center(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
+ComputeCost	floorplanner.cpp	/^double Floorplanner::ComputeCost(const Floorplan& floorplan) const {$/;"	f	class:Floorplanner
+ComputeWirelength	net.cpp	/^double Net::ComputeWirelength(std::vector<std::pair<Point, Point>>$/;"	f	class:Net
 Contour	contour.cpp	/^Contour::Contour() : max_y_(0.0), coordinates_(1, Point(0.0, 0.0)) {}$/;"	f	class:Contour
 Contour	contour.hpp	/^class Contour {$/;"	c
 DATABASE_HPP	database.hpp	2;"	d
@@ -22,6 +25,7 @@ Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros)$/;"	f	class:Floor
 Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
 Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha)$/;"	f	class:Floorplanner
 Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
+HPWL	point.cpp	/^double Point::HPWL(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
 Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id,$/;"	f	class:BStarTree
 IsDelimiter	simple_parser.hpp	/^  bool IsDelimiter(char c) { return delimiters_.find(c) != std::string::npos; }$/;"	f	class:simple_parser::Parser
 MACRO_HPP	macro.hpp	2;"	d
@@ -50,6 +54,7 @@ Print	net.cpp	/^void Net::Print(ostream& os, int indent_level) const {$/;"	f	cla
 Print	point.cpp	/^void Point::Print(ostream& os, int indent_level) const {$/;"	f	class:Point
 Print	terminal.cpp	/^void Terminal::Print(ostream& os, int indent_level) const {$/;"	f	class:Terminal
 Run	floorplanner.cpp	/^void Floorplanner::Run() {$/;"	f	class:Floorplanner
+SA	floorplanner.cpp	/^void Floorplanner::SA() {$/;"	f	class:Floorplanner
 SIMPLE_PARSER_HPP	simple_parser.hpp	2;"	d
 TERMINAL_HPP	terminal.hpp	2;"	d
 Terminal	terminal.cpp	/^Terminal::Terminal(const string& name, double x, double y)$/;"	f	class:Terminal
@@ -60,6 +65,9 @@ Update	contour.cpp	/^tuple<Point, Point, list<Point>::iterator> Contour::Update(
 Visit	b_star_tree.cpp	/^void BStarTree::Visit(int node_id) { node(node_id).is_visited_ = true; }$/;"	f	class:BStarTree
 alpha_	floorplanner.hpp	/^  double alpha_;$/;"	m	class:Floorplanner
 area	floorplan.cpp	/^double Floorplan::area() const { return width_ * height_; }$/;"	f	class:Floorplan
+average_area_	floorplanner.hpp	/^  double average_area_;$/;"	m	class:Floorplanner
+average_uphill_cost_	floorplanner.hpp	/^  double average_uphill_cost_;$/;"	m	class:Floorplanner
+average_wirelength_	floorplanner.hpp	/^  double average_wirelength_;$/;"	m	class:Floorplanner
 b_star_tree_	floorplan.hpp	/^  BStarTree b_star_tree_;$/;"	m	class:Floorplan
 best_floorplan_	floorplanner.hpp	/^  Floorplan best_floorplan_;$/;"	m	class:Floorplanner
 coordinates	terminal.cpp	/^const Point& Terminal::coordinates() const { return coordinates_; }$/;"	f	class:Terminal
@@ -82,7 +90,7 @@ is_visited_	b_star_tree.hpp	/^    bool is_visited_;$/;"	m	class:BStarTree::Node
 left_child_id	b_star_tree.cpp	/^int BStarTree::left_child_id(int node_id) const {$/;"	f	class:BStarTree
 left_child_id_	b_star_tree.hpp	/^    int left_child_id_;$/;"	m	class:BStarTree::Node
 macro	database.cpp	/^const Macro& Database::macro(int macro_id) const {$/;"	f	class:Database
-macro_coordinates_from_macro_id_	floorplan.hpp	/^  std::vector<std::pair<Point, Point>> macro_coordinates_from_macro_id_;$/;"	m	class:Floorplan
+macro_bounding_box_from_macro_id_	floorplan.hpp	/^  std::vector<std::pair<Point, Point>> macro_bounding_box_from_macro_id_;$/;"	m	class:Floorplan
 macro_id	net.cpp	/^int Net::macro_id(int nth_macro) const { return macro_ids_.at(nth_macro); }$/;"	f	class:Net
 macro_id_from_name	database.cpp	/^int Database::macro_id_from_name(const string& macro_name) const {$/;"	f	class:Database
 macro_id_from_name_	database.hpp	/^  std::map<std::string, int> macro_id_from_name_;$/;"	m	class:Database
@@ -101,12 +109,14 @@ name	macro.cpp	/^const string& Macro::name() const { return name_; }$/;"	f	class
 name	terminal.cpp	/^const string& Terminal::name() const { return name_; }$/;"	f	class:Terminal
 name_	macro.hpp	/^  std::string name_;$/;"	m	class:Macro
 name_	terminal.hpp	/^  std::string name_;$/;"	m	class:Terminal
+net	database.cpp	/^const Net& Database::net(int net_id) const { return nets_.at(net_id); }$/;"	f	class:Database
 nets_	database.hpp	/^  std::vector<Net> nets_;$/;"	m	class:Database
 node	b_star_tree.cpp	/^BStarTree::Node& BStarTree::node(int node_id) { return nodes_.at(node_id); }$/;"	f	class:BStarTree
 node	b_star_tree.cpp	/^const BStarTree::Node& BStarTree::node(int node_id) const {$/;"	f	class:BStarTree
 nodes_	b_star_tree.hpp	/^  std::vector<Node> nodes_;$/;"	m	class:BStarTree
 num_macros	database.cpp	/^int Database::num_macros() const { return macros_.size(); }$/;"	f	class:Database
 num_macros	net.cpp	/^int Net::num_macros() const { return macro_ids_.size(); }$/;"	f	class:Net
+num_nets	database.cpp	/^int Database::num_nets() const { return nets_.size(); }$/;"	f	class:Database
 num_terminals	database.cpp	/^int Database::num_terminals() const { return terminals_.size(); }$/;"	f	class:Database
 other	simple_parser.hpp	/^  Parser& operator=(const Parser& other) = delete;$/;"	m	class:simple_parser::Parser
 outline_height	database.cpp	/^double Database::outline_height() const { return outline_height_; }$/;"	f	class:Database
