@@ -1,8 +1,11 @@
 #include "./floorplanner.hpp"
 
+#include "./json.hpp"
+
 #include <cmath>
 
 using namespace std;
+using Json = nlohmann::json;
 
 Floorplanner::Floorplanner(const Database& database, double alpha)
     : database_(database),
@@ -62,6 +65,25 @@ void Floorplanner::Output(ostream& os) const {
     os << macro_name << " " << lower_left.x() << " " << lower_left.y() << " "
        << upper_right.x() << " " << upper_right.y() << endl;
   }
+}
+
+void Floorplanner::Draw(ostream& os) const {
+  Json obj = Json::object();
+  obj["objects"] = Json::array();
+  for (int i = 0; i < database_.num_macros(); ++i) {
+    const int macro_id = i;
+    const string macro_name = database_.macro(macro_id).name();
+    auto bounding_box = best_floorplan_.macro_bounding_box(macro_id);
+    const Point& lower_left = bounding_box.first;
+    const Point& upper_right = bounding_box.second;
+    Json rect;
+    rect["type"] = "rect";
+    rect["color"] = 0x0000FF;
+    rect["lower_left"] = {{"x", lower_left.x()}, {"y", lower_left.y()}};
+    rect["upper_right"] = {{"x", upper_right.x()}, {"y", upper_right.y()}};
+    obj["objects"].push_back(rect);
+  }
+  os << obj;
 }
 
 void Floorplanner::Run() {

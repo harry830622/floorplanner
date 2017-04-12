@@ -32,5 +32,10 @@ int main(int argc, char* argv[]) {
   ofstream output(argv[4]);
   floorplanner.Output(output);
 
+  if (argc > 5) {
+    ofstream json(argv[5]);
+    floorplanner.Draw(json);
+  }
+
   return 0;
 }

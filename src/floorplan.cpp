@@ -114,9 +114,11 @@ void Floorplan::Pack(const Database& database) {
       if (is_left_child_macro_rotated) {
         swap(left_child_macro_width, left_child_macro_height);
       }
+      /* t = contour.Update(current_macro_bounding_box.second.x(), */
+      /*                    left_child_macro_width, left_child_macro_height, */
+      /*                    it_hint); */
       t = contour.Update(current_macro_bounding_box.second.x(),
-                         left_child_macro_width, left_child_macro_height,
-                         it_hint);
+                         left_child_macro_width, left_child_macro_height);
       /* contour.Print(); */
       macro_bounding_box_from_macro_id_.at(left_child_macro_id) =
           make_pair(get<0>(t), get<1>(t));
@@ -134,9 +136,11 @@ void Floorplan::Pack(const Database& database) {
       if (is_right_child_macro_rotated) {
         swap(right_child_macro_width, right_child_macro_height);
       }
+      /* t = contour.Update(current_macro_bounding_box.first.x(), */
+      /*                    right_child_macro_width, right_child_macro_height, */
+      /*                    it_hint); */
       t = contour.Update(current_macro_bounding_box.first.x(),
-                         right_child_macro_width, right_child_macro_height,
-                         it_hint);
+                         right_child_macro_width, right_child_macro_height);
       /* contour.Print(); */
       macro_bounding_box_from_macro_id_.at(right_child_macro_id) =
           make_pair(get<0>(t), get<1>(t));

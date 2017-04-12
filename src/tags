@@ -10,7 +10,7 @@ B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
 CONTOUR_HPP	contour.hpp	2;"	d
 Center	point.cpp	/^Point Point::Center(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
 ComputeCost	floorplanner.cpp	/^double Floorplanner::ComputeCost(const Floorplan& floorplan) const {$/;"	f	class:Floorplanner
-ComputeWirelength	net.cpp	/^double Net::ComputeWirelength(std::vector<std::pair<Point, Point>>$/;"	f	class:Net
+ComputeWirelength	net.cpp	/^double Net::ComputeWirelength($/;"	f	class:Net
 Contour	contour.cpp	/^Contour::Contour() : max_y_(0.0), coordinates_(1, Point(0.0, 0.0)) {}$/;"	f	class:Contour
 Contour	contour.hpp	/^class Contour {$/;"	c
 DATABASE_HPP	database.hpp	2;"	d
@@ -18,6 +18,7 @@ Database	database.cpp	/^Database::Database(istream& block_input, istream& net_in
 Database	database.hpp	/^class Database {$/;"	c
 Delete	b_star_tree.cpp	/^void BStarTree::Delete(int deleted_node_id) {$/;"	f	class:BStarTree
 DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,$/;"	f	class:BStarTree
+Draw	floorplanner.cpp	/^void Floorplanner::Draw(ostream& os) const {$/;"	f	class:Floorplanner
 FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 FLOORPLAN_HPP	floorplan.hpp	2;"	d
 FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end,$/;"	f	class:Contour
@@ -28,14 +29,31 @@ Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
 HPWL	point.cpp	/^double Point::HPWL(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
 Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id,$/;"	f	class:BStarTree
 IsDelimiter	simple_parser.hpp	/^  bool IsDelimiter(char c) { return delimiters_.find(c) != std::string::npos; }$/;"	f	class:simple_parser::Parser
+JSON_CATCH	json.hpp	100;"	d
+JSON_CATCH	json.hpp	12998;"	d
+JSON_CATCH	json.hpp	96;"	d
+JSON_DEPRECATED	json.hpp	12999;"	d
+JSON_DEPRECATED	json.hpp	85;"	d
+JSON_DEPRECATED	json.hpp	87;"	d
+JSON_DEPRECATED	json.hpp	89;"	d
+JSON_THROW	json.hpp	13000;"	d
+JSON_THROW	json.hpp	94;"	d
+JSON_THROW	json.hpp	98;"	d
+JSON_TRY	json.hpp	13001;"	d
+JSON_TRY	json.hpp	95;"	d
+JSON_TRY	json.hpp	99;"	d
 MACRO_HPP	macro.hpp	2;"	d
 Macro	macro.cpp	/^Macro::Macro(const string& name, double width, double height)$/;"	f	class:Macro
 Macro	macro.hpp	/^class Macro {$/;"	c
 NET_HPP	net.hpp	2;"	d
+NLOHMANN_JSON_HAS_HELPER	json.hpp	378;"	d
+NLOHMANN_JSON_HAS_HELPER	json.hpp	394;"	d
+NLOHMANN_JSON_HPP	json.hpp	30;"	d
 Net	net.cpp	/^Net::Net(const vector<int>& macro_ids,$/;"	f	class:Net
 Net	net.hpp	/^class Net {$/;"	c
 Node	b_star_tree.cpp	/^BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)$/;"	f	class:BStarTree::Node
 Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
+Output	floorplanner.cpp	/^void Floorplanner::Output(ostream& os) const {$/;"	f	class:Floorplanner
 POINT_HPP	point.hpp	2;"	d
 Pack	floorplan.cpp	/^void Floorplan::Pack(const Database& database) {$/;"	f	class:Floorplan
 Parse	simple_parser.hpp	/^  void Parse(Handler handler) {$/;"	f	class:simple_parser::Parser
@@ -56,6 +74,7 @@ Print	terminal.cpp	/^void Terminal::Print(ostream& os, int indent_level) const {
 Run	floorplanner.cpp	/^void Floorplanner::Run() {$/;"	f	class:Floorplanner
 SA	floorplanner.cpp	/^void Floorplanner::SA() {$/;"	f	class:Floorplanner
 SIMPLE_PARSER_HPP	simple_parser.hpp	2;"	d
+T	json.hpp	/^    static basic_json parse(T (&array)[N],$/;"	m	class:nlohmann::basic_json
 TERMINAL_HPP	terminal.hpp	2;"	d
 Terminal	terminal.cpp	/^Terminal::Terminal(const string& name, double x, double y)$/;"	f	class:Terminal
 Terminal	terminal.hpp	/^class Terminal {$/;"	c
@@ -63,33 +82,207 @@ Tokenize	simple_parser.hpp	/^  Tokens Tokenize(const std::string& str) {$/;"	f	c
 UnvisitAll	b_star_tree.cpp	/^void BStarTree::UnvisitAll() {$/;"	f	class:BStarTree
 Update	contour.cpp	/^tuple<Point, Point, list<Point>::iterator> Contour::Update($/;"	f	class:Contour
 Visit	b_star_tree.cpp	/^void BStarTree::Visit(int node_id) { node(node_id).is_visited_ = true; }$/;"	f	class:BStarTree
+_json	json.hpp	/^inline nlohmann::json operator "" _json(const char* s, std::size_t n)$/;"	f
+_json_pointer	json.hpp	/^inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)$/;"	f
+adl_serializer	json.hpp	/^struct adl_serializer$/;"	s	namespace:nlohmann
 alpha_	floorplanner.hpp	/^  double alpha_;$/;"	m	class:Floorplanner
+anchor	json.hpp	/^                : anchor(it)$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+anchor	json.hpp	/^            IteratorType anchor;$/;"	m	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
 area	floorplan.cpp	/^double Floorplan::area() const { return width_ * height_; }$/;"	f	class:Floorplan
+array	json.hpp	/^        array_t* array;$/;"	m	union:nlohmann::basic_json::json_value
+array	json.hpp	/^    array,           \/\/\/< array (ordered collection of values)$/;"	m	class:nlohmann::detail::value_t
+array	json.hpp	/^    static basic_json array(std::initializer_list<basic_json> init =$/;"	f	class:nlohmann::basic_json
+array_end	json.hpp	/^        array_end,$/;"	m	class:nlohmann::basic_json::parse_event_t
+array_index	json.hpp	/^            size_t array_index = 0;$/;"	m	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+array_iterator	json.hpp	/^        typename array_t::iterator array_iterator;$/;"	m	struct:nlohmann::basic_json::internal_iterator
+array_start	json.hpp	/^        array_start,$/;"	m	class:nlohmann::basic_json::parse_event_t
+assert_invariant	json.hpp	/^    void assert_invariant() const$/;"	f	class:nlohmann::basic_json
+at	json.hpp	/^    const_reference at(const json_pointer& ptr) const$/;"	f	class:nlohmann::basic_json
+at	json.hpp	/^    const_reference at(const typename object_t::key_type& key) const$/;"	f	class:nlohmann::basic_json
+at	json.hpp	/^    const_reference at(size_type idx) const$/;"	f	class:nlohmann::basic_json
+at	json.hpp	/^    reference at(const json_pointer& ptr)$/;"	f	class:nlohmann::basic_json
+at	json.hpp	/^    reference at(const typename object_t::key_type& key)$/;"	f	class:nlohmann::basic_json
+at	json.hpp	/^    reference at(size_type idx)$/;"	f	class:nlohmann::basic_json
 average_area_	floorplanner.hpp	/^  double average_area_;$/;"	m	class:Floorplanner
 average_uphill_cost_	floorplanner.hpp	/^  double average_uphill_cost_;$/;"	m	class:Floorplanner
 average_wirelength_	floorplanner.hpp	/^  double average_wirelength_;$/;"	m	class:Floorplanner
 b_star_tree_	floorplan.hpp	/^  BStarTree b_star_tree_;$/;"	m	class:Floorplan
+back	json.hpp	/^    const_reference back() const$/;"	f	class:nlohmann::basic_json
+back	json.hpp	/^    reference back()$/;"	f	class:nlohmann::basic_json
+base_iterator	json.hpp	/^            : base_iterator(it)$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+basic_json	json.hpp	/^        : basic_json(value_t::null)$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^    basic_json(InputIT first, InputIT last)$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^    basic_json(const basic_json& other)$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^    basic_json(const value_t value_type)$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^    basic_json(size_type cnt, const basic_json& val)$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^    basic_json(std::initializer_list<basic_json> init,$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^    explicit basic_json(std::istream& i, const parser_callback_t cb = nullptr)$/;"	f	class:nlohmann::basic_json
+basic_json	json.hpp	/^class basic_json$/;"	c	namespace:nlohmann
+begin_array	json.hpp	/^            begin_array,     \/\/\/< the character for array begin `[`$/;"	m	class:nlohmann::basic_json::lexer::token_type
+begin_object	json.hpp	/^            begin_object,    \/\/\/< the character for object begin `{`$/;"	m	class:nlohmann::basic_json::lexer::token_type
+begin_value	json.hpp	/^        static constexpr difference_type begin_value = 0;$/;"	m	class:nlohmann::basic_json::primitive_iterator_t
 best_floorplan_	floorplanner.hpp	/^  Floorplan best_floorplan_;$/;"	m	class:Floorplanner
+boolean	json.hpp	/^        boolean_t boolean;$/;"	m	union:nlohmann::basic_json::json_value
+boolean	json.hpp	/^        json_value(boolean_t v) noexcept : boolean(v) {}$/;"	f	union:nlohmann::basic_json::json_value
+boolean	json.hpp	/^    boolean,         \/\/\/< boolean value$/;"	m	class:nlohmann::detail::value_t
+call	json.hpp	/^    noexcept(noexcept(std::declval<from_json_fn>().call(j, val, priority_tag<1> {})))$/;"	f	struct:nlohmann::detail::from_json_fn
+call	json.hpp	/^    noexcept(noexcept(std::declval<to_json_fn>().call(j, std::forward<T>(val), priority_tag<1> {})))$/;"	f	struct:nlohmann::detail::to_json_fn
+callback	json.hpp	/^        const parser_callback_t callback = nullptr;$/;"	m	class:nlohmann::basic_json::parser
+cb	json.hpp	/^                            const parser_callback_t cb = nullptr)$/;"	m	class:nlohmann::basic_json
+conjunction	json.hpp	/^struct conjunction<B1, Bn...> : std::conditional<bool(B1::value), conjunction<Bn...>, B1>::type {};$/;"	s	namespace:nlohmann::detail
+conjunction	json.hpp	/^template<class B1> struct conjunction<B1> : B1 {};$/;"	s	namespace:nlohmann::detail
+conjunction	json.hpp	/^template<class...> struct conjunction : std::true_type {};$/;"	s	namespace:nlohmann::detail
+construct	json.hpp	/^    static void construct(BasicJsonType& j, const CompatibleArrayType& arr)$/;"	f	struct:nlohmann::detail::external_constructor
+construct	json.hpp	/^    static void construct(BasicJsonType& j, const CompatibleObjectType& obj)$/;"	f	struct:nlohmann::detail::external_constructor
+construct	json.hpp	/^    static void construct(BasicJsonType& j, const typename BasicJsonType::array_t& arr)$/;"	f	struct:nlohmann::detail::external_constructor
+construct	json.hpp	/^    static void construct(BasicJsonType& j, const typename BasicJsonType::object_t& obj)$/;"	f	struct:nlohmann::detail::external_constructor
+construct	json.hpp	/^    static void construct(BasicJsonType& j, const typename BasicJsonType::string_t& s)$/;"	f	struct:nlohmann::detail::external_constructor
+container	json.hpp	/^        typename IteratorType::reference container;$/;"	m	class:nlohmann::basic_json::iteration_proxy
 coordinates	terminal.cpp	/^const Point& Terminal::coordinates() const { return coordinates_; }$/;"	f	class:Terminal
 coordinates_	contour.hpp	/^  std::list<Point> coordinates_;$/;"	m	class:Contour
 coordinates_	terminal.hpp	/^  Point coordinates_;$/;"	m	class:Terminal
+count	json.hpp	/^    size_type count(typename object_t::key_type key) const$/;"	f	class:nlohmann::basic_json
+create	json.hpp	/^    static T* create(Args&& ... args)$/;"	f	class:nlohmann::basic_json
 database_	floorplanner.hpp	/^  const Database& database_;$/;"	m	class:Floorplanner
+decltype	json.hpp	/^-> decltype($/;"	f	namespace:nlohmann::detail
 delimiters_	simple_parser.hpp	/^  Delimiters delimiters_;$/;"	m	class:simple_parser::Parser
+depth	json.hpp	/^        int depth = 0;$/;"	m	class:nlohmann::basic_json::parser
+detail	json.hpp	/^namespace detail$/;"	n	namespace:nlohmann
+diff	json.hpp	/^    static basic_json diff(const basic_json& source,$/;"	f	class:nlohmann::basic_json
+dump	json.hpp	/^    string_t dump(const int indent = -1) const$/;"	f	class:nlohmann::basic_json
+dump	json.hpp	/^    void dump(std::ostream& o,$/;"	f	class:nlohmann::basic_json
+emplace	json.hpp	/^    std::pair<iterator, bool> emplace(Args&& ... args)$/;"	f	class:nlohmann::basic_json
+emplace_back	json.hpp	/^    void emplace_back(Args&& ... args)$/;"	f	class:nlohmann::basic_json
+end_array	json.hpp	/^            end_array,       \/\/\/< the character for array end `]`$/;"	m	class:nlohmann::basic_json::lexer::token_type
+end_object	json.hpp	/^            end_object,      \/\/\/< the character for object end `}`$/;"	m	class:nlohmann::basic_json::lexer::token_type
+end_value	json.hpp	/^        static constexpr difference_type end_value = begin_value + 1;$/;"	m	class:nlohmann::basic_json::primitive_iterator_t
+erase	json.hpp	/^    IteratorType erase(IteratorType first, IteratorType last)$/;"	f	class:nlohmann::basic_json
+erase	json.hpp	/^    IteratorType erase(IteratorType pos)$/;"	f	class:nlohmann::basic_json
+erase	json.hpp	/^    size_type erase(const typename object_t::key_type& key)$/;"	f	class:nlohmann::basic_json
+erase	json.hpp	/^    void erase(const size_type idx)$/;"	f	class:nlohmann::basic_json
+escape	json.hpp	/^        static std::string escape(std::string s)$/;"	f	class:nlohmann::basic_json::json_pointer
+expect	json.hpp	/^        void expect(typename lexer::token_type t) const$/;"	f	class:nlohmann::basic_json::parser
+external_constructor	json.hpp	/^struct external_constructor<value_t::array>$/;"	s	namespace:nlohmann::detail
+external_constructor	json.hpp	/^struct external_constructor<value_t::boolean>$/;"	s	namespace:nlohmann::detail
+external_constructor	json.hpp	/^struct external_constructor<value_t::number_float>$/;"	s	namespace:nlohmann::detail
+external_constructor	json.hpp	/^struct external_constructor<value_t::number_integer>$/;"	s	namespace:nlohmann::detail
+external_constructor	json.hpp	/^struct external_constructor<value_t::number_unsigned>$/;"	s	namespace:nlohmann::detail
+external_constructor	json.hpp	/^struct external_constructor<value_t::object>$/;"	s	namespace:nlohmann::detail
+external_constructor	json.hpp	/^struct external_constructor<value_t::string>$/;"	s	namespace:nlohmann::detail
+fill_line_buffer	json.hpp	/^        void fill_line_buffer(size_t n = 0)$/;"	f	class:nlohmann::basic_json::lexer
+find	json.hpp	/^    const_iterator find(typename object_t::key_type key) const$/;"	f	class:nlohmann::basic_json
+find	json.hpp	/^    iterator find(typename object_t::key_type key)$/;"	f	class:nlohmann::basic_json
+flatten	json.hpp	/^        static void flatten(const std::string& reference_string,$/;"	f	class:nlohmann::basic_json::json_pointer
+flatten	json.hpp	/^    basic_json flatten() const$/;"	f	class:nlohmann::basic_json
+from_json	json.hpp	/^constexpr const auto& from_json = detail::static_const<detail::from_json_fn>::value;$/;"	m	namespace:nlohmann::__anon1
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, ArithmeticType& val)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, CompatibleArrayType& arr)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, CompatibleObjectType& obj)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, UnscopedEnumType& e)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, std::forward_list<T, Allocator>& l)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, typename BasicJsonType::array_t& arr)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, typename BasicJsonType::boolean_t& b)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, typename BasicJsonType::number_float_t& val)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, typename BasicJsonType::number_integer_t& val)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, typename BasicJsonType::number_unsigned_t& val)$/;"	f	namespace:nlohmann::detail
+from_json	json.hpp	/^void from_json(const BasicJsonType& j, typename BasicJsonType::string_t& s)$/;"	f	namespace:nlohmann::detail
+from_json_array_impl	json.hpp	/^void from_json_array_impl(const BasicJsonType& j, CompatibleArrayType& arr, priority_tag<0>)$/;"	f	namespace:nlohmann::detail
+from_json_fn	json.hpp	/^struct from_json_fn$/;"	s	namespace:nlohmann::detail
+front	json.hpp	/^    const_reference front() const$/;"	f	class:nlohmann::basic_json
+front	json.hpp	/^    reference front()$/;"	f	class:nlohmann::basic_json
+get	json.hpp	/^    basic_json get() const$/;"	f	class:nlohmann::basic_json
+get_allocator	json.hpp	/^    static allocator_type get_allocator()$/;"	f	class:nlohmann::basic_json
+get_and_create	json.hpp	/^        reference get_and_create(reference j) const$/;"	f	class:nlohmann::basic_json::json_pointer
+get_arithmetic_value	json.hpp	/^void get_arithmetic_value(const BasicJsonType& j, ArithmeticType& val)$/;"	f	namespace:nlohmann::detail
+get_checked	json.hpp	/^        const_reference get_checked(const_pointer ptr) const$/;"	f	class:nlohmann::basic_json::json_pointer
+get_checked	json.hpp	/^        reference get_checked(pointer ptr) const$/;"	f	class:nlohmann::basic_json::json_pointer
+get_impl	json.hpp	/^    boolean_t get_impl(boolean_t* \/*unused*\/) const$/;"	f	class:nlohmann::basic_json
+get_number	json.hpp	/^        bool get_number(basic_json& result, const token_type token) const$/;"	f	class:nlohmann::basic_json::lexer
+get_ref	json.hpp	/^    ReferenceType get_ref() const$/;"	f	class:nlohmann::basic_json
+get_ref	json.hpp	/^    ReferenceType get_ref()$/;"	f	class:nlohmann::basic_json
+get_ref_impl	json.hpp	/^    static ReferenceType get_ref_impl(ThisType& obj)$/;"	f	class:nlohmann::basic_json
+get_string	json.hpp	/^        string_t get_string() const$/;"	f	class:nlohmann::basic_json::lexer
+get_token	json.hpp	/^        typename lexer::token_type get_token()$/;"	f	class:nlohmann::basic_json::parser
+get_token_string	json.hpp	/^        string_t get_token_string() const$/;"	f	class:nlohmann::basic_json::lexer
+get_unchecked	json.hpp	/^        const_reference get_unchecked(const_pointer ptr) const$/;"	f	class:nlohmann::basic_json::json_pointer
+get_unchecked	json.hpp	/^        reference get_unchecked(pointer ptr) const$/;"	f	class:nlohmann::basic_json::json_pointer
+has_from_json	json.hpp	/^struct has_from_json$/;"	s	namespace:nlohmann::detail
+has_non_default_from_json	json.hpp	/^struct has_non_default_from_json$/;"	s	namespace:nlohmann::detail
+has_to_json	json.hpp	/^struct has_to_json$/;"	s	namespace:nlohmann::detail
+hash	json.hpp	/^struct hash<nlohmann::json>$/;"	s	namespace:std
 height	floorplan.cpp	/^double Floorplan::height() const { return height_; }$/;"	f	class:Floorplan
 height	macro.cpp	/^double Macro::height() const { return height_; }$/;"	f	class:Macro
 height_	floorplan.hpp	/^  double height_;$/;"	m	class:Floorplan
 height_	macro.hpp	/^  double height_;$/;"	m	class:Macro
 input_	simple_parser.hpp	/^  std::istream& input_;$/;"	m	class:simple_parser::Parser
+insert	json.hpp	/^    iterator insert(const_iterator pos, basic_json&& val)$/;"	f	class:nlohmann::basic_json
+insert	json.hpp	/^    iterator insert(const_iterator pos, const basic_json& val)$/;"	f	class:nlohmann::basic_json
+insert	json.hpp	/^    iterator insert(const_iterator pos, const_iterator first, const_iterator last)$/;"	f	class:nlohmann::basic_json
+insert	json.hpp	/^    iterator insert(const_iterator pos, size_type cnt, const basic_json& val)$/;"	f	class:nlohmann::basic_json
+insert	json.hpp	/^    iterator insert(const_iterator pos, std::initializer_list<basic_json> ilist)$/;"	f	class:nlohmann::basic_json
+internal_iterator	json.hpp	/^    struct internal_iterator$/;"	s	class:nlohmann::basic_json
 invalid_list_	contour.cpp	/^list<Point> Contour::invalid_list_;$/;"	m	class:Contour	file:
 invalid_list_	contour.hpp	/^  static std::list<Point> invalid_list_;$/;"	m	class:Contour
+is_basic_json_nested_type	json.hpp	/^struct is_basic_json_nested_type$/;"	s	namespace:nlohmann::detail
+is_compatible_array_type	json.hpp	/^struct is_compatible_array_type$/;"	s	namespace:nlohmann::detail
+is_compatible_integer_type	json.hpp	/^struct is_compatible_integer_type$/;"	s	namespace:nlohmann::detail
+is_compatible_integer_type_impl	json.hpp	/^struct is_compatible_integer_type_impl : std::false_type {};$/;"	s	namespace:nlohmann::detail
+is_compatible_integer_type_impl	json.hpp	/^struct is_compatible_integer_type_impl<true, RealIntegerType, CompatibleNumberIntegerType>$/;"	s	namespace:nlohmann::detail
+is_compatible_object_type	json.hpp	/^struct is_compatible_object_type$/;"	s	namespace:nlohmann::detail
+is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl : std::false_type {};$/;"	s	namespace:nlohmann::detail
+is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl<true, RealType, CompatibleObjectType>$/;"	s	namespace:nlohmann::detail
 is_macro_existed	database.cpp	/^bool Database::is_macro_existed(const string& macro_name) const {$/;"	f	class:Database
+is_root	json.hpp	/^        bool is_root() const$/;"	f	class:nlohmann::basic_json::json_pointer
 is_rotated_from_macro_id_	floorplan.hpp	/^  std::vector<bool> is_rotated_from_macro_id_;$/;"	m	class:Floorplan
 is_terminal_existed	database.cpp	/^bool Database::is_terminal_existed(const string& terminal_name) const {$/;"	f	class:Database
 is_visited	b_star_tree.cpp	/^bool BStarTree::is_visited(int node_id) const {$/;"	f	class:BStarTree
 is_visited_	b_star_tree.hpp	/^    bool is_visited_;$/;"	m	class:BStarTree::Node
+iter_impl	json.hpp	/^    class iter_impl : public std::iterator<std::random_access_iterator_tag, U>$/;"	c	class:nlohmann::basic_json
+iteration_proxy	json.hpp	/^        explicit iteration_proxy(typename IteratorType::reference cont)$/;"	f	class:nlohmann::basic_json::iteration_proxy
+iteration_proxy	json.hpp	/^    class iteration_proxy$/;"	c	class:nlohmann::basic_json
+iteration_proxy_internal	json.hpp	/^        class iteration_proxy_internal$/;"	c	class:nlohmann::basic_json::iteration_proxy
+iterator_wrapper	json.hpp	/^    static iteration_proxy<const_iterator> iterator_wrapper(const_reference cont)$/;"	f	class:nlohmann::basic_json
+iterator_wrapper	json.hpp	/^    static iteration_proxy<iterator> iterator_wrapper(reference cont)$/;"	f	class:nlohmann::basic_json
+json_pointer	json.hpp	/^        explicit json_pointer(const std::string& s = "")$/;"	f	class:nlohmann::basic_json::json_pointer
+json_pointer	json.hpp	/^    class json_pointer$/;"	c	class:nlohmann::basic_json
+json_reverse_iterator	json.hpp	/^    class json_reverse_iterator : public std::reverse_iterator<Base>$/;"	c	class:nlohmann::basic_json
+json_value	json.hpp	/^        json_value(const array_t& value)$/;"	f	union:nlohmann::basic_json::json_value
+json_value	json.hpp	/^        json_value(const object_t& value)$/;"	f	union:nlohmann::basic_json::json_value
+json_value	json.hpp	/^        json_value(const string_t& value)$/;"	f	union:nlohmann::basic_json::json_value
+json_value	json.hpp	/^        json_value(value_t t)$/;"	f	union:nlohmann::basic_json::json_value
+json_value	json.hpp	/^    union json_value$/;"	u	class:nlohmann::basic_json
+key	json.hpp	/^            typename basic_json::string_t key() const$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+key	json.hpp	/^        key,$/;"	m	class:nlohmann::basic_json::parse_event_t
+key	json.hpp	/^        typename object_t::key_type key() const$/;"	f	class:nlohmann::basic_json::iter_impl
+key	json.hpp	/^        typename object_t::key_type key() const$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+last_token	json.hpp	/^        typename lexer::token_type last_token = lexer::token_type::uninitialized;$/;"	m	class:nlohmann::basic_json::parser
+last_token_type	json.hpp	/^        token_type last_token_type = token_type::end_of_input;$/;"	m	class:nlohmann::basic_json::lexer
 left_child_id	b_star_tree.cpp	/^int BStarTree::left_child_id(int node_id) const {$/;"	f	class:BStarTree
 left_child_id_	b_star_tree.hpp	/^    int left_child_id_;$/;"	m	class:BStarTree::Node
+lexer	json.hpp	/^        explicit lexer(std::istream& s)$/;"	f	class:nlohmann::basic_json::lexer
+lexer	json.hpp	/^    class lexer$/;"	c	class:nlohmann::basic_json
+literal_false	json.hpp	/^            literal_false,   \/\/\/< the `false` literal$/;"	m	class:nlohmann::basic_json::lexer::token_type
+literal_null	json.hpp	/^            literal_null,    \/\/\/< the `null` literal$/;"	m	class:nlohmann::basic_json::lexer::token_type
+literal_true	json.hpp	/^            literal_true,    \/\/\/< the `true` literal$/;"	m	class:nlohmann::basic_json::lexer::token_type
+m_content	json.hpp	/^            : m_content(buff)$/;"	f	class:nlohmann::basic_json::lexer
+m_content	json.hpp	/^        const lexer_char_t* m_content = nullptr;$/;"	m	class:nlohmann::basic_json::lexer
+m_cursor	json.hpp	/^        const lexer_char_t* m_cursor = nullptr;$/;"	m	class:nlohmann::basic_json::lexer
+m_end	json.hpp	/^            const char* const m_end = nullptr;$/;"	m	struct:nlohmann::basic_json::lexer::strtonum
+m_it	json.hpp	/^            : m_object(other.m_object), m_it(other.m_it)$/;"	f	class:nlohmann::basic_json::iter_impl
+m_it	json.hpp	/^        difference_type m_it = std::numeric_limits<std::ptrdiff_t>::denorm_min();$/;"	m	class:nlohmann::basic_json::primitive_iterator_t
+m_it	json.hpp	/^        internal_iterator m_it = internal_iterator();$/;"	m	class:nlohmann::basic_json::iter_impl
+m_lexer	json.hpp	/^        lexer m_lexer;$/;"	m	class:nlohmann::basic_json::parser
+m_limit	json.hpp	/^        const lexer_char_t* m_limit = nullptr;$/;"	m	class:nlohmann::basic_json::lexer
+m_marker	json.hpp	/^        const lexer_char_t* m_marker = nullptr;$/;"	m	class:nlohmann::basic_json::lexer
+m_object	json.hpp	/^            : m_object(object)$/;"	f	class:nlohmann::basic_json::iter_impl
+m_object	json.hpp	/^        pointer m_object = nullptr;$/;"	m	class:nlohmann::basic_json::iter_impl
+m_start	json.hpp	/^            const char* const m_start = nullptr;$/;"	m	struct:nlohmann::basic_json::lexer::strtonum
+m_start	json.hpp	/^        const lexer_char_t* m_start = nullptr;$/;"	m	class:nlohmann::basic_json::lexer
+m_stream	json.hpp	/^        std::istream* m_stream = nullptr;$/;"	m	class:nlohmann::basic_json::lexer
+m_type	json.hpp	/^    value_t m_type = value_t::null;$/;"	m	class:nlohmann::basic_json
+m_value	json.hpp	/^    json_value m_value = {};$/;"	m	class:nlohmann::basic_json
 macro	database.cpp	/^const Macro& Database::macro(int macro_id) const {$/;"	f	class:Database
+macro_bounding_box	floorplan.cpp	/^const pair<Point, Point>& Floorplan::macro_bounding_box(int macro_id) const {$/;"	f	class:Floorplan
 macro_bounding_box_from_macro_id_	floorplan.hpp	/^  std::vector<std::pair<Point, Point>> macro_bounding_box_from_macro_id_;$/;"	m	class:Floorplan
 macro_id	net.cpp	/^int Net::macro_id(int nth_macro) const { return macro_ids_.at(nth_macro); }$/;"	f	class:Net
 macro_id_from_name	database.cpp	/^int Database::macro_id_from_name(const string& macro_name) const {$/;"	f	class:Database
@@ -103,21 +296,109 @@ max_x_	net.hpp	/^  double max_x_;$/;"	m	class:Net
 max_y	contour.cpp	/^double Contour::max_y() const { return max_y_; }$/;"	f	class:Contour
 max_y_	contour.hpp	/^  double max_y_;$/;"	m	class:Contour
 max_y_	net.hpp	/^  double max_y_;$/;"	m	class:Net
+meta	json.hpp	/^    static basic_json meta()$/;"	f	class:nlohmann::basic_json
 min_x_	net.hpp	/^  double min_x_;$/;"	m	class:Net
 min_y_	net.hpp	/^  double min_y_;$/;"	m	class:Net
+move	json.hpp	/^          m_value(std::move(other.m_value))$/;"	f	class:nlohmann::basic_json
 name	macro.cpp	/^const string& Macro::name() const { return name_; }$/;"	f	class:Macro
 name	terminal.cpp	/^const string& Terminal::name() const { return name_; }$/;"	f	class:Terminal
 name_	macro.hpp	/^  std::string name_;$/;"	m	class:Macro
 name_	terminal.hpp	/^  std::string name_;$/;"	m	class:Terminal
+name_separator	json.hpp	/^            name_separator,  \/\/\/< the name separator `:`$/;"	m	class:nlohmann::basic_json::lexer::token_type
+negation	json.hpp	/^template<class B> struct negation : std::integral_constant < bool, !B::value > {};$/;"	s	namespace:nlohmann::detail
 net	database.cpp	/^const Net& Database::net(int net_id) const { return nets_.at(net_id); }$/;"	f	class:Database
 nets_	database.hpp	/^  std::vector<Net> nets_;$/;"	m	class:Database
+nlohmann	json.hpp	/^namespace nlohmann$/;"	n
 node	b_star_tree.cpp	/^BStarTree::Node& BStarTree::node(int node_id) { return nodes_.at(node_id); }$/;"	f	class:BStarTree
 node	b_star_tree.cpp	/^const BStarTree::Node& BStarTree::node(int node_id) const {$/;"	f	class:BStarTree
 nodes_	b_star_tree.hpp	/^  std::vector<Node> nodes_;$/;"	m	class:BStarTree
+noexcept	json.hpp	/^                 nlohmann::json& j2) noexcept($/;"	f	namespace:std
+noexcept	json.hpp	/^        internal_iterator() noexcept$/;"	m	struct:nlohmann::basic_json::internal_iterator
+noexcept	json.hpp	/^        iter_impl& operator=(iter_impl other) noexcept($/;"	f	class:nlohmann::basic_json::iter_impl
+noexcept	json.hpp	/^        noexcept(::nlohmann::from_json(std::forward<BasicJsonType>(j), val)))$/;"	f	struct:nlohmann::adl_serializer
+noexcept	json.hpp	/^        noexcept(::nlohmann::to_json(j, std::forward<ValueType>(val))))$/;"	f	struct:nlohmann::adl_serializer
+noexcept	json.hpp	/^    ValueType get() const noexcept(noexcept($/;"	f	class:nlohmann::basic_json
+noexcept	json.hpp	/^    basic_json(CompatibleType && val) noexcept(noexcept(JSONSerializer<U>::to_json($/;"	f	class:nlohmann::basic_json
+noexcept	json.hpp	/^    reference& operator=(basic_json other) noexcept ($/;"	f	class:nlohmann::basic_json
+noexcept	json.hpp	/^    void swap(reference other) noexcept ($/;"	f	class:nlohmann::basic_json
+null	json.hpp	/^    null,            \/\/\/< null value$/;"	m	class:nlohmann::detail::value_t
 num_macros	database.cpp	/^int Database::num_macros() const { return macros_.size(); }$/;"	f	class:Database
 num_macros	net.cpp	/^int Net::num_macros() const { return macro_ids_.size(); }$/;"	f	class:Net
 num_nets	database.cpp	/^int Database::num_nets() const { return nets_.size(); }$/;"	f	class:Database
 num_terminals	database.cpp	/^int Database::num_terminals() const { return terminals_.size(); }$/;"	f	class:Database
+number_float	json.hpp	/^        json_value(number_float_t v) noexcept : number_float(v) {}$/;"	f	union:nlohmann::basic_json::json_value
+number_float	json.hpp	/^        number_float_t number_float;$/;"	m	union:nlohmann::basic_json::json_value
+number_float	json.hpp	/^    number_float,    \/\/\/< number value (floating-point)$/;"	m	class:nlohmann::detail::value_t
+number_integer	json.hpp	/^        json_value(number_integer_t v) noexcept : number_integer(v) {}$/;"	f	union:nlohmann::basic_json::json_value
+number_integer	json.hpp	/^        number_integer_t number_integer;$/;"	m	union:nlohmann::basic_json::json_value
+number_integer	json.hpp	/^    number_integer,  \/\/\/< number value (signed integer)$/;"	m	class:nlohmann::detail::value_t
+number_unsigned	json.hpp	/^        json_value(number_unsigned_t v) noexcept : number_unsigned(v) {}$/;"	f	union:nlohmann::basic_json::json_value
+number_unsigned	json.hpp	/^        number_unsigned_t number_unsigned;$/;"	m	union:nlohmann::basic_json::json_value
+number_unsigned	json.hpp	/^    number_unsigned, \/\/\/< number value (unsigned integer)$/;"	m	class:nlohmann::detail::value_t
+object	json.hpp	/^        object_t* object;$/;"	m	union:nlohmann::basic_json::json_value
+object	json.hpp	/^    object,          \/\/\/< object (unordered set of name\/value pairs)$/;"	m	class:nlohmann::detail::value_t
+object	json.hpp	/^    static basic_json object(std::initializer_list<basic_json> init =$/;"	f	class:nlohmann::basic_json
+object_end	json.hpp	/^        object_end,$/;"	m	class:nlohmann::basic_json::parse_event_t
+object_iterator	json.hpp	/^        typename object_t::iterator object_iterator;$/;"	m	struct:nlohmann::basic_json::internal_iterator
+object_start	json.hpp	/^        object_start,$/;"	m	class:nlohmann::basic_json::parse_event_t
+operator !=	json.hpp	/^            bool operator!= (const iteration_proxy_internal& o) const$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+operator !=	json.hpp	/^        bool operator!=(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator ()	json.hpp	/^    std::size_t operator()(const nlohmann::json& j) const$/;"	f	struct:std::hash
+operator *	json.hpp	/^            iteration_proxy_internal& operator*()$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+operator *	json.hpp	/^        reference operator*() const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator +	json.hpp	/^        iter_impl operator+(difference_type i)$/;"	f	class:nlohmann::basic_json::iter_impl
+operator +	json.hpp	/^        json_reverse_iterator operator+(difference_type i) const$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator +	json.hpp	/^        primitive_iterator_t operator+(difference_type i)$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator ++	json.hpp	/^            iteration_proxy_internal& operator++()$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+operator ++	json.hpp	/^        iter_impl operator++(int)$/;"	f	class:nlohmann::basic_json::iter_impl
+operator ++	json.hpp	/^        iter_impl& operator++()$/;"	f	class:nlohmann::basic_json::iter_impl
+operator ++	json.hpp	/^        json_reverse_iterator operator++(int)$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator ++	json.hpp	/^        json_reverse_iterator& operator++()$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator ++	json.hpp	/^        primitive_iterator_t operator++(int)$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator ++	json.hpp	/^        primitive_iterator_t& operator++()$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator +=	json.hpp	/^        iter_impl& operator+=(difference_type i)$/;"	f	class:nlohmann::basic_json::iter_impl
+operator +=	json.hpp	/^        json_reverse_iterator& operator+=(difference_type i)$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator +=	json.hpp	/^        primitive_iterator_t& operator+=(difference_type n)$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator +=	json.hpp	/^    reference operator+=(basic_json&& val)$/;"	f	class:nlohmann::basic_json
+operator +=	json.hpp	/^    reference operator+=(const basic_json& val)$/;"	f	class:nlohmann::basic_json
+operator +=	json.hpp	/^    reference operator+=(const typename object_t::value_type& val)$/;"	f	class:nlohmann::basic_json
+operator +=	json.hpp	/^    reference operator+=(std::initializer_list<basic_json> init)$/;"	f	class:nlohmann::basic_json
+operator -	json.hpp	/^        difference_type operator-(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator -	json.hpp	/^        difference_type operator-(const json_reverse_iterator& other) const$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator -	json.hpp	/^        iter_impl operator-(difference_type i)$/;"	f	class:nlohmann::basic_json::iter_impl
+operator -	json.hpp	/^        json_reverse_iterator operator-(difference_type i) const$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator --	json.hpp	/^        iter_impl operator--(int)$/;"	f	class:nlohmann::basic_json::iter_impl
+operator --	json.hpp	/^        iter_impl& operator--()$/;"	f	class:nlohmann::basic_json::iter_impl
+operator --	json.hpp	/^        json_reverse_iterator operator--(int)$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator --	json.hpp	/^        json_reverse_iterator& operator--()$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator --	json.hpp	/^        primitive_iterator_t operator--(int)$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator --	json.hpp	/^        primitive_iterator_t& operator--()$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator -=	json.hpp	/^        iter_impl& operator-=(difference_type i)$/;"	f	class:nlohmann::basic_json::iter_impl
+operator -=	json.hpp	/^        primitive_iterator_t& operator-=(difference_type n)$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator ->	json.hpp	/^        pointer operator->() const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator <	json.hpp	/^        bool operator<(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator <<	json.hpp	/^        friend std::ostream& operator<<(std::ostream& os, primitive_iterator_t it)$/;"	f	class:nlohmann::basic_json::primitive_iterator_t
+operator <<	json.hpp	/^    friend std::ostream& operator<<(std::ostream& o, const basic_json& j)$/;"	f	class:nlohmann::basic_json
+operator <=	json.hpp	/^        bool operator<=(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator ==	json.hpp	/^        bool operator==(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator >	json.hpp	/^        bool operator>(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator >=	json.hpp	/^        bool operator>=(const iter_impl& other) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator >>	json.hpp	/^    friend std::ostream& operator>>(const basic_json& j, std::ostream& o)$/;"	f	class:nlohmann::basic_json
+operator ValueType	json.hpp	/^    operator ValueType() const$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^        reference operator[](difference_type n) const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator []	json.hpp	/^        reference operator[](difference_type n) const$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+operator []	json.hpp	/^    const_reference operator[](T * (&key)[n]) const$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    const_reference operator[](T* key) const$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    const_reference operator[](const json_pointer& ptr) const$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    const_reference operator[](const typename object_t::key_type& key) const$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    const_reference operator[](size_type idx) const$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    reference operator[](T * (&key)[n])$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    reference operator[](T* key)$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    reference operator[](const json_pointer& ptr)$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    reference operator[](const typename object_t::key_type& key)$/;"	f	class:nlohmann::basic_json
+operator []	json.hpp	/^    reference operator[](size_type idx)$/;"	f	class:nlohmann::basic_json
+operator const_iterator	json.hpp	/^        operator const_iterator() const$/;"	f	class:nlohmann::basic_json::iter_impl
+operator std::string	json.hpp	/^        operator std::string() const$/;"	f	class:nlohmann::basic_json::json_pointer
 other	simple_parser.hpp	/^  Parser& operator=(const Parser& other) = delete;$/;"	m	class:simple_parser::Parser
 outline_height	database.cpp	/^double Database::outline_height() const { return outline_height_; }$/;"	f	class:Database
 outline_height_	database.hpp	/^  double outline_height_;$/;"	m	class:Database
@@ -125,15 +406,91 @@ outline_width	database.cpp	/^double Database::outline_width() const { return out
 outline_width_	database.hpp	/^  double outline_width_;$/;"	m	class:Database
 parent_id	b_star_tree.cpp	/^int BStarTree::parent_id(int node_id) const { return node(node_id).parent_id_; }$/;"	f	class:BStarTree
 parent_id_	b_star_tree.hpp	/^    int parent_id_;$/;"	m	class:BStarTree::Node
+parse	json.hpp	/^            bool parse(T& value, \/*is_integral=*\/std::false_type) const$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+parse	json.hpp	/^            bool parse(T& value, \/*is_integral=*\/std::true_type) const$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+parse	json.hpp	/^        basic_json parse()$/;"	f	class:nlohmann::basic_json::parser
+parse_error	json.hpp	/^            parse_error,     \/\/\/< indicating a parse error$/;"	m	class:nlohmann::basic_json::lexer::token_type
+parse_event_t	json.hpp	/^    enum class parse_event_t : uint8_t$/;"	c	class:nlohmann::basic_json
+parse_integral	json.hpp	/^            signed long long parse_integral(char** endptr, \/*is_signed*\/std::true_type) const$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+parse_integral	json.hpp	/^            unsigned long long parse_integral(char** endptr, \/*is_signed*\/std::false_type) const$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+parse_internal	json.hpp	/^        basic_json parse_internal(bool keep)$/;"	f	class:nlohmann::basic_json::parser
+parser	json.hpp	/^        parser(IteratorType first, IteratorType last, const parser_callback_t cb = nullptr)$/;"	f	class:nlohmann::basic_json::parser
+parser	json.hpp	/^        parser(const char* buff, const parser_callback_t cb = nullptr)$/;"	f	class:nlohmann::basic_json::parser
+parser	json.hpp	/^        parser(std::istream& is, const parser_callback_t cb = nullptr)$/;"	f	class:nlohmann::basic_json::parser
+parser	json.hpp	/^    class parser$/;"	c	class:nlohmann::basic_json
+patch	json.hpp	/^    basic_json patch(const basic_json& json_patch) const$/;"	f	class:nlohmann::basic_json
+pop_back	json.hpp	/^        std::string pop_back()$/;"	f	class:nlohmann::basic_json::json_pointer
+primitive_iterator	json.hpp	/^            : object_iterator(), array_iterator(), primitive_iterator()$/;"	f	struct:nlohmann::basic_json::internal_iterator
+primitive_iterator	json.hpp	/^        primitive_iterator_t primitive_iterator;$/;"	m	struct:nlohmann::basic_json::internal_iterator
+primitive_iterator_t	json.hpp	/^    class primitive_iterator_t$/;"	c	class:nlohmann::basic_json
+priority_tag	json.hpp	/^template<> struct priority_tag<0> {};$/;"	s	namespace:nlohmann::detail
+priority_tag	json.hpp	/^template<unsigned N> struct priority_tag : priority_tag < N - 1 > {};$/;"	s	namespace:nlohmann::detail
+push_back	json.hpp	/^    void push_back(basic_json&& val)$/;"	f	class:nlohmann::basic_json
+push_back	json.hpp	/^    void push_back(const basic_json& val)$/;"	f	class:nlohmann::basic_json
+push_back	json.hpp	/^    void push_back(const typename object_t::value_type& val)$/;"	f	class:nlohmann::basic_json
+push_back	json.hpp	/^    void push_back(std::initializer_list<basic_json> init)$/;"	f	class:nlohmann::basic_json
+replace_substring	json.hpp	/^        static void replace_substring(std::string& s,$/;"	f	class:nlohmann::basic_json::json_pointer
 right_child_id	b_star_tree.cpp	/^int BStarTree::right_child_id(int node_id) const {$/;"	f	class:BStarTree
 right_child_id_	b_star_tree.hpp	/^    int right_child_id_;$/;"	m	class:BStarTree::Node
 root_id	b_star_tree.cpp	/^int BStarTree::root_id() const { return root_id_; }$/;"	f	class:BStarTree
 root_id_	b_star_tree.hpp	/^  int root_id_;$/;"	m	class:BStarTree
+scan	json.hpp	/^        token_type scan()$/;"	f	class:nlohmann::basic_json::lexer
 simple_parser	simple_parser.hpp	/^namespace simple_parser {$/;"	n
+split	json.hpp	/^        static std::vector<std::string> split(const std::string& reference_string)$/;"	f	class:nlohmann::basic_json::json_pointer
+static_const	json.hpp	/^struct static_const$/;"	s	namespace:nlohmann::detail
+std	json.hpp	/^namespace std$/;"	n
+string	json.hpp	/^        string_t* string;$/;"	m	union:nlohmann::basic_json::json_value
+string	json.hpp	/^    string,          \/\/\/< string value$/;"	m	class:nlohmann::detail::value_t
+strtof	json.hpp	/^            static void strtof(double& f, const char* str, char** endptr)$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+strtof	json.hpp	/^            static void strtof(float& f, const char* str, char** endptr)$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+strtof	json.hpp	/^            static void strtof(long double& f, const char* str, char** endptr)$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+strtonum	json.hpp	/^            strtonum(const char* start, const char* end)$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+strtonum	json.hpp	/^        struct strtonum$/;"	s	class:nlohmann::basic_json::lexer
+swap	json.hpp	/^    void swap(array_t& other)$/;"	f	class:nlohmann::basic_json
+swap	json.hpp	/^    void swap(object_t& other)$/;"	f	class:nlohmann::basic_json
+swap	json.hpp	/^    void swap(string_t& other)$/;"	f	class:nlohmann::basic_json
 terminal	database.cpp	/^const Terminal& Database::terminal(int terminal_id) const {$/;"	f	class:Database
 terminal_id_from_name	database.cpp	/^int Database::terminal_id_from_name(const string& terminal_name) const {$/;"	f	class:Database
 terminal_id_from_name_	database.hpp	/^  std::map<std::string, int> terminal_id_from_name_;$/;"	m	class:Database
 terminals_	database.hpp	/^  std::vector<Terminal> terminals_;$/;"	m	class:Database
+to	json.hpp	/^            bool to(T& val) const$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
+to_json	json.hpp	/^constexpr const auto& to_json = detail::static_const<detail::to_json_fn>::value;$/;"	m	namespace:nlohmann::__anon1
+to_json	json.hpp	/^void to_json(BasicJsonType& j, const  CompatibleArrayType& arr)$/;"	f	namespace:nlohmann::detail
+to_json	json.hpp	/^void to_json(BasicJsonType& j, const  CompatibleObjectType& arr)$/;"	f	namespace:nlohmann::detail
+to_json	json.hpp	/^void to_json(BasicJsonType& j, const CompatibleString& s)$/;"	f	namespace:nlohmann::detail
+to_json_fn	json.hpp	/^struct to_json_fn$/;"	s	namespace:nlohmann::detail
+to_unicode	json.hpp	/^        static string_t to_unicode(const std::size_t codepoint1,$/;"	f	class:nlohmann::basic_json::lexer
+token_type	json.hpp	/^        enum class token_type$/;"	c	class:nlohmann::basic_json::lexer
+token_type_name	json.hpp	/^        static std::string token_type_name(const token_type t)$/;"	f	class:nlohmann::basic_json::lexer
+top	json.hpp	/^        json_pointer top() const$/;"	f	class:nlohmann::basic_json::json_pointer
+unescape	json.hpp	/^        static void unescape(std::string& s)$/;"	f	class:nlohmann::basic_json::json_pointer
+unexpect	json.hpp	/^        void unexpect(typename lexer::token_type t) const$/;"	f	class:nlohmann::basic_json::parser
+unflatten	json.hpp	/^        static basic_json unflatten(const basic_json& value)$/;"	f	class:nlohmann::basic_json::json_pointer
+unflatten	json.hpp	/^    basic_json unflatten() const$/;"	f	class:nlohmann::basic_json
+uninitialized	json.hpp	/^            uninitialized,   \/\/\/< indicating the scanner is uninitialized$/;"	m	class:nlohmann::basic_json::lexer::token_type
+value	json.hpp	/^            typename IteratorType::reference value() const$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
+value	json.hpp	/^        reference value() const$/;"	f	class:nlohmann::basic_json::iter_impl
+value	json.hpp	/^        reference value() const$/;"	f	class:nlohmann::basic_json::json_reverse_iterator
+value	json.hpp	/^    ValueType value(const json_pointer& ptr, ValueType default_value) const$/;"	f	class:nlohmann::basic_json
+value	json.hpp	/^    ValueType value(const typename object_t::key_type& key, ValueType default_value) const$/;"	f	class:nlohmann::basic_json
+value	json.hpp	/^    static auto constexpr value = is_compatible_object_type_impl <$/;"	m	struct:nlohmann::detail::is_compatible_object_type
+value	json.hpp	/^    static auto constexpr value = std::is_same<T, typename BasicJsonType::iterator>::value or$/;"	m	struct:nlohmann::detail::is_basic_json_nested_type
+value	json.hpp	/^    static auto constexpr value =$/;"	m	struct:nlohmann::detail::is_compatible_array_type
+value	json.hpp	/^    static constexpr auto value =$/;"	m	struct:nlohmann::detail::is_compatible_integer_type
+value	json.hpp	/^    static constexpr auto value =$/;"	m	struct:nlohmann::detail::is_compatible_integer_type_impl
+value	json.hpp	/^    static constexpr auto value =$/;"	m	struct:nlohmann::detail::is_compatible_object_type_impl
+value	json.hpp	/^    static constexpr bool value = std::is_integral<decltype($/;"	m	struct:nlohmann::detail::has_from_json
+value	json.hpp	/^    static constexpr bool value = std::is_integral<decltype(detect($/;"	m	struct:nlohmann::detail::has_non_default_from_json
+value	json.hpp	/^    static constexpr bool value = std::is_integral<decltype(detect($/;"	m	struct:nlohmann::detail::has_to_json
+value	json.hpp	/^    string_t value(const json_pointer& ptr, const char* default_value) const$/;"	f	class:nlohmann::basic_json
+value	json.hpp	/^    string_t value(const typename object_t::key_type& key, const char* default_value) const$/;"	f	class:nlohmann::basic_json
+value	json.hpp	/^constexpr T static_const<T>::value;$/;"	m	class:nlohmann::detail::static_const
+value_float	json.hpp	/^            value_float,     \/\/\/< an floating point number -- use get_number() for actual value$/;"	m	class:nlohmann::basic_json::lexer::token_type
+value_integer	json.hpp	/^            value_integer,   \/\/\/< a signed integer -- use get_number() for actual value$/;"	m	class:nlohmann::basic_json::lexer::token_type
+value_separator	json.hpp	/^            value_separator, \/\/\/< the value separator `,`$/;"	m	class:nlohmann::basic_json::lexer::token_type
+value_string	json.hpp	/^            value_string,    \/\/\/< a string -- use get_string() for actual value$/;"	m	class:nlohmann::basic_json::lexer::token_type
+value_t	json.hpp	/^enum class value_t : uint8_t$/;"	c	namespace:nlohmann::detail
+value_unsigned	json.hpp	/^            value_unsigned,  \/\/\/< an unsigned integer -- use get_number() for actual value$/;"	m	class:nlohmann::basic_json::lexer::token_type
 width	floorplan.cpp	/^double Floorplan::width() const { return width_; }$/;"	f	class:Floorplan
 width	macro.cpp	/^double Macro::width() const { return width_; }$/;"	f	class:Macro
 width_	floorplan.hpp	/^  double width_;$/;"	m	class:Floorplan
@@ -146,3 +503,4 @@ x_	point.hpp	/^  double x_;$/;"	m	class:Point
 y	point.cpp	/^double Point::y() const { return y_; }$/;"	f	class:Point
 y	terminal.cpp	/^double Terminal::y() const { return coordinates_.y(); }$/;"	f	class:Terminal
 y_	point.hpp	/^  double y_;$/;"	m	class:Point
+~basic_json	json.hpp	/^    ~basic_json()$/;"	f	class:nlohmann::basic_json
