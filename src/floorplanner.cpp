@@ -20,7 +20,7 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   double total_area = 0.0;
   double total_wirelength = 0.0;
   for (int i = 0; i < num_perturbations; ++i) {
-    floorplan.Perturb();
+    floorplan.Perturb(database_);
     floorplan.Pack(database_);
     total_area += floorplan.area();
     total_wirelength += floorplan.wirelength();
@@ -32,7 +32,7 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   int num_uphills = 0;
   double last_cost = ComputeCost(best_floorplan_);
   for (int i = 0; i < num_perturbations; ++i) {
-    floorplan.Perturb();
+    floorplan.Perturb(database_);
     floorplan.Pack(database_);
     double cost = ComputeCost(floorplan);
     double cost_delta = cost - last_cost;
@@ -47,7 +47,7 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   /*      << average_uphill_cost_ << endl; */
 }
 
-void Floorplanner::Output(ostream& os) const {
+void Floorplanner::Output(ostream& os, double runtime) const {
   const double width = best_floorplan_.width();
   const double height = best_floorplan_.height();
   const double area = best_floorplan_.area();
@@ -55,7 +55,7 @@ void Floorplanner::Output(ostream& os) const {
   os << alpha_ * area + (1 - alpha_) * wirelength << endl;
   os << wirelength << endl;
   os << width << " " << height << endl;
-  // TODO: Report runtime
+  os << runtime << endl;
   for (int i = 0; i < database_.num_macros(); ++i) {
     const int macro_id = i;
     const string macro_name = database_.macro(macro_id).name();
@@ -78,7 +78,7 @@ void Floorplanner::Draw(ostream& os) const {
     const Point& upper_right = bounding_box.second;
     Json rect;
     rect["type"] = "rect";
-    rect["color"] = 0x0000FF;
+    rect["color"] = 0xA9EEE6;
     rect["lower_left"] = {{"x", lower_left.x()}, {"y", lower_left.y()}};
     rect["upper_right"] = {{"x", upper_right.x()}, {"y", upper_right.y()}};
     obj["objects"].push_back(rect);
@@ -112,7 +112,7 @@ void Floorplanner::SA() {
   while (temperature > frozen_temperature) {
     for (int i = 0; i < num_perturbations; ++i) {
       Floorplan new_floorplan(floorplan);
-      new_floorplan.Perturb();
+      new_floorplan.Perturb(database_);
       new_floorplan.Pack(database_);
 
       const double cost = ComputeCost(new_floorplan);

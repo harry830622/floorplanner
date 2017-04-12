@@ -31,13 +31,19 @@ const pair<Point, Point>& Floorplan::macro_bounding_box(int macro_id) const {
   return macro_bounding_box_from_macro_id_.at(macro_id);
 }
 
-void Floorplan::Perturb() {
+void Floorplan::Perturb(const Database& database) {
   const int num_macros = is_rotated_from_macro_id_.size();
   const int num_nodes = num_macros;
   const int op = rand() % 3;
   switch (op) {
     case 0: {
-      const int macro_id = rand() % num_macros;
+      const int macro_id = [&]() {
+        int id = rand() % num_macros;
+        while (!database.is_macro_rotatable(id)) {
+          id = rand() % num_macros;
+        }
+        return id;
+      }();
       is_rotated_from_macro_id_.at(macro_id) =
           !is_rotated_from_macro_id_.at(macro_id);
       break;

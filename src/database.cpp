@@ -71,6 +71,12 @@ int Database::terminal_id_from_name(const string& terminal_name) const {
   return terminal_id_from_name_.at(terminal_name);
 }
 
+bool Database::is_macro_rotatable(int macro_id) const {
+  return is_macro_rotatable_from_id_.at(macro_id);
+}
+
+// Private
+
 void Database::ParseBlocks(istream& block_input) {
   simple_parser::Parser block_parser(block_input, ":");
   int num_macros = 0;
@@ -91,8 +97,17 @@ void Database::ParseBlocks(istream& block_input) {
         if (nth_macro < num_macros) {
           ++nth_macro;
           const string macro_name = tokens[0];
-          const double macro_width = stod(tokens[1]);
-          const double macro_height = stod(tokens[2]);
+          double macro_width = stod(tokens[1]);
+          double macro_height = stod(tokens[2]);
+          if (macro_width > outline_width_ || macro_height > outline_height_) {
+            swap(macro_width, macro_height);
+            is_macro_rotatable_from_id_.push_back(false);
+          } else if (macro_width > outline_height_ ||
+                     macro_height > outline_width_) {
+            is_macro_rotatable_from_id_.push_back(false);
+          } else {
+            is_macro_rotatable_from_id_.push_back(true);
+          }
           macros_.push_back(Macro(macro_name, macro_width, macro_height));
           const int macro_id = macros_.size() - 1;
           macro_id_from_name_.insert({macro_name, macro_id});

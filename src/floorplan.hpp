@@ -14,7 +14,7 @@ class Floorplan {
   double wirelength() const;
   const std::pair<Point, Point>& macro_bounding_box(int macro_id) const;
 
-  void Perturb();
+  void Perturb(const Database& database);
   void Pack(const Database& database);
 
  private:

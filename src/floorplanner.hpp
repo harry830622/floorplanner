@@ -7,7 +7,7 @@ class Floorplanner {
  public:
   Floorplanner(const Database& database, double alpha);
 
-  void Output(std::ostream& os = std::cout) const;
+  void Output(std::ostream& os, double runtime) const;
   void Draw(std::ostream& os = std::cout) const;
 
   void Run();

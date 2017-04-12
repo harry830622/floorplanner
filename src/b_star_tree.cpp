@@ -135,15 +135,25 @@ void BStarTree::Insert(int inserted_node_id, int target_node_id,
   Node& target_node = node(target_node_id);
   inserted_node.parent_id_ = target_node_id;
   if (is_inserted_left) {
-    inserted_node.left_child_id_ = target_node.left_child_id_;
-    if (inserted_node.left_child_id_ != -1) {
-      node(inserted_node.left_child_id_).parent_id_ = inserted_node_id;
+    if (rand() % 2 == 0) {
+      inserted_node.left_child_id_ = target_node.left_child_id_;
+    } else {
+      inserted_node.right_child_id_ = target_node.left_child_id_;
+    }
+    /* inserted_node.left_child_id_ = target_node.left_child_id_; */
+    if (target_node.left_child_id_ != -1) {
+      node(target_node.left_child_id_).parent_id_ = inserted_node_id;
     }
     target_node.left_child_id_ = inserted_node_id;
   } else {
-    inserted_node.right_child_id_ = target_node.right_child_id_;
-    if (inserted_node.right_child_id_ != -1) {
-      node(inserted_node.right_child_id_).parent_id_ = inserted_node_id;
+    if (rand() % 2 == 0) {
+      inserted_node.left_child_id_ = target_node.right_child_id_;
+    } else {
+      inserted_node.right_child_id_ = target_node.right_child_id_;
+    }
+    /* inserted_node.right_child_id_ = target_node.right_child_id_; */
+    if (target_node.right_child_id_ != -1) {
+      node(target_node.right_child_id_).parent_id_ = inserted_node_id;
     }
     target_node.right_child_id_ = inserted_node_id;
   }
