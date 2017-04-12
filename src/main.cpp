@@ -29,5 +29,8 @@ int main(int argc, char* argv[]) {
   Floorplanner floorplanner(database, alpha);
   floorplanner.Run();
 
+  ofstream output(argv[4]);
+  floorplanner.Output(output);
+
   return 0;
 }

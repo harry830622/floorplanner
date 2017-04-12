@@ -44,6 +44,26 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   /*      << average_uphill_cost_ << endl; */
 }
 
+void Floorplanner::Output(ostream& os) const {
+  const double width = best_floorplan_.width();
+  const double height = best_floorplan_.height();
+  const double area = best_floorplan_.area();
+  const double wirelength = best_floorplan_.wirelength();
+  os << alpha_ * area + (1 - alpha_) * wirelength << endl;
+  os << wirelength << endl;
+  os << width << " " << height << endl;
+  // TODO: Report runtime
+  for (int i = 0; i < database_.num_macros(); ++i) {
+    const int macro_id = i;
+    const string macro_name = database_.macro(macro_id).name();
+    auto bounding_box = best_floorplan_.macro_bounding_box(macro_id);
+    const Point& lower_left = bounding_box.first;
+    const Point& upper_right = bounding_box.second;
+    os << macro_name << " " << lower_left.x() << " " << lower_left.y() << " "
+       << upper_right.x() << " " << upper_right.y() << endl;
+  }
+}
+
 void Floorplanner::Run() {
   SA();
 

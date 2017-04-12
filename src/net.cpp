@@ -48,8 +48,8 @@ int Net::num_macros() const { return macro_ids_.size(); }
 
 int Net::macro_id(int nth_macro) const { return macro_ids_.at(nth_macro); }
 
-double Net::ComputeWirelength(std::vector<std::pair<Point, Point>>
-    macro_bounding_box_from_macro_id) const {
+double Net::ComputeWirelength(
+    vector<pair<Point, Point>> macro_bounding_box_from_macro_id) const {
   double min_x = min_x_;
   double min_y = min_y_;
   double max_x = max_x_;

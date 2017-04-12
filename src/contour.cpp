@@ -28,17 +28,17 @@ tuple<Point, Point, list<Point>::iterator> Contour::Update(
 tuple<Point, Point, list<Point>::iterator> Contour::Update(
     double macro_x, double macro_width, double macro_height,
     list<Point>::iterator it_hint) {
-  const double bottom_left_x = macro_x;
-  const double bottom_left_y =
+  const double lower_left_x = macro_x;
+  const double lower_left_y =
       FindMaxYBetween(macro_x, macro_x + macro_width, it_hint);
-  const double upper_right_x = bottom_left_x + macro_width;
-  const double upper_right_y = bottom_left_y + macro_height;
+  const double upper_right_x = lower_left_x + macro_width;
+  const double upper_right_y = lower_left_y + macro_height;
   if (upper_right_y > max_y_) {
     max_y_ = upper_right_y;
   }
 
   list<Point>::iterator it = it_hint;
-  while (it != coordinates_.end() && it->x() < bottom_left_x) {
+  while (it != coordinates_.end() && it->x() < lower_left_x) {
     ++it;
   }
   list<Point>::iterator it_begin = it;
@@ -56,41 +56,41 @@ tuple<Point, Point, list<Point>::iterator> Contour::Update(
 
   coordinates_.erase(it_begin, it_end);
 
-  coordinates_.insert(it_end, Point(bottom_left_x, upper_right_y));
+  coordinates_.insert(it_end, Point(lower_left_x, upper_right_y));
   if (!is_equal) {
     coordinates_.insert(it_end, Point(upper_right_x, last_y));
   }
 
-  /* double previous_y = -1; */
-  /* for (it = coordinates_.begin(); it != coordinates_.end(); ++it) { */
-  /*   if (it->y() == previous_y) { */
-  /*     it = coordinates_.erase(it); */
-  /*     --it; */
-  /*   } else { */
-  /*     previous_y = it->y(); */
-  /*   } */
-  /* } */
-
-  list<Point>::iterator it_rend = (new_it_hint == invalid_list_.end())
-                                      ? coordinates_.begin()
-                                      : prev(new_it_hint);
-  it = prev(it_end);
-  while (it != it_rend) {
-    if (it->y() != it_end->y()) {
-      break;
+  double previous_y = -1;
+  for (it = coordinates_.begin(); it != coordinates_.end(); ++it) {
+    if (it->y() == previous_y) {
+      it = coordinates_.erase(it);
+      --it;
+    } else {
+      previous_y = it->y();
     }
-    if (it == new_it_hint) {
-      new_it_hint = prev(new_it_hint);
-    }
-    it = coordinates_.erase(it);
-    --it;
   }
+
+  /* list<Point>::iterator it_rend = (new_it_hint == invalid_list_.end()) */
+  /*                                     ? coordinates_.begin() */
+  /*                                     : prev(new_it_hint); */
+  /* it = prev(it_end); */
+  /* while (it != it_rend) { */
+  /*   if (it->y() != it_end->y()) { */
+  /*     break; */
+  /*   } */
+  /*   if (it == new_it_hint) { */
+  /*     new_it_hint = prev(new_it_hint); */
+  /*   } */
+  /*   it = coordinates_.erase(it); */
+  /*   --it; */
+  /* } */
 
   if (new_it_hint == invalid_list_.end()) {
     new_it_hint = coordinates_.begin();
   }
 
-  return make_tuple(Point(bottom_left_x, bottom_left_y),
+  return make_tuple(Point(lower_left_x, lower_left_y),
                     Point(upper_right_x, upper_right_y), new_it_hint);
 }
 

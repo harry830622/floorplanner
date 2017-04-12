@@ -27,6 +27,10 @@ double Floorplan::area() const { return width_ * height_; }
 
 double Floorplan::wirelength() const { return wirelength_; }
 
+const pair<Point, Point>& Floorplan::macro_bounding_box(int macro_id) const {
+  return macro_bounding_box_from_macro_id_.at(macro_id);
+}
+
 void Floorplan::Perturb() {
   const int num_macros = is_rotated_from_macro_id_.size();
   const int num_nodes = num_macros;
