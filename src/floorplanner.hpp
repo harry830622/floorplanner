@@ -18,6 +18,10 @@ class Floorplanner {
 
   const Database& database_;
   double alpha_;
+  double min_area_;
+  double max_area_;
+  double min_wirelength_;
+  double max_wirelength_;
   double average_area_;
   double average_wirelength_;
   double average_uphill_cost_;

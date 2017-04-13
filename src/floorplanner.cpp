@@ -3,6 +3,7 @@
 #include "./json.hpp"
 
 #include <cmath>
+#include <limits>
 
 using namespace std;
 using Json = nlohmann::json;
@@ -10,6 +11,10 @@ using Json = nlohmann::json;
 Floorplanner::Floorplanner(const Database& database, double alpha)
     : database_(database),
       alpha_(alpha),
+      min_area_(numeric_limits<double>::max()),
+      max_area_(0.0),
+      min_wirelength_(numeric_limits<double>::max()),
+      max_wirelength_(0.0),
       average_area_(0.0),
       average_wirelength_(0.0),
       average_uphill_cost_(0.0),
@@ -22,8 +27,22 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   for (int i = 0; i < num_perturbations; ++i) {
     floorplan.Perturb(database_);
     floorplan.Pack(database_);
-    total_area += floorplan.area();
-    total_wirelength += floorplan.wirelength();
+    const double area = floorplan.area();
+    const double wirelength = floorplan.wirelength();
+    if (area < min_area_) {
+      min_area_ = area;
+    }
+    if (area > max_area_) {
+      max_area_ = area;
+    }
+    if (wirelength < min_wirelength_) {
+      min_wirelength_ = wirelength;
+    }
+    if (wirelength > max_wirelength_) {
+      max_wirelength_ = wirelength;
+    }
+    total_area += area;
+    total_wirelength += wirelength;
   }
   average_area_ = total_area / num_perturbations;
   average_wirelength_ = total_wirelength / num_perturbations;
@@ -35,10 +54,10 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
     floorplan.Perturb(database_);
     floorplan.Pack(database_);
     double cost = ComputeCost(floorplan);
-    double cost_delta = cost - last_cost;
-    if (cost_delta > 0) {
+    double delta_cost = cost - last_cost;
+    if (delta_cost > 0) {
       ++num_uphills;
-      total_uphill_cost += cost;
+      total_uphill_cost += delta_cost;
     }
     last_cost = cost;
   }
@@ -100,24 +119,31 @@ void Floorplanner::SA() {
   const double r = 0.85;
   const double initial_temperature =
       average_uphill_cost_ / -1 * log(initial_uphill_probability);
-  const double frozen_temperature = initial_temperature / 1000;
+  const double frozen_temperature = initial_temperature / 1000.0;
+  const int frozen_num_no_improvements = 10;
   const int num_perturbations =
-      database_.num_macros() * database_.num_macros() * 3;
+      database_.num_macros() * database_.num_macros() * 5;
 
   Floorplan floorplan(best_floorplan_);
   floorplan.Pack(database_);
   double best_cost = ComputeCost(floorplan);
   double last_cost = best_cost;
   double temperature = initial_temperature;
-  while (temperature > frozen_temperature) {
+  int num_no_improvements = 0;
+  while (temperature > frozen_temperature ||
+         num_no_improvements < frozen_num_no_improvements) {
+    double total_delta_cost = 0.0;
+
     for (int i = 0; i < num_perturbations; ++i) {
       Floorplan new_floorplan(floorplan);
       new_floorplan.Perturb(database_);
       new_floorplan.Pack(database_);
 
       const double cost = ComputeCost(new_floorplan);
-      const double cost_delta = cost - last_cost;
-      if (cost_delta <= 0) {
+      const double delta_cost = cost - last_cost;
+      if (delta_cost <= 0) {
+        total_delta_cost += delta_cost;
+
         floorplan = new_floorplan;
         last_cost = cost;
 
@@ -131,12 +157,23 @@ void Floorplanner::SA() {
           }
         }
       } else {
-        const double p = exp(-1 * cost_delta / temperature);
+        const double p = exp(-1 * delta_cost / temperature);
         if (rand() / static_cast<double>(RAND_MAX) < p) {
+          total_delta_cost += delta_cost;
+
           floorplan = new_floorplan;
           last_cost = cost;
         }
       }
+    }
+
+    cout << "temperature: " << temperature
+         << "\ttotal_delta_cost: " << total_delta_cost << endl;
+    cout << "best_width: " << best_floorplan_.width()
+         << "\tbest_height: " << best_floorplan_.height() << endl;
+
+    if (total_delta_cost == 0.0) {
+      ++num_no_improvements;
     }
 
     temperature *= r;
@@ -164,17 +201,17 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan) const {
     }
     penalty += ((width - outline_width) * (width - outline_width) +
                 (height - outline_height) * (height - outline_height));
-    /* double ratio = height / static_cast<double>(width); */
-    /* double outline_ratio = outline_height /
-     * static_cast<double>(outline_width); */
+    /* double ratio = height / width; */
+    /* double outline_ratio = outline_height / outline_width; */
     /* penalty += ((ratio - outline_ratio) * (ratio - outline_ratio)); */
   }
 
   const int penalty_weight = 10;
-  const double cost =
-      alpha_ * floorplan.area() / average_area_ +
-      (1.0 - alpha_) * floorplan.wirelength() / average_wirelength_ +
-      penalty_weight * penalty / average_area_;
+  const double cost = alpha_ * floorplan.area() / (max_area_ - min_area_) +
+                      (1.0 - alpha_) * floorplan.wirelength() /
+                          (max_wirelength_ - min_wirelength_) +
+                      penalty_weight * penalty / (max_area_ - min_area_);
+  /* penalty_weight * penalty; */
 
   return cost;
 }
