@@ -39,7 +39,7 @@ void Floorplan::Perturb(const Database& database) {
     case 0: {
       const int macro_id = [&]() {
         int id = rand() % num_macros;
-        while (!database.is_macro_rotatable(id)) {
+        while (!database.macro(id).is_rotatable()) {
           id = rand() % num_macros;
         }
         return id;

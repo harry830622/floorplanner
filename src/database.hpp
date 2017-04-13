@@ -26,7 +26,6 @@ class Database {
   const Net& net(int net_id) const;
   int macro_id_from_name(const std::string& macro_name) const;
   int terminal_id_from_name(const std::string& terminal_name) const;
-  bool is_macro_rotatable(int macro_id) const;
 
  private:
   void ParseBlocks(std::istream& block_input);
@@ -39,7 +38,6 @@ class Database {
   std::vector<Net> nets_;
   std::map<std::string, int> macro_id_from_name_;
   std::map<std::string, int> terminal_id_from_name_;
-  std::vector<bool> is_macro_rotatable_from_id_;
 };
 
 #endif

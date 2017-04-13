@@ -71,10 +71,6 @@ int Database::terminal_id_from_name(const string& terminal_name) const {
   return terminal_id_from_name_.at(terminal_name);
 }
 
-bool Database::is_macro_rotatable(int macro_id) const {
-  return is_macro_rotatable_from_id_.at(macro_id);
-}
-
 // Private
 
 void Database::ParseBlocks(istream& block_input) {
@@ -99,16 +95,16 @@ void Database::ParseBlocks(istream& block_input) {
           const string macro_name = tokens[0];
           double macro_width = stod(tokens[1]);
           double macro_height = stod(tokens[2]);
+          bool is_macro_rotatable = true;
           if (macro_width > outline_width_ || macro_height > outline_height_) {
             swap(macro_width, macro_height);
-            is_macro_rotatable_from_id_.push_back(false);
+            is_macro_rotatable = false;
           } else if (macro_width > outline_height_ ||
                      macro_height > outline_width_) {
-            is_macro_rotatable_from_id_.push_back(false);
-          } else {
-            is_macro_rotatable_from_id_.push_back(true);
+            is_macro_rotatable = false;
           }
-          macros_.push_back(Macro(macro_name, macro_width, macro_height));
+          macros_.push_back(
+              Macro(macro_name, macro_width, macro_height, is_macro_rotatable));
           const int macro_id = macros_.size() - 1;
           macro_id_from_name_.insert({macro_name, macro_id});
         } else if (nth_terminal < num_terminals) {
@@ -125,6 +121,7 @@ void Database::ParseBlocks(istream& block_input) {
     return true;
   });
 }
+
 void Database::ParseNets(istream& net_input) {
   simple_parser::Parser net_parser(net_input, ":");
   int num_nets = 0;
