@@ -19,7 +19,7 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
       average_wirelength_(0.0),
       average_uphill_cost_(0.0),
       best_floorplan_(Floorplan(database.num_macros())) {
-  const int num_perturbations = 10000;
+  const int num_perturbations = 5000;
   Floorplan floorplan(best_floorplan_);
 
   double total_area = 0.0;
@@ -108,7 +108,8 @@ void Floorplanner::Draw(ostream& os) const {
 
 void Floorplanner::Run() {
   do {
-    SA();
+    /* SA(); */
+    FastSA();
   } while (best_floorplan_.area() == 0.0);
 
   const double outline_width = database_.outline_width();
@@ -193,15 +194,6 @@ void Floorplanner::SA() {
       }
     }
 
-    /* cout << "total_delta_cost: " << total_delta_cost << endl; */
-    /* cout << "num_no_improvements: " << num_no_improvements << endl; */
-    /* cout << "num_feasible_floorplans: " << num_feasible_floorplans << endl;
-     */
-    /* cout << "adaptive_alpha: " << adaptive_alpha */
-    /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
-    /* cout << "Best area: " << best_floorplan_.area() */
-    /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
-
     adaptive_alpha =
         adaptive_alpha_base +
         (alpha - adaptive_alpha_base) *
@@ -218,6 +210,98 @@ void Floorplanner::SA() {
     }
 
     temperature *= r;
+  }
+}
+
+void Floorplanner::FastSA() {
+  const double initial_uphill_probability = 0.999;
+  const double initial_temperature =
+      average_uphill_cost_ / -1 * log(initial_uphill_probability);
+  const double frozen_temperature = initial_temperature / 1.0e50;
+  const int num_perturbations =
+      database_.num_macros() * database_.num_macros() * 3;
+  const double alpha = alpha_;
+  const double beta = (1 - alpha);
+  const double adaptive_alpha_base = alpha / 4.0;
+  const double adaptive_beta_base = beta / 4.0;
+  const int c = 100;
+  const int k = 6;
+
+  Floorplan floorplan(best_floorplan_);
+  floorplan.Pack(database_);
+  double adaptive_alpha = adaptive_alpha_base;
+  double adaptive_beta = adaptive_beta_base;
+  double best_cost = ComputeCost(floorplan, adaptive_alpha, adaptive_beta);
+  double last_cost = best_cost;
+  double temperature = initial_temperature;
+  int nth_iteration = 0;
+  while (temperature > frozen_temperature) {
+    ++nth_iteration;
+
+    double total_delta_cost = 0.0;
+    int num_feasible_floorplans = 0;
+
+    for (int i = 0; i < num_perturbations; ++i) {
+      Floorplan new_floorplan(floorplan);
+      new_floorplan.Perturb(database_);
+      new_floorplan.Pack(database_);
+
+      const double cost =
+          ComputeCost(new_floorplan, adaptive_alpha, adaptive_beta);
+      const double delta_cost = cost - last_cost;
+      if (delta_cost < 0) {
+        total_delta_cost += delta_cost;
+
+        floorplan = new_floorplan;
+        last_cost = cost;
+
+        const double outline_width = database_.outline_width();
+        const double outline_height = database_.outline_height();
+        if (new_floorplan.width() <= outline_width &&
+            new_floorplan.height() <= outline_height) {
+          ++num_feasible_floorplans;
+          if (cost < best_cost) {
+            best_floorplan_ = new_floorplan;
+            best_cost = cost;
+          }
+        }
+      } else {
+        const double p = exp(-1 * delta_cost / temperature);
+        if (rand() / static_cast<double>(RAND_MAX) < p) {
+          total_delta_cost += delta_cost;
+
+          floorplan = new_floorplan;
+          last_cost = cost;
+        }
+      }
+    }
+
+    /* cout << "nth_iteration: " << nth_iteration << endl; */
+    /* cout << "  temperature: " << temperature << endl; */
+    /* cout << "  total_delta_cost: " << total_delta_cost << endl; */
+    /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl; */
+    /* cout << "  adaptive_alpha: " << adaptive_alpha */
+    /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
+    /* cout << "  Best area: " << best_floorplan_.area() */
+    /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
+
+    adaptive_alpha =
+        adaptive_alpha_base +
+        (alpha - adaptive_alpha_base) *
+            (num_feasible_floorplans / static_cast<double>(num_perturbations));
+    adaptive_beta =
+        adaptive_beta_base +
+        (beta - adaptive_beta_base) *
+            (num_feasible_floorplans / static_cast<double>(num_perturbations));
+
+    const double average_delta_cost = abs(total_delta_cost / num_perturbations);
+    if (nth_iteration >= 1 && nth_iteration < k) {
+      temperature =
+          initial_temperature * average_delta_cost / (nth_iteration + 1) / c;
+    } else {
+      temperature =
+          initial_temperature * average_delta_cost / (nth_iteration + 1);
+    }
   }
 }
 

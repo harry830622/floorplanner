@@ -14,6 +14,7 @@ class Floorplanner {
 
  private:
   void SA();
+  void FastSA();
   double ComputeCost(const Floorplan& floorplan, double alpha,
                      double beta) const;
 
