@@ -74,6 +74,7 @@ void Floorplanner::Output(ostream& os, double runtime) const {
   const double wirelength = best_floorplan_.wirelength();
   os << alpha_ * area + (1 - alpha_) * wirelength << endl;
   os << wirelength << endl;
+  os << area << endl;
   os << width << " " << height << endl;
   os << runtime << endl;
   for (int i = 0; i < database_.num_macros(); ++i) {

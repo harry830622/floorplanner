@@ -9,7 +9,7 @@ BStarTree	b_star_tree.hpp	/^class BStarTree {$/;"	c
 B_STAR_TREE_HPP	b_star_tree.hpp	2;"	d
 CONTOUR_HPP	contour.hpp	2;"	d
 Center	point.cpp	/^Point Point::Center(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
-ComputeCost	floorplanner.cpp	/^double Floorplanner::ComputeCost(const Floorplan& floorplan) const {$/;"	f	class:Floorplanner
+ComputeCost	floorplanner.cpp	/^double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,$/;"	f	class:Floorplanner
 ComputeWirelength	net.cpp	/^double Net::ComputeWirelength($/;"	f	class:Net
 Contour	contour.cpp	/^Contour::Contour() : max_y_(0.0), coordinates_(1, Point(0.0, 0.0)) {}$/;"	f	class:Contour
 Contour	contour.hpp	/^class Contour {$/;"	c
@@ -17,17 +17,18 @@ DATABASE_HPP	database.hpp	2;"	d
 Database	database.cpp	/^Database::Database(istream& block_input, istream& net_input)$/;"	f	class:Database
 Database	database.hpp	/^class Database {$/;"	c
 Delete	b_star_tree.cpp	/^void BStarTree::Delete(int deleted_node_id) {$/;"	f	class:BStarTree
-DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,$/;"	f	class:BStarTree
+DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id) {$/;"	f	class:BStarTree
 Draw	floorplanner.cpp	/^void Floorplanner::Draw(ostream& os) const {$/;"	f	class:Floorplanner
 FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 FLOORPLAN_HPP	floorplan.hpp	2;"	d
-FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end,$/;"	f	class:Contour
+FastSA	floorplanner.cpp	/^void Floorplanner::FastSA() {$/;"	f	class:Floorplanner
+FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end) const {$/;"	f	class:Contour
 Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros)$/;"	f	class:Floorplan
 Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
 Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha)$/;"	f	class:Floorplanner
 Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
 HPWL	point.cpp	/^double Point::HPWL(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
-Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id,$/;"	f	class:BStarTree
+Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id) {$/;"	f	class:BStarTree
 IsDelimiter	simple_parser.hpp	/^  bool IsDelimiter(char c) { return delimiters_.find(c) != std::string::npos; }$/;"	f	class:simple_parser::Parser
 JSON_CATCH	json.hpp	100;"	d
 JSON_CATCH	json.hpp	12998;"	d
@@ -43,7 +44,7 @@ JSON_TRY	json.hpp	13001;"	d
 JSON_TRY	json.hpp	95;"	d
 JSON_TRY	json.hpp	99;"	d
 MACRO_HPP	macro.hpp	2;"	d
-Macro	macro.cpp	/^Macro::Macro(const string& name, double width, double height)$/;"	f	class:Macro
+Macro	macro.cpp	/^Macro::Macro(const string& name, double width, double height, bool is_rotatable)$/;"	f	class:Macro
 Macro	macro.hpp	/^class Macro {$/;"	c
 NET_HPP	net.hpp	2;"	d
 NLOHMANN_JSON_HAS_HELPER	json.hpp	378;"	d
@@ -53,7 +54,7 @@ Net	net.cpp	/^Net::Net(const vector<int>& macro_ids,$/;"	f	class:Net
 Net	net.hpp	/^class Net {$/;"	c
 Node	b_star_tree.cpp	/^BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)$/;"	f	class:BStarTree::Node
 Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
-Output	floorplanner.cpp	/^void Floorplanner::Output(ostream& os) const {$/;"	f	class:Floorplanner
+Output	floorplanner.cpp	/^void Floorplanner::Output(ostream& os, double runtime) const {$/;"	f	class:Floorplanner
 POINT_HPP	point.hpp	2;"	d
 Pack	floorplan.cpp	/^void Floorplan::Pack(const Database& database) {$/;"	f	class:Floorplan
 Parse	simple_parser.hpp	/^  void Parse(Handler handler) {$/;"	f	class:simple_parser::Parser
@@ -61,7 +62,7 @@ ParseBlocks	database.cpp	/^void Database::ParseBlocks(istream& block_input) {$/;
 ParseNets	database.cpp	/^void Database::ParseNets(istream& net_input) {$/;"	f	class:Database
 Parser	simple_parser.hpp	/^  Parser(std::istream& input, const Delimiters& extra_delimiters = "")$/;"	f	class:simple_parser::Parser
 Parser	simple_parser.hpp	/^class Parser {$/;"	c	namespace:simple_parser
-Perturb	floorplan.cpp	/^void Floorplan::Perturb() {$/;"	f	class:Floorplan
+Perturb	floorplan.cpp	/^void Floorplan::Perturb(const Database& database) {$/;"	f	class:Floorplan
 Point	point.cpp	/^Point::Point(double x, double y) : x_(x), y_(y) {}$/;"	f	class:Point
 Point	point.hpp	/^class Point {$/;"	c
 Print	b_star_tree.cpp	/^void BStarTree::Print(ostream& os, int indent_level) const {$/;"	f	class:BStarTree
@@ -80,7 +81,7 @@ Terminal	terminal.cpp	/^Terminal::Terminal(const string& name, double x, double 
 Terminal	terminal.hpp	/^class Terminal {$/;"	c
 Tokenize	simple_parser.hpp	/^  Tokens Tokenize(const std::string& str) {$/;"	f	class:simple_parser::Parser
 UnvisitAll	b_star_tree.cpp	/^void BStarTree::UnvisitAll() {$/;"	f	class:BStarTree
-Update	contour.cpp	/^tuple<Point, Point, list<Point>::iterator> Contour::Update($/;"	f	class:Contour
+Update	contour.cpp	/^pair<Point, Point> Contour::Update(double macro_x, double macro_width,$/;"	f	class:Contour
 Visit	b_star_tree.cpp	/^void BStarTree::Visit(int node_id) { node(node_id).is_visited_ = true; }$/;"	f	class:BStarTree
 _json	json.hpp	/^inline nlohmann::json operator "" _json(const char* s, std::size_t n)$/;"	f
 _json_pointer	json.hpp	/^inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)$/;"	f
@@ -221,8 +222,6 @@ insert	json.hpp	/^    iterator insert(const_iterator pos, const_iterator first, 
 insert	json.hpp	/^    iterator insert(const_iterator pos, size_type cnt, const basic_json& val)$/;"	f	class:nlohmann::basic_json
 insert	json.hpp	/^    iterator insert(const_iterator pos, std::initializer_list<basic_json> ilist)$/;"	f	class:nlohmann::basic_json
 internal_iterator	json.hpp	/^    struct internal_iterator$/;"	s	class:nlohmann::basic_json
-invalid_list_	contour.cpp	/^list<Point> Contour::invalid_list_;$/;"	m	class:Contour	file:
-invalid_list_	contour.hpp	/^  static std::list<Point> invalid_list_;$/;"	m	class:Contour
 is_basic_json_nested_type	json.hpp	/^struct is_basic_json_nested_type$/;"	s	namespace:nlohmann::detail
 is_compatible_array_type	json.hpp	/^struct is_compatible_array_type$/;"	s	namespace:nlohmann::detail
 is_compatible_integer_type	json.hpp	/^struct is_compatible_integer_type$/;"	s	namespace:nlohmann::detail
@@ -233,6 +232,8 @@ is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl 
 is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl<true, RealType, CompatibleObjectType>$/;"	s	namespace:nlohmann::detail
 is_macro_existed	database.cpp	/^bool Database::is_macro_existed(const string& macro_name) const {$/;"	f	class:Database
 is_root	json.hpp	/^        bool is_root() const$/;"	f	class:nlohmann::basic_json::json_pointer
+is_rotatable	macro.cpp	/^bool Macro::is_rotatable() const { return is_rotatable_; }$/;"	f	class:Macro
+is_rotatable_	macro.hpp	/^  bool is_rotatable_;$/;"	m	class:Macro
 is_rotated_from_macro_id_	floorplan.hpp	/^  std::vector<bool> is_rotated_from_macro_id_;$/;"	m	class:Floorplan
 is_terminal_existed	database.cpp	/^bool Database::is_terminal_existed(const string& terminal_name) const {$/;"	f	class:Database
 is_visited	b_star_tree.cpp	/^bool BStarTree::is_visited(int node_id) const {$/;"	f	class:BStarTree
@@ -291,12 +292,16 @@ macro_id_from_node_id_	floorplan.hpp	/^  std::vector<int> macro_id_from_node_id_
 macro_ids_	net.hpp	/^  std::vector<int> macro_ids_;$/;"	m	class:Net
 macros_	database.hpp	/^  std::vector<Macro> macros_;$/;"	m	class:Database
 main	main.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+max_area_	floorplanner.hpp	/^  double max_area_;$/;"	m	class:Floorplanner
+max_wirelength_	floorplanner.hpp	/^  double max_wirelength_;$/;"	m	class:Floorplanner
 max_x	contour.cpp	/^double Contour::max_x() const { return coordinates_.back().x(); }$/;"	f	class:Contour
 max_x_	net.hpp	/^  double max_x_;$/;"	m	class:Net
 max_y	contour.cpp	/^double Contour::max_y() const { return max_y_; }$/;"	f	class:Contour
 max_y_	contour.hpp	/^  double max_y_;$/;"	m	class:Contour
 max_y_	net.hpp	/^  double max_y_;$/;"	m	class:Net
 meta	json.hpp	/^    static basic_json meta()$/;"	f	class:nlohmann::basic_json
+min_area_	floorplanner.hpp	/^  double min_area_;$/;"	m	class:Floorplanner
+min_wirelength_	floorplanner.hpp	/^  double min_wirelength_;$/;"	m	class:Floorplanner
 min_x_	net.hpp	/^  double min_x_;$/;"	m	class:Net
 min_y_	net.hpp	/^  double min_y_;$/;"	m	class:Net
 move	json.hpp	/^          m_value(std::move(other.m_value))$/;"	f	class:nlohmann::basic_json

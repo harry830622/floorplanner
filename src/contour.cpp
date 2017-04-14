@@ -20,30 +20,21 @@ double Contour::max_x() const { return coordinates_.back().x(); }
 
 double Contour::max_y() const { return max_y_; }
 
-tuple<Point, Point, list<Point>::iterator> Contour::Update(
-    double macro_x, double macro_width, double macro_height) {
-  return Update(macro_x, macro_width, macro_height, coordinates_.begin());
-}
-
-tuple<Point, Point, list<Point>::iterator> Contour::Update(
-    double macro_x, double macro_width, double macro_height,
-    list<Point>::iterator it_hint) {
+pair<Point, Point> Contour::Update(double macro_x, double macro_width,
+                                   double macro_height) {
   const double lower_left_x = macro_x;
-  const double lower_left_y =
-      FindMaxYBetween(macro_x, macro_x + macro_width, it_hint);
+  const double lower_left_y = FindMaxYBetween(macro_x, macro_x + macro_width);
   const double upper_right_x = lower_left_x + macro_width;
   const double upper_right_y = lower_left_y + macro_height;
   if (upper_right_y > max_y_) {
     max_y_ = upper_right_y;
   }
 
-  list<Point>::iterator it = it_hint;
+  list<Point>::iterator it = coordinates_.begin();
   while (it != coordinates_.end() && it->x() < lower_left_x) {
     ++it;
   }
   list<Point>::iterator it_begin = it;
-  list<Point>::iterator new_it_hint =
-      (it_begin != coordinates_.begin()) ? prev(it_begin) : invalid_list_.end();
   while (it != coordinates_.end() && it->x() < upper_right_x) {
     ++it;
   }
@@ -71,37 +62,14 @@ tuple<Point, Point, list<Point>::iterator> Contour::Update(
     }
   }
 
-  /* list<Point>::iterator it_rend = (new_it_hint == invalid_list_.end()) */
-  /*                                     ? coordinates_.begin() */
-  /*                                     : prev(new_it_hint); */
-  /* it = prev(it_end); */
-  /* while (it != it_rend) { */
-  /*   if (it->y() != it_end->y()) { */
-  /*     break; */
-  /*   } */
-  /*   if (it == new_it_hint) { */
-  /*     new_it_hint = prev(new_it_hint); */
-  /*   } */
-  /*   it = coordinates_.erase(it); */
-  /*   --it; */
-  /* } */
-
-  if (new_it_hint == invalid_list_.end()) {
-    new_it_hint = coordinates_.begin();
-  }
-
-  return make_tuple(Point(lower_left_x, lower_left_y),
-                    Point(upper_right_x, upper_right_y), new_it_hint);
+  return make_pair(Point(lower_left_x, lower_left_y),
+                   Point(upper_right_x, upper_right_y));
 }
 
 // Private
 
-list<Point> Contour::invalid_list_;
-
-double Contour::FindMaxYBetween(double x_begin, double x_end,
-                                list<Point>::iterator it_hint) const {
-  list<Point>::const_iterator it =
-      (it_hint != invalid_list_.end()) ? it_hint : coordinates_.begin();
+double Contour::FindMaxYBetween(double x_begin, double x_end) const {
+  list<Point>::const_iterator it = coordinates_.begin();
 
   while (it != coordinates_.end() && it->x() <= x_begin) {
     ++it;

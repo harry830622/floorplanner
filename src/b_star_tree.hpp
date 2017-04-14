@@ -18,8 +18,7 @@ class BStarTree {
 
   void Visit(int node_id);
   void UnvisitAll();
-  void DeleteAndInsert(int deleted_node_id, int target_node_id,
-                       bool is_inserted_left);
+  void DeleteAndInsert(int deleted_node_id, int target_node_id);
 
  private:
   class Node {
@@ -34,7 +33,7 @@ class BStarTree {
   const Node& node(int node_id) const;
   Node& node(int node_id);
   void Delete(int deleted_node_id);
-  void Insert(int inserted_node_id, int target_node_id, bool is_inserted_left);
+  void Insert(int inserted_node_id, int target_node_id);
 
   int root_id_;
   std::vector<Node> nodes_;

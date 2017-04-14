@@ -59,10 +59,9 @@ void BStarTree::UnvisitAll() {
   }
 }
 
-void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,
-                                bool is_inserted_left) {
+void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id) {
   Delete(deleted_node_id);
-  Insert(deleted_node_id, target_node_id, is_inserted_left);
+  Insert(deleted_node_id, target_node_id);
 }
 
 // Private
@@ -129,18 +128,16 @@ void BStarTree::Delete(int deleted_node_id) {
   deleted_node.right_child_id_ = -1;
 }
 
-void BStarTree::Insert(int inserted_node_id, int target_node_id,
-                       bool is_inserted_left) {
+void BStarTree::Insert(int inserted_node_id, int target_node_id) {
   Node& inserted_node = node(inserted_node_id);
   Node& target_node = node(target_node_id);
   inserted_node.parent_id_ = target_node_id;
-  if (is_inserted_left) {
+  if (rand() % 2 == 0) {
     if (rand() % 2 == 0) {
       inserted_node.left_child_id_ = target_node.left_child_id_;
     } else {
       inserted_node.right_child_id_ = target_node.left_child_id_;
     }
-    /* inserted_node.left_child_id_ = target_node.left_child_id_; */
     if (target_node.left_child_id_ != -1) {
       node(target_node.left_child_id_).parent_id_ = inserted_node_id;
     }
@@ -151,7 +148,6 @@ void BStarTree::Insert(int inserted_node_id, int target_node_id,
     } else {
       inserted_node.right_child_id_ = target_node.right_child_id_;
     }
-    /* inserted_node.right_child_id_ = target_node.right_child_id_; */
     if (target_node.right_child_id_ != -1) {
       node(target_node.right_child_id_).parent_id_ = inserted_node_id;
     }

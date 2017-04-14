@@ -1,5 +1,5 @@
-#include "./floorplan.hpp"
 #include "./contour.hpp"
+#include "./floorplan.hpp"
 
 #include <stack>
 
@@ -70,8 +70,7 @@ void Floorplan::Perturb(const Database& database) {
         }
         return macro_id;
       }();
-      const bool is_inserted_left = rand() % 2 == 0 ? true : false;
-      b_star_tree_.DeleteAndInsert(macro_a_id, macro_b_id, is_inserted_left);
+      b_star_tree_.DeleteAndInsert(macro_a_id, macro_b_id);
       break;
     }
     default:
@@ -80,8 +79,8 @@ void Floorplan::Perturb(const Database& database) {
 }
 
 void Floorplan::Pack(const Database& database) {
-  /* b_star_tree_.Print(); */
   b_star_tree_.UnvisitAll();
+
   const int root_id = b_star_tree_.root_id();
   const int root_macro_id = macro_id_from_node_id_.at(root_id);
   const Macro& root_macro = database.macro(root_macro_id);
@@ -89,17 +88,14 @@ void Floorplan::Pack(const Database& database) {
   double root_macro_height = root_macro.height();
   const bool is_root_macro_rotated =
       is_rotated_from_macro_id_.at(root_macro_id);
+
   if (is_root_macro_rotated) {
     swap(root_macro_width, root_macro_height);
   }
+
   Contour contour;
-  /* contour.Print(); */
-  tuple<Point, Point, list<Point>::iterator> t =
-      contour.Update(0.0, root_macro_width, root_macro_height);
-  /* contour.Print(); */
   macro_bounding_box_from_macro_id_.at(root_macro_id) =
-      make_pair(get<0>(t), get<1>(t));
-  list<Point>::iterator it_hint = get<2>(t);
+      contour.Update(0.0, root_macro_width, root_macro_height);
   stack<int> unvisited_node_ids;
   unvisited_node_ids.push(root_id);
   while (!unvisited_node_ids.empty()) {
@@ -109,29 +105,28 @@ void Floorplan::Pack(const Database& database) {
         macro_bounding_box_from_macro_id_.at(current_macro_id);
     const int left_child_id = b_star_tree_.left_child_id(current_node_id);
     const int right_child_id = b_star_tree_.right_child_id(current_node_id);
+
     if (left_child_id != -1 && !b_star_tree_.is_visited(left_child_id)) {
       unvisited_node_ids.push(left_child_id);
+
       const int left_child_macro_id = macro_id_from_node_id_.at(left_child_id);
       const Macro& left_child_macro = database.macro(left_child_macro_id);
       double left_child_macro_width = left_child_macro.width();
       double left_child_macro_height = left_child_macro.height();
       const bool is_left_child_macro_rotated =
           is_rotated_from_macro_id_.at(left_child_macro_id);
+
       if (is_left_child_macro_rotated) {
         swap(left_child_macro_width, left_child_macro_height);
       }
-      /* t = contour.Update(current_macro_bounding_box.second.x(), */
-      /*                    left_child_macro_width, left_child_macro_height, */
-      /*                    it_hint); */
-      t = contour.Update(current_macro_bounding_box.second.x(),
-                         left_child_macro_width, left_child_macro_height);
-      /* contour.Print(); */
+
       macro_bounding_box_from_macro_id_.at(left_child_macro_id) =
-          make_pair(get<0>(t), get<1>(t));
-      it_hint = get<2>(t);
+          contour.Update(current_macro_bounding_box.second.x(),
+                         left_child_macro_width, left_child_macro_height);
     } else if (right_child_id != -1 &&
                !b_star_tree_.is_visited(right_child_id)) {
       unvisited_node_ids.push(right_child_id);
+
       const int right_child_macro_id =
           macro_id_from_node_id_.at(right_child_id);
       const Macro& right_child_macro = database.macro(right_child_macro_id);
@@ -139,35 +134,28 @@ void Floorplan::Pack(const Database& database) {
       double right_child_macro_height = right_child_macro.height();
       const bool is_right_child_macro_rotated =
           is_rotated_from_macro_id_.at(right_child_macro_id);
+
       if (is_right_child_macro_rotated) {
         swap(right_child_macro_width, right_child_macro_height);
       }
-      /* t = contour.Update(current_macro_bounding_box.first.x(), */
-      /*                    right_child_macro_width, right_child_macro_height, */
-      /*                    it_hint); */
-      t = contour.Update(current_macro_bounding_box.first.x(),
-                         right_child_macro_width, right_child_macro_height);
-      /* contour.Print(); */
+
       macro_bounding_box_from_macro_id_.at(right_child_macro_id) =
-          make_pair(get<0>(t), get<1>(t));
-      it_hint = get<2>(t);
+          contour.Update(current_macro_bounding_box.first.x(),
+                         right_child_macro_width, right_child_macro_height);
     } else {
       unvisited_node_ids.pop();
+
       b_star_tree_.Visit(current_node_id);
     }
   }
+
   width_ = contour.max_x();
   height_ = contour.max_y();
-  wirelength_ = 0.0;
+
+  double wirelength = 0.0;
   for (int i = 0; i < database.num_nets(); ++i) {
-    wirelength_ +=
+    wirelength +=
         database.net(i).ComputeWirelength(macro_bounding_box_from_macro_id_);
   }
-  /* contour.Print(); */
-  /* cout << contour.max_x() << " " << contour.max_y() << endl; */
-  /* cout << "Boxs:" << endl; */
-  /* for (const auto& box : macro_bounding_box_from_macro_id_) { */
-  /*   box.first.Print(cout, 1); */
-  /*   box.second.Print(cout, 1); */
-  /* } */
+  wirelength_ = wirelength;
 }
