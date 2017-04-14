@@ -14,7 +14,8 @@ class Floorplanner {
 
  private:
   void SA();
-  double ComputeCost(const Floorplan& floorplan) const;
+  double ComputeCost(const Floorplan& floorplan, double alpha,
+                     double beta) const;
 
   const Database& database_;
   double alpha_;

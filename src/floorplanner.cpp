@@ -19,7 +19,7 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
       average_wirelength_(0.0),
       average_uphill_cost_(0.0),
       best_floorplan_(Floorplan(database.num_macros())) {
-  const int num_perturbations = 1000;
+  const int num_perturbations = 10000;
   Floorplan floorplan(best_floorplan_);
 
   double total_area = 0.0;
@@ -49,11 +49,14 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
 
   double total_uphill_cost = 0.0;
   int num_uphills = 0;
-  double last_cost = ComputeCost(best_floorplan_);
+  double adaptive_alpha = alpha_ / 4.0;
+  double adaptive_beta = (1.0 - alpha_) / 4.0;
+  double last_cost =
+      ComputeCost(best_floorplan_, adaptive_alpha, adaptive_beta);
   for (int i = 0; i < num_perturbations; ++i) {
     floorplan.Perturb(database_);
     floorplan.Pack(database_);
-    double cost = ComputeCost(floorplan);
+    double cost = ComputeCost(floorplan, adaptive_alpha, adaptive_beta);
     double delta_cost = cost - last_cost;
     if (delta_cost > 0) {
       ++num_uphills;
@@ -62,8 +65,6 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
     last_cost = cost;
   }
   average_uphill_cost_ = total_uphill_cost / num_uphills;
-  /* cout << average_area_ << " " << average_wirelength_ << " " */
-  /*      << average_uphill_cost_ << endl; */
 }
 
 void Floorplanner::Output(ostream& os, double runtime) const {
@@ -106,52 +107,77 @@ void Floorplanner::Draw(ostream& os) const {
 }
 
 void Floorplanner::Run() {
-  SA();
+  do {
+    SA();
+  } while (best_floorplan_.area() == 0.0);
+
+  const double outline_width = database_.outline_width();
+  const double outline_height = database_.outline_height();
+  const double best_width = best_floorplan_.width();
+  const double best_height = best_floorplan_.height();
+  const double best_area = best_floorplan_.area();
+  const double best_wirelength = best_floorplan_.wirelength();
+  const double best_cost = alpha_ * best_area + (1 - alpha_) * best_wirelength;
 
   cout << endl;
-  cout << database_.outline_width() << " " << database_.outline_height()
+  cout << "============================= SUMMARY =============================="
        << endl;
-  cout << best_floorplan_.width() << " " << best_floorplan_.height() << endl;
+  cout << "outline width:\t" << outline_width << "\t\toutline height:\t\t"
+       << outline_height << endl;
+  cout << "best width:\t" << best_width << "\t\tbest height:\t\t" << best_height
+       << endl;
+  cout << "best area:\t" << best_area << "\tbest wirelength:\t"
+       << best_wirelength << endl;
+  cout << "best cost:\t" << best_cost << endl;
 }
 
 void Floorplanner::SA() {
-  const double initial_uphill_probability = 0.99;
+  const double initial_uphill_probability = 0.999;
   const double r = 0.85;
   const double initial_temperature =
       average_uphill_cost_ / -1 * log(initial_uphill_probability);
-  const double frozen_temperature = initial_temperature / 1000.0;
+  const double frozen_temperature = initial_temperature / 10000.0;
   const int frozen_num_no_improvements = 10;
   const int num_perturbations =
-      database_.num_macros() * database_.num_macros() * 5;
+      database_.num_macros() * database_.num_macros() * 3;
+  const double alpha = alpha_;
+  const double beta = (1 - alpha);
+  const double adaptive_alpha_base = alpha / 4.0;
+  const double adaptive_beta_base = beta / 4.0;
 
   Floorplan floorplan(best_floorplan_);
   floorplan.Pack(database_);
-  double best_cost = ComputeCost(floorplan);
+  double adaptive_alpha = adaptive_alpha_base;
+  double adaptive_beta = adaptive_beta_base;
+  double best_cost = ComputeCost(floorplan, adaptive_alpha, adaptive_beta);
   double last_cost = best_cost;
   double temperature = initial_temperature;
   int num_no_improvements = 0;
-  while (temperature > frozen_temperature ||
+  while (temperature > frozen_temperature &&
          num_no_improvements < frozen_num_no_improvements) {
     double total_delta_cost = 0.0;
+    int num_feasible_floorplans = 0;
 
     for (int i = 0; i < num_perturbations; ++i) {
       Floorplan new_floorplan(floorplan);
       new_floorplan.Perturb(database_);
       new_floorplan.Pack(database_);
 
-      const double cost = ComputeCost(new_floorplan);
+      const double cost =
+          ComputeCost(new_floorplan, adaptive_alpha, adaptive_beta);
       const double delta_cost = cost - last_cost;
-      if (delta_cost <= 0) {
+      if (delta_cost < 0) {
         total_delta_cost += delta_cost;
 
         floorplan = new_floorplan;
         last_cost = cost;
 
-        if (cost < best_cost) {
-          const double outline_width = database_.outline_width();
-          const double outline_height = database_.outline_height();
-          if (new_floorplan.width() <= outline_width &&
-              new_floorplan.height() <= outline_height) {
+        const double outline_width = database_.outline_width();
+        const double outline_height = database_.outline_height();
+        if (new_floorplan.width() <= outline_width &&
+            new_floorplan.height() <= outline_height) {
+          ++num_feasible_floorplans;
+          if (cost < best_cost) {
             best_floorplan_ = new_floorplan;
             best_cost = cost;
           }
@@ -167,20 +193,36 @@ void Floorplanner::SA() {
       }
     }
 
-    cout << "temperature: " << temperature
-         << "\ttotal_delta_cost: " << total_delta_cost << endl;
-    cout << "best_width: " << best_floorplan_.width()
-         << "\tbest_height: " << best_floorplan_.height() << endl;
+    /* cout << "total_delta_cost: " << total_delta_cost << endl; */
+    /* cout << "num_no_improvements: " << num_no_improvements << endl; */
+    /* cout << "num_feasible_floorplans: " << num_feasible_floorplans << endl;
+     */
+    /* cout << "adaptive_alpha: " << adaptive_alpha */
+    /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
+    /* cout << "Best area: " << best_floorplan_.area() */
+    /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
+
+    adaptive_alpha =
+        adaptive_alpha_base +
+        (alpha - adaptive_alpha_base) *
+            (num_feasible_floorplans / static_cast<double>(num_perturbations));
+    adaptive_beta =
+        adaptive_beta_base +
+        (beta - adaptive_beta_base) *
+            (num_feasible_floorplans / static_cast<double>(num_perturbations));
 
     if (total_delta_cost == 0.0) {
       ++num_no_improvements;
+    } else {
+      num_no_improvements = 0;
     }
 
     temperature *= r;
   }
 }
 
-double Floorplanner::ComputeCost(const Floorplan& floorplan) const {
+double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
+                                 double beta) const {
   const double outline_width = database_.outline_width();
   const double outline_height = database_.outline_height();
   const double width = floorplan.width();
@@ -192,26 +234,32 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan) const {
       penalty += (width * height - outline_width * outline_height);
     } else if (width > outline_width) {
       penalty += ((width - outline_width) * height);
-      /* penalty += ((width - outline_width) * height + */
-      /*             outline_width * (outline_height - height)); */
     } else if (height > outline_height) {
       penalty += (width * (height - outline_height));
-      /* penalty += (width * (height - outline_height) + */
-      /*             (outline_width - width) * outline_height); */
     }
     penalty += ((width - outline_width) * (width - outline_width) +
                 (height - outline_height) * (height - outline_height));
-    /* double ratio = height / width; */
-    /* double outline_ratio = outline_height / outline_width; */
-    /* penalty += ((ratio - outline_ratio) * (ratio - outline_ratio)); */
+    penalty /= (max_area_ - min_area_);
   }
 
-  const int penalty_weight = 10;
-  const double cost = alpha_ * floorplan.area() / (max_area_ - min_area_) +
-                      (1.0 - alpha_) * floorplan.wirelength() /
-                          (max_wirelength_ - min_wirelength_) +
-                      penalty_weight * penalty / (max_area_ - min_area_);
-  /* penalty_weight * penalty; */
+  /* double penalty = 0.0; */
+  /* if (width > outline_width || height > outline_height) { */
+  /*   const double ratio = height / width; */
+  /*   const double outline_ratio = outline_height / outline_width; */
+  /*   penalty = (ratio - outline_ratio) * (ratio - outline_ratio); */
+  /* } */
+
+  /* const double ratio = height / width; */
+  /* const double outline_ratio = outline_height / outline_width; */
+  /* const double penalty = (ratio - outline_ratio) * (ratio - outline_ratio); */
+
+  const double normalized_area = floorplan.area() / (max_area_ - min_area_);
+  const double normalized_wirelength =
+      floorplan.wirelength() / (max_wirelength_ - min_wirelength_);
+
+  const double penalty_weight = 10.0;
+  const double cost = alpha * normalized_area + beta * normalized_wirelength +
+                      (1.0 - alpha - beta) * penalty_weight * penalty;
 
   return cost;
 }

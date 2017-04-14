@@ -158,6 +158,7 @@ void Floorplan::Pack(const Database& database) {
   }
   width_ = contour.max_x();
   height_ = contour.max_y();
+  wirelength_ = 0.0;
   for (int i = 0; i < database.num_nets(); ++i) {
     wirelength_ +=
         database.net(i).ComputeWirelength(macro_bounding_box_from_macro_id_);
