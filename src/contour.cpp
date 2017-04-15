@@ -40,27 +40,51 @@ pair<Point, Point> Contour::Update(double macro_x, double macro_width,
   }
   list<Point>::iterator it_end = it;
 
-  const bool is_equal =
+  const bool is_touched =
       (it_end == coordinates_.end() || it_end->x() != upper_right_x) ? false
                                                                      : true;
   const double last_y = prev(it_end)->y();
 
-  coordinates_.erase(it_begin, it_end);
-
-  coordinates_.insert(it_end, Point(lower_left_x, upper_right_y));
-  if (!is_equal) {
-    coordinates_.insert(it_end, Point(upper_right_x, last_y));
+  bool is_previous_y_equal = false;
+  if (it_begin != coordinates_.begin() &&
+      prev(it_begin)->y() == upper_right_y) {
+    is_previous_y_equal = true;
   }
 
-  double previous_y = -1;
-  for (it = coordinates_.begin(); it != coordinates_.end(); ++it) {
-    if (it->y() == previous_y) {
-      it = coordinates_.erase(it);
-      --it;
-    } else {
-      previous_y = it->y();
+  bool is_next_y_equal = false;
+  if (it_end != coordinates_.end() && it_end->y() == upper_right_y) {
+    is_next_y_equal = true;
+  }
+
+  bool is_last_y_next_y_equal = false;
+  if (it_end != coordinates_.end() && it_end->y() == last_y) {
+    is_last_y_next_y_equal = true;
+  }
+
+  if (is_previous_y_equal) {
+    coordinates_.erase(it_begin, it_end);
+  } else {
+    coordinates_.erase(it_begin, it_end);
+    coordinates_.insert(it_end, Point(lower_left_x, upper_right_y));
+  }
+  if (is_touched && is_next_y_equal) {
+    coordinates_.erase(it_end);
+  } else {
+    coordinates_.insert(it_end, Point(upper_right_x, last_y));
+    if (is_last_y_next_y_equal) {
+      coordinates_.erase(it_end);
     }
   }
+
+  /* double previous_y = -1; */
+  /* for (it = coordinates_.begin(); it != coordinates_.end(); ++it) { */
+  /*   if (it->y() == previous_y) { */
+  /*     it = coordinates_.erase(it); */
+  /*     --it; */
+  /*   } else { */
+  /*     previous_y = it->y(); */
+  /*   } */
+  /* } */
 
   return make_pair(Point(lower_left_x, lower_left_y),
                    Point(upper_right_x, upper_right_y));
