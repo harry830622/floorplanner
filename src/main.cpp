@@ -33,8 +33,42 @@ int main(int argc, char* argv[]) {
 
   double runtime = (clock() - time_begin) / static_cast<double>(CLOCKS_PER_SEC);
 
+  const Floorplan& best_floorplan = floorplanner.best_floorplan();
+  const double outline_width = database.outline_width();
+  const double outline_height = database.outline_height();
+  const double best_width = best_floorplan.width();
+  const double best_height = best_floorplan.height();
+  const double best_area = best_floorplan.area();
+  const double best_wirelength = best_floorplan.wirelength();
+  const double best_cost = alpha * best_area + (1 - alpha) * best_wirelength;
+
+  cout << endl;
+  cout << "============================= SUMMARY =============================="
+       << endl;
+  cout << "outline width:\t" << outline_width << "\t\toutline height:\t\t"
+       << outline_height << endl;
+  cout << "best width:\t" << best_width << "\t\tbest height:\t\t" << best_height
+       << endl;
+  cout << "best area:\t" << best_area << "\tbest wirelength:\t"
+       << best_wirelength << endl;
+  cout << "alpha:\t\t" << alpha << "\t\tbest cost:\t\t" << best_cost << endl;
+  cout << "runtime:\t" << runtime << endl;
+
   ofstream output(argv[4]);
-  floorplanner.Output(output, runtime);
+  output << best_cost << endl;
+  output << best_wirelength << endl;
+  output << best_area << endl;
+  output << best_width << " " << best_height << endl;
+  output << runtime << endl;
+  for (int i = 0; i < database.num_macros(); ++i) {
+    const int macro_id = i;
+    const string macro_name = database.macro(macro_id).name();
+    auto bounding_box = best_floorplan.macro_bounding_box(macro_id);
+    const Point& lower_left = bounding_box.first;
+    const Point& upper_right = bounding_box.second;
+    output << macro_name << " " << lower_left.x() << " " << lower_left.y()
+           << " " << upper_right.x() << " " << upper_right.y() << endl;
+  }
 
   if (argc > 5) {
     ofstream json(argv[5]);

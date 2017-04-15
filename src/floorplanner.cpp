@@ -67,25 +67,10 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   average_uphill_cost_ = total_uphill_cost / num_uphills;
 }
 
-void Floorplanner::Output(ostream& os, double runtime) const {
-  const double width = best_floorplan_.width();
-  const double height = best_floorplan_.height();
-  const double area = best_floorplan_.area();
-  const double wirelength = best_floorplan_.wirelength();
-  os << alpha_ * area + (1 - alpha_) * wirelength << endl;
-  os << wirelength << endl;
-  os << area << endl;
-  os << width << " " << height << endl;
-  os << runtime << endl;
-  for (int i = 0; i < database_.num_macros(); ++i) {
-    const int macro_id = i;
-    const string macro_name = database_.macro(macro_id).name();
-    auto bounding_box = best_floorplan_.macro_bounding_box(macro_id);
-    const Point& lower_left = bounding_box.first;
-    const Point& upper_right = bounding_box.second;
-    os << macro_name << " " << lower_left.x() << " " << lower_left.y() << " "
-       << upper_right.x() << " " << upper_right.y() << endl;
-  }
+double Floorplanner::alpha() const { return alpha_; }
+
+const Floorplan& Floorplanner::best_floorplan() const {
+  return best_floorplan_;
 }
 
 void Floorplanner::Draw(ostream& os) const {
@@ -112,25 +97,6 @@ void Floorplanner::Run() {
     /* SA(); */
     FastSA();
   } while (best_floorplan_.area() == 0.0);
-
-  const double outline_width = database_.outline_width();
-  const double outline_height = database_.outline_height();
-  const double best_width = best_floorplan_.width();
-  const double best_height = best_floorplan_.height();
-  const double best_area = best_floorplan_.area();
-  const double best_wirelength = best_floorplan_.wirelength();
-  const double best_cost = alpha_ * best_area + (1 - alpha_) * best_wirelength;
-
-  cout << endl;
-  cout << "============================= SUMMARY =============================="
-       << endl;
-  cout << "outline width:\t" << outline_width << "\t\toutline height:\t\t"
-       << outline_height << endl;
-  cout << "best width:\t" << best_width << "\t\tbest height:\t\t" << best_height
-       << endl;
-  cout << "best area:\t" << best_area << "\tbest wirelength:\t"
-       << best_wirelength << endl;
-  cout << "best cost:\t" << best_cost << endl;
 }
 
 void Floorplanner::SA() {
