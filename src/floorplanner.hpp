@@ -10,8 +10,6 @@ class Floorplanner {
   double alpha() const;
   const Floorplan& best_floorplan() const;
 
-  void Draw(std::ostream& os = std::cout) const;
-
   void Run();
 
  private:

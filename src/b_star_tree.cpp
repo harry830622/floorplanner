@@ -36,6 +36,8 @@ void BStarTree::Print(ostream& os, int indent_level) const {
   }
 }
 
+int BStarTree::num_nodes() const { return nodes_.size(); }
+
 int BStarTree::root_id() const { return root_id_; }
 
 int BStarTree::parent_id(int node_id) const { return node(node_id).parent_id_; }
@@ -59,9 +61,10 @@ void BStarTree::UnvisitAll() {
   }
 }
 
-void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id) {
+void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,
+                                pair<int, int> inserted_positions) {
   Delete(deleted_node_id);
-  Insert(deleted_node_id, target_node_id);
+  Insert(deleted_node_id, target_node_id, inserted_positions);
 }
 
 // Private
@@ -128,12 +131,13 @@ void BStarTree::Delete(int deleted_node_id) {
   deleted_node.right_child_id_ = -1;
 }
 
-void BStarTree::Insert(int inserted_node_id, int target_node_id) {
+void BStarTree::Insert(int inserted_node_id, int target_node_id,
+                       pair<int, int> inserted_positions) {
   Node& inserted_node = node(inserted_node_id);
   Node& target_node = node(target_node_id);
   inserted_node.parent_id_ = target_node_id;
-  if (rand() % 2 == 0) {
-    if (rand() % 2 == 0) {
+  if (inserted_positions.first % 2 == 0) {
+    if (inserted_positions.second % 2 == 0) {
       inserted_node.left_child_id_ = target_node.left_child_id_;
     } else {
       inserted_node.right_child_id_ = target_node.left_child_id_;
@@ -143,7 +147,7 @@ void BStarTree::Insert(int inserted_node_id, int target_node_id) {
     }
     target_node.left_child_id_ = inserted_node_id;
   } else {
-    if (rand() % 2 == 0) {
+    if (inserted_positions.second % 2 == 0) {
       inserted_node.left_child_id_ = target_node.right_child_id_;
     } else {
       inserted_node.right_child_id_ = target_node.right_child_id_;

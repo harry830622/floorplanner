@@ -8,6 +8,7 @@ class Floorplan {
  public:
   Floorplan(int num_macros);
 
+  int num_macros() const;
   double width() const;
   double height() const;
   double area() const;
@@ -22,9 +23,9 @@ class Floorplan {
   double height_;
   double wirelength_;
   BStarTree b_star_tree_;
-  std::vector<int> macro_id_from_node_id_;
-  std::vector<bool> is_rotated_from_macro_id_;
-  std::vector<std::pair<Point, Point>> macro_bounding_box_from_macro_id_;
+  std::vector<int> macro_id_by_node_id_;
+  std::vector<bool> is_macro_rotated_by_id_;
+  std::vector<std::pair<Point, Point>> macro_bounding_box_by_id_;
 };
 
 #endif

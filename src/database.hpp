@@ -24,8 +24,8 @@ class Database {
   const Macro& macro(int macro_id) const;
   const Terminal& terminal(int terminal_id) const;
   const Net& net(int net_id) const;
-  int macro_id_from_name(const std::string& macro_name) const;
-  int terminal_id_from_name(const std::string& terminal_name) const;
+  int macro_id_by_name(const std::string& macro_name) const;
+  int terminal_id_by_name(const std::string& terminal_name) const;
 
  private:
   void ParseBlocks(std::istream& block_input);
@@ -36,8 +36,8 @@ class Database {
   std::vector<Macro> macros_;
   std::vector<Terminal> terminals_;
   std::vector<Net> nets_;
-  std::map<std::string, int> macro_id_from_name_;
-  std::map<std::string, int> terminal_id_from_name_;
+  std::map<std::string, int> macro_id_by_name_;
+  std::map<std::string, int> terminal_id_by_name_;
 };
 
 #endif

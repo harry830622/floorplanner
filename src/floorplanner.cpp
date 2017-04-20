@@ -1,12 +1,9 @@
 #include "./floorplanner.hpp"
 
-#include "./json.hpp"
-
 #include <cmath>
 #include <limits>
 
 using namespace std;
-using Json = nlohmann::json;
 
 Floorplanner::Floorplanner(const Database& database, double alpha)
     : database_(database),
@@ -71,25 +68,6 @@ double Floorplanner::alpha() const { return alpha_; }
 
 const Floorplan& Floorplanner::best_floorplan() const {
   return best_floorplan_;
-}
-
-void Floorplanner::Draw(ostream& os) const {
-  Json obj = Json::object();
-  obj["objects"] = Json::array();
-  for (int i = 0; i < database_.num_macros(); ++i) {
-    const int macro_id = i;
-    const string macro_name = database_.macro(macro_id).name();
-    auto bounding_box = best_floorplan_.macro_bounding_box(macro_id);
-    const Point& lower_left = bounding_box.first;
-    const Point& upper_right = bounding_box.second;
-    Json rect;
-    rect["type"] = "rect";
-    rect["color"] = 0xA9EEE6;
-    rect["lower_left"] = {{"x", lower_left.x()}, {"y", lower_left.y()}};
-    rect["upper_right"] = {{"x", upper_right.x()}, {"y", upper_right.y()}};
-    obj["objects"].push_back(rect);
-  }
-  os << obj;
 }
 
 void Floorplanner::Run() {
@@ -246,7 +224,8 @@ void Floorplanner::FastSA() {
     /* cout << "nth_iteration: " << nth_iteration << endl; */
     /* cout << "  temperature: " << temperature << endl; */
     /* cout << "  total_delta_cost: " << total_delta_cost << endl; */
-    /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl; */
+    /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl;
+     */
     /* cout << "  adaptive_alpha: " << adaptive_alpha */
     /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
     /* cout << "  Best area: " << best_floorplan_.area() */
@@ -302,7 +281,8 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
 
   /* const double ratio = height / width; */
   /* const double outline_ratio = outline_height / outline_width; */
-  /* const double penalty = (ratio - outline_ratio) * (ratio - outline_ratio); */
+  /* const double penalty = (ratio - outline_ratio) * (ratio - outline_ratio);
+   */
 
   const double normalized_area = floorplan.area() / (max_area_ - min_area_);
   const double normalized_wirelength =

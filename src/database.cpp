@@ -40,11 +40,11 @@ double Database::outline_width() const { return outline_width_; }
 double Database::outline_height() const { return outline_height_; }
 
 bool Database::is_macro_existed(const string& macro_name) const {
-  return macro_id_from_name_.count(macro_name) == 1;
+  return macro_id_by_name_.count(macro_name) == 1;
 }
 
 bool Database::is_terminal_existed(const string& terminal_name) const {
-  return terminal_id_from_name_.count(terminal_name) == 1;
+  return terminal_id_by_name_.count(terminal_name) == 1;
 }
 
 int Database::num_macros() const { return macros_.size(); }
@@ -63,12 +63,12 @@ const Terminal& Database::terminal(int terminal_id) const {
 
 const Net& Database::net(int net_id) const { return nets_.at(net_id); }
 
-int Database::macro_id_from_name(const string& macro_name) const {
-  return macro_id_from_name_.at(macro_name);
+int Database::macro_id_by_name(const string& macro_name) const {
+  return macro_id_by_name_.at(macro_name);
 }
 
-int Database::terminal_id_from_name(const string& terminal_name) const {
-  return terminal_id_from_name_.at(terminal_name);
+int Database::terminal_id_by_name(const string& terminal_name) const {
+  return terminal_id_by_name_.at(terminal_name);
 }
 
 // Private
@@ -106,7 +106,7 @@ void Database::ParseBlocks(istream& block_input) {
           macros_.push_back(
               Macro(macro_name, macro_width, macro_height, is_macro_rotatable));
           const int macro_id = macros_.size() - 1;
-          macro_id_from_name_.insert({macro_name, macro_id});
+          macro_id_by_name_.insert({macro_name, macro_id});
         } else if (nth_terminal < num_terminals) {
           ++nth_terminal;
           const string terminal_name = tokens[0];
@@ -114,7 +114,7 @@ void Database::ParseBlocks(istream& block_input) {
           const double terminal_y = stod(tokens[3]);
           terminals_.push_back(Terminal(terminal_name, terminal_x, terminal_y));
           const int terminal_id = terminals_.size() - 1;
-          terminal_id_from_name_.insert({terminal_name, terminal_id});
+          terminal_id_by_name_.insert({terminal_name, terminal_id});
         }
       }
     }
@@ -142,11 +142,11 @@ void Database::ParseNets(istream& net_input) {
             ++nth_terminal;
             const string name = tokens[0];
             if (is_terminal_existed(name)) {
-              const int terminal_id = terminal_id_from_name(name);
+              const int terminal_id = terminal_id_by_name(name);
               net_terminal_coordinates.push_back(
                   terminal(terminal_id).coordinates());
             } else {
-              net_macro_ids.push_back(macro_id_from_name(name));
+              net_macro_ids.push_back(macro_id_by_name(name));
             }
             if (nth_terminal == num_terminals) {
               return false;

@@ -15,8 +15,8 @@ class Net {
   int num_macros() const;
   int macro_id(int nth_macro) const;
 
-  double ComputeWirelength(std::vector<std::pair<Point, Point>>
-                               macro_bounding_box_from_macro_id) const;
+  double ComputeWirelength(
+      std::vector<std::pair<Point, Point>> macro_bounding_box_by_id) const;
 
  private:
   double min_x_;

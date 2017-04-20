@@ -70,10 +70,5 @@ int main(int argc, char* argv[]) {
            << " " << upper_right.x() << " " << upper_right.y() << endl;
   }
 
-  if (argc > 5) {
-    ofstream json(argv[5]);
-    floorplanner.Draw(json);
-  }
-
   return 0;
 }

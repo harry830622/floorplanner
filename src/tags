@@ -17,8 +17,7 @@ DATABASE_HPP	database.hpp	2;"	d
 Database	database.cpp	/^Database::Database(istream& block_input, istream& net_input)$/;"	f	class:Database
 Database	database.hpp	/^class Database {$/;"	c
 Delete	b_star_tree.cpp	/^void BStarTree::Delete(int deleted_node_id) {$/;"	f	class:BStarTree
-DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id) {$/;"	f	class:BStarTree
-Draw	floorplanner.cpp	/^void Floorplanner::Draw(ostream& os) const {$/;"	f	class:Floorplanner
+DeleteAndInsert	b_star_tree.cpp	/^void BStarTree::DeleteAndInsert(int deleted_node_id, int target_node_id,$/;"	f	class:BStarTree
 FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 FLOORPLAN_HPP	floorplan.hpp	2;"	d
 FastSA	floorplanner.cpp	/^void Floorplanner::FastSA() {$/;"	f	class:Floorplanner
@@ -28,7 +27,7 @@ Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
 Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha)$/;"	f	class:Floorplanner
 Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
 HPWL	point.cpp	/^double Point::HPWL(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
-Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id) {$/;"	f	class:BStarTree
+Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id,$/;"	f	class:BStarTree
 IsDelimiter	simple_parser.hpp	/^  bool IsDelimiter(char c) { return delimiters_.find(c) != std::string::npos; }$/;"	f	class:simple_parser::Parser
 JSON_CATCH	json.hpp	100;"	d
 JSON_CATCH	json.hpp	12998;"	d
@@ -54,7 +53,6 @@ Net	net.cpp	/^Net::Net(const vector<int>& macro_ids,$/;"	f	class:Net
 Net	net.hpp	/^class Net {$/;"	c
 Node	b_star_tree.cpp	/^BStarTree::Node::Node(int parent_id, int left_child_id, int right_child_id)$/;"	f	class:BStarTree::Node
 Node	b_star_tree.hpp	/^  class Node {$/;"	c	class:BStarTree
-Output	floorplanner.cpp	/^void Floorplanner::Output(ostream& os, double runtime) const {$/;"	f	class:Floorplanner
 POINT_HPP	point.hpp	2;"	d
 Pack	floorplan.cpp	/^void Floorplan::Pack(const Database& database) {$/;"	f	class:Floorplan
 Parse	simple_parser.hpp	/^  void Parse(Handler handler) {$/;"	f	class:simple_parser::Parser
@@ -86,6 +84,7 @@ Visit	b_star_tree.cpp	/^void BStarTree::Visit(int node_id) { node(node_id).is_vi
 _json	json.hpp	/^inline nlohmann::json operator "" _json(const char* s, std::size_t n)$/;"	f
 _json_pointer	json.hpp	/^inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)$/;"	f
 adl_serializer	json.hpp	/^struct adl_serializer$/;"	s	namespace:nlohmann
+alpha	floorplanner.cpp	/^double Floorplanner::alpha() const { return alpha_; }$/;"	f	class:Floorplanner
 alpha_	floorplanner.hpp	/^  double alpha_;$/;"	m	class:Floorplanner
 anchor	json.hpp	/^                : anchor(it)$/;"	f	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
 anchor	json.hpp	/^            IteratorType anchor;$/;"	m	class:nlohmann::basic_json::iteration_proxy::iteration_proxy_internal
@@ -122,6 +121,7 @@ basic_json	json.hpp	/^class basic_json$/;"	c	namespace:nlohmann
 begin_array	json.hpp	/^            begin_array,     \/\/\/< the character for array begin `[`$/;"	m	class:nlohmann::basic_json::lexer::token_type
 begin_object	json.hpp	/^            begin_object,    \/\/\/< the character for object begin `{`$/;"	m	class:nlohmann::basic_json::lexer::token_type
 begin_value	json.hpp	/^        static constexpr difference_type begin_value = 0;$/;"	m	class:nlohmann::basic_json::primitive_iterator_t
+best_floorplan	floorplanner.cpp	/^const Floorplan& Floorplanner::best_floorplan() const {$/;"	f	class:Floorplanner
 best_floorplan_	floorplanner.hpp	/^  Floorplan best_floorplan_;$/;"	m	class:Floorplanner
 boolean	json.hpp	/^        boolean_t boolean;$/;"	m	union:nlohmann::basic_json::json_value
 boolean	json.hpp	/^        json_value(boolean_t v) noexcept : boolean(v) {}$/;"	f	union:nlohmann::basic_json::json_value
@@ -231,10 +231,10 @@ is_compatible_object_type	json.hpp	/^struct is_compatible_object_type$/;"	s	name
 is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl : std::false_type {};$/;"	s	namespace:nlohmann::detail
 is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl<true, RealType, CompatibleObjectType>$/;"	s	namespace:nlohmann::detail
 is_macro_existed	database.cpp	/^bool Database::is_macro_existed(const string& macro_name) const {$/;"	f	class:Database
+is_macro_rotated_by_id_	floorplan.hpp	/^  std::vector<bool> is_macro_rotated_by_id_;$/;"	m	class:Floorplan
 is_root	json.hpp	/^        bool is_root() const$/;"	f	class:nlohmann::basic_json::json_pointer
 is_rotatable	macro.cpp	/^bool Macro::is_rotatable() const { return is_rotatable_; }$/;"	f	class:Macro
 is_rotatable_	macro.hpp	/^  bool is_rotatable_;$/;"	m	class:Macro
-is_rotated_from_macro_id_	floorplan.hpp	/^  std::vector<bool> is_rotated_from_macro_id_;$/;"	m	class:Floorplan
 is_terminal_existed	database.cpp	/^bool Database::is_terminal_existed(const string& terminal_name) const {$/;"	f	class:Database
 is_visited	b_star_tree.cpp	/^bool BStarTree::is_visited(int node_id) const {$/;"	f	class:BStarTree
 is_visited_	b_star_tree.hpp	/^    bool is_visited_;$/;"	m	class:BStarTree::Node
@@ -284,11 +284,11 @@ m_type	json.hpp	/^    value_t m_type = value_t::null;$/;"	m	class:nlohmann::basi
 m_value	json.hpp	/^    json_value m_value = {};$/;"	m	class:nlohmann::basic_json
 macro	database.cpp	/^const Macro& Database::macro(int macro_id) const {$/;"	f	class:Database
 macro_bounding_box	floorplan.cpp	/^const pair<Point, Point>& Floorplan::macro_bounding_box(int macro_id) const {$/;"	f	class:Floorplan
-macro_bounding_box_from_macro_id_	floorplan.hpp	/^  std::vector<std::pair<Point, Point>> macro_bounding_box_from_macro_id_;$/;"	m	class:Floorplan
+macro_bounding_box_by_id_	floorplan.hpp	/^  std::vector<std::pair<Point, Point>> macro_bounding_box_by_id_;$/;"	m	class:Floorplan
 macro_id	net.cpp	/^int Net::macro_id(int nth_macro) const { return macro_ids_.at(nth_macro); }$/;"	f	class:Net
-macro_id_from_name	database.cpp	/^int Database::macro_id_from_name(const string& macro_name) const {$/;"	f	class:Database
-macro_id_from_name_	database.hpp	/^  std::map<std::string, int> macro_id_from_name_;$/;"	m	class:Database
-macro_id_from_node_id_	floorplan.hpp	/^  std::vector<int> macro_id_from_node_id_;$/;"	m	class:Floorplan
+macro_id_by_name	database.cpp	/^int Database::macro_id_by_name(const string& macro_name) const {$/;"	f	class:Database
+macro_id_by_name_	database.hpp	/^  std::map<std::string, int> macro_id_by_name_;$/;"	m	class:Database
+macro_id_by_node_id_	floorplan.hpp	/^  std::vector<int> macro_id_by_node_id_;$/;"	m	class:Floorplan
 macro_ids_	net.hpp	/^  std::vector<int> macro_ids_;$/;"	m	class:Net
 macros_	database.hpp	/^  std::vector<Macro> macros_;$/;"	m	class:Database
 main	main.cpp	/^int main(int argc, char* argv[]) {$/;"	f
@@ -328,8 +328,10 @@ noexcept	json.hpp	/^    reference& operator=(basic_json other) noexcept ($/;"	f	
 noexcept	json.hpp	/^    void swap(reference other) noexcept ($/;"	f	class:nlohmann::basic_json
 null	json.hpp	/^    null,            \/\/\/< null value$/;"	m	class:nlohmann::detail::value_t
 num_macros	database.cpp	/^int Database::num_macros() const { return macros_.size(); }$/;"	f	class:Database
+num_macros	floorplan.cpp	/^int Floorplan::num_macros() const { return b_star_tree_.num_nodes(); }$/;"	f	class:Floorplan
 num_macros	net.cpp	/^int Net::num_macros() const { return macro_ids_.size(); }$/;"	f	class:Net
 num_nets	database.cpp	/^int Database::num_nets() const { return nets_.size(); }$/;"	f	class:Database
+num_nodes	b_star_tree.cpp	/^int BStarTree::num_nodes() const { return nodes_.size(); }$/;"	f	class:BStarTree
 num_terminals	database.cpp	/^int Database::num_terminals() const { return terminals_.size(); }$/;"	f	class:Database
 number_float	json.hpp	/^        json_value(number_float_t v) noexcept : number_float(v) {}$/;"	f	union:nlohmann::basic_json::json_value
 number_float	json.hpp	/^        number_float_t number_float;$/;"	m	union:nlohmann::basic_json::json_value
@@ -455,8 +457,8 @@ swap	json.hpp	/^    void swap(array_t& other)$/;"	f	class:nlohmann::basic_json
 swap	json.hpp	/^    void swap(object_t& other)$/;"	f	class:nlohmann::basic_json
 swap	json.hpp	/^    void swap(string_t& other)$/;"	f	class:nlohmann::basic_json
 terminal	database.cpp	/^const Terminal& Database::terminal(int terminal_id) const {$/;"	f	class:Database
-terminal_id_from_name	database.cpp	/^int Database::terminal_id_from_name(const string& terminal_name) const {$/;"	f	class:Database
-terminal_id_from_name_	database.hpp	/^  std::map<std::string, int> terminal_id_from_name_;$/;"	m	class:Database
+terminal_id_by_name	database.cpp	/^int Database::terminal_id_by_name(const string& terminal_name) const {$/;"	f	class:Database
+terminal_id_by_name_	database.hpp	/^  std::map<std::string, int> terminal_id_by_name_;$/;"	m	class:Database
 terminals_	database.hpp	/^  std::vector<Terminal> terminals_;$/;"	m	class:Database
 to	json.hpp	/^            bool to(T& val) const$/;"	f	struct:nlohmann::basic_json::lexer::strtonum
 to_json	json.hpp	/^constexpr const auto& to_json = detail::static_const<detail::to_json_fn>::value;$/;"	m	namespace:nlohmann::__anon1

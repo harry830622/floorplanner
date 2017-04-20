@@ -10,6 +10,7 @@ class BStarTree {
 
   void Print(std::ostream& os = std::cout, int indent_level = 0) const;
 
+  int num_nodes() const;
   int root_id() const;
   int parent_id(int node_id) const;
   int left_child_id(int node_id) const;
@@ -18,7 +19,8 @@ class BStarTree {
 
   void Visit(int node_id);
   void UnvisitAll();
-  void DeleteAndInsert(int deleted_node_id, int target_node_id);
+  void DeleteAndInsert(int deleted_node_id, int target_node_id,
+                       std::pair<int, int> inserted_positions);
 
  private:
   class Node {
@@ -33,7 +35,8 @@ class BStarTree {
   const Node& node(int node_id) const;
   Node& node(int node_id);
   void Delete(int deleted_node_id);
-  void Insert(int inserted_node_id, int target_node_id);
+  void Insert(int inserted_node_id, int target_node_id,
+              std::pair<int, int> inserted_positions);
 
   int root_id_;
   std::vector<Node> nodes_;
