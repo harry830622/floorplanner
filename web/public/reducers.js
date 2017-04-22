@@ -1,7 +1,13 @@
 const reducers = (() => {
   const { combineReducers } = Redux;
 
-  const { FETCH, RECEIVE, TOGGLE_IS_PLAYING, SET_SPEED } = actions;
+  const {
+    FETCH,
+    RECEIVE,
+    TOGGLE_IS_PLAYING,
+    SET_SPEED,
+    SET_NTH_ITERATION,
+  } = actions;
 
   function isFetching(state = false, action) {
     switch (action.type) {
@@ -39,6 +45,17 @@ const reducers = (() => {
     }
   }
 
+  function nthIteration(state = -2, action) {
+    switch (action.type) {
+      case SET_NTH_ITERATION: {
+        return action.nthIteration;
+      }
+      default: {
+        return state;
+      }
+    }
+  }
+
   function drawing(state = {}, action) {
     switch (action.type) {
       case FETCH: {
@@ -57,6 +74,7 @@ const reducers = (() => {
     isFetching,
     isPlaying,
     speed,
+    nthIteration,
     drawing,
   });
 })();

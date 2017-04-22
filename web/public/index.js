@@ -1,4 +1,10 @@
-const { toggleIsPlaying, setSpeed, fetch, receive } = actionCreators;
+const {
+  fetch,
+  receive,
+  toggleIsPlaying,
+  setSpeed,
+  setNthIteration,
+} = actionCreators;
 
 const uploadInput = document.querySelector('#upload-input');
 const uploadLink = document.querySelector('#upload-link');
@@ -31,6 +37,8 @@ uploadLink.addEventListener(
 );
 
 const playBtn = document.querySelector('#play-btn');
+const fastBackwardBtn = document.querySelector('#fast-backward-btn');
+const fastForwardBtn = document.querySelector('#fast-forward-btn');
 
 playBtn.addEventListener(
   'click',
@@ -44,17 +52,39 @@ playBtn.addEventListener(
   false
 );
 
-store.subscribe(() => {
-  const { isFetching, isPlaying } = store.getState();
+fastBackwardBtn.addEventListener(
+  'click',
+  () => {
+    const { isFetching } = store.getState();
 
-  if (!isFetching) {
-    if (isPlaying) {
-      playBtn.querySelector('i.play').style.display = 'none';
-      playBtn.querySelector('i.pause').style.display = 'inline-block';
-    } else {
-      playBtn.querySelector('i.pause').style.display = 'none';
-      playBtn.querySelector('i.play').style.display = 'inline-block';
+    if (!isFetching) {
+      store.dispatch(setNthIteration(-1));
     }
+  },
+  false
+);
+
+fastForwardBtn.addEventListener(
+  'click',
+  () => {
+    const { isFetching } = store.getState();
+
+    if (!isFetching) {
+      store.dispatch(setNthIteration(-2));
+    }
+  },
+  false
+);
+
+store.subscribe(() => {
+  const { isPlaying } = store.getState();
+
+  if (isPlaying) {
+    playBtn.querySelector('i.play').style.display = 'none';
+    playBtn.querySelector('i.pause').style.display = 'inline-block';
+  } else {
+    playBtn.querySelector('i.pause').style.display = 'none';
+    playBtn.querySelector('i.play').style.display = 'inline-block';
   }
 });
 
@@ -70,13 +100,18 @@ const renderer = PIXI.autoDetectRenderer({
 
 const stage = new PIXI.Container();
 
-function computeScale(
-  { width: objWidth, height: objHeight },
-  { width: targetWidth, height: targetHeight }
-) {
-  return objWidth > objHeight
-    ? targetWidth / objWidth
-    : targetHeight / objHeight;
+function computeScale({ width: targetWidth, height: targetHeight }, ...objs) {
+  const { width: maxObjWidth, height: maxObjHeight } = objs.reduce(
+    (max, obj) => ({
+      width: Math.max(max.width, obj.width),
+      height: Math.max(max.height, obj.height),
+    }),
+    { width: 0, height: 0 }
+  );
+
+  return maxObjWidth > maxObjHeight
+    ? targetWidth / maxObjWidth
+    : targetHeight / maxObjHeight;
 }
 
 function createText({ x, y, text }, style) {
@@ -108,61 +143,87 @@ function createRect({ x, y, width, height }, style) {
   return graphics;
 }
 
-store.subscribe(() => {
-  const { drawing } = store.getState();
+function drawOutline({ width, height }, scale) {
+  stage.addChild(
+    createLine(
+      { x: 0, y: canvasHeight - height * scale },
+      { x: width * scale, y: canvasHeight - height * scale },
+      { width: 2, color: 0xff0000 }
+    )
+  );
+  stage.addChild(
+    createLine(
+      { x: width * scale, y: canvasHeight - height * scale },
+      { x: width * scale, y: canvasHeight },
+      { width: 2, color: 0xff0000 }
+    )
+  );
+}
 
-  if (drawing.best_floorplan) {
+function drawMacro({ name, lowerLeft, upperRight }, scale) {
+  const x = lowerLeft.x * scale;
+  const y = canvasHeight - upperRight.y * scale;
+  const width = (upperRight.x - lowerLeft.x) * scale;
+  const height = (upperRight.y - lowerLeft.y) * scale;
+
+  stage.addChild(createRect({ x, y, width, height }, { color: 0x3f72af }));
+  stage.addChild(
+    createText(
+      { x: x + 10 * scale, y: y + 10 * scale, text: name },
+      { fontSize: 12 }
+    )
+  );
+}
+
+store.subscribe(() => {
+  const { isFetching, nthIteration, drawing } = store.getState();
+
+  if (isFetching) {
+    stage.removeChildren();
+  }
+
+  if (nthIteration === -2 && drawing.best_floorplan) {
+    stage.removeChildren();
+
     const { outline, best_floorplan } = drawing;
     const scale =
-      computeScale(outline, {
-        width: canvasWidth,
-        height: canvasHeight,
-      }) * 0.97;
-    stage.addChild(
-      createLine(
-        { x: 0, y: canvasHeight - outline.height * scale },
-        { x: outline.width * scale, y: canvasHeight - outline.height * scale },
-        { width: 2, color: 0xff0000 }
-      )
-    );
-    stage.addChild(
-      createLine(
-        { x: outline.width * scale, y: canvasHeight - outline.height * scale },
-        { x: outline.width * scale, y: canvasHeight },
-        { width: 2, color: 0xff0000 }
-      )
-    );
-    best_floorplan.macros.forEach((macro) => {
-      const { name, lower_left, upper_right } = macro;
-      const rect_x = lower_left.x * scale;
-      const rect_y = canvasHeight - upper_right.y * scale;
-      const rect_width = (upper_right.x - lower_left.x) * scale;
-      const rect_height = (upper_right.y - lower_left.y) * scale;
-
-      stage.addChild(
-        createRect(
-          {
-            x: rect_x,
-            y: rect_y,
-            width: rect_width,
-            height: rect_height,
-          },
-          { color: 0x3f72af }
-        )
-      );
-      stage.addChild(
-        createText(
-          {
-            x: rect_x + 10 * scale,
-            y: rect_y + 10 * scale,
-            text: name,
-          },
-          { fontSize: 12 }
-        )
-      );
+      computeScale(
+        {
+          width: canvasWidth,
+          height: canvasHeight,
+        },
+        outline,
+        best_floorplan
+      ) * 0.97;
+    drawOutline(outline, scale);
+    best_floorplan.macros.forEach(({
+      name,
+      lower_left: lowerLeft,
+      upper_right: upperRight,
+    }) => {
+      drawMacro({ name, lowerLeft, upperRight }, scale);
     });
-  } else {
+  } else if (nthIteration === -1 && drawing.initial_floorplan) {
     stage.removeChildren();
+
+    const { outline, initial_floorplan } = drawing;
+    const scale =
+      computeScale(
+        {
+          width: canvasWidth,
+          height: canvasHeight,
+        },
+        outline,
+        initial_floorplan
+      ) * 0.97;
+    drawOutline(outline, scale);
+    initial_floorplan.macros.forEach(({
+      name,
+      lower_left: lowerLeft,
+      upper_right: upperRight,
+    }) => {
+      drawMacro({ name, lowerLeft, upperRight }, scale);
+    });
   }
 });
 

@@ -159,6 +159,10 @@ int main(int argc, char* argv[]) {
            {"upper_right",
             {{"x", macro_upper_right.x()}, {"y", macro_upper_right.y()}}}});
     }
+    best_floorplan_drawing["width"] = best_floorplan.width();
+    best_floorplan_drawing["height"] = best_floorplan.height();
+    best_floorplan_drawing["area"] = best_floorplan.area();
+    best_floorplan_drawing["wirelength"] = best_floorplan.wirelength();
     drawing["runtime"] = runtime;
     drawing_output << drawing;
   }
