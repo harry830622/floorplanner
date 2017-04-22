@@ -4,10 +4,14 @@
 #include <limits>
 
 using namespace std;
+using Json = nlohmann::json;
 
-Floorplanner::Floorplanner(const Database& database, double alpha)
+Floorplanner::Floorplanner(const Database& database, double alpha,
+                           bool is_using_fast_sa, bool is_drawing)
     : database_(database),
       alpha_(alpha),
+      is_using_fast_sa_(is_using_fast_sa),
+      is_drawing_(is_drawing),
       min_area_(numeric_limits<double>::max()),
       max_area_(0.0),
       min_wirelength_(numeric_limits<double>::max()),
@@ -15,7 +19,8 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
       average_area_(0.0),
       average_wirelength_(0.0),
       average_uphill_cost_(0.0),
-      best_floorplan_(Floorplan(database.num_macros())) {
+      best_floorplan_(Floorplan(database.num_macros(), is_drawing)),
+      drawing_(Json::object()) {
   const int num_perturbations = 5000;
   Floorplan floorplan(best_floorplan_);
 
@@ -64,6 +69,8 @@ Floorplanner::Floorplanner(const Database& database, double alpha)
   average_uphill_cost_ = total_uphill_cost / num_uphills;
 }
 
+const Json& Floorplanner::drawing() const { return drawing_; }
+
 double Floorplanner::alpha() const { return alpha_; }
 
 const Floorplan& Floorplanner::best_floorplan() const {
@@ -72,8 +79,13 @@ const Floorplan& Floorplanner::best_floorplan() const {
 
 void Floorplanner::Run() {
   do {
-    /* SA(); */
-    FastSA();
+    drawing_ = Json::object();
+
+    if (is_using_fast_sa_) {
+      FastSA();
+    } else {
+      SA();
+    }
   } while (best_floorplan_.area() == 0.0);
 }
 
@@ -82,7 +94,7 @@ void Floorplanner::SA() {
   const double r = 0.85;
   const double initial_temperature =
       average_uphill_cost_ / -1 * log(initial_uphill_probability);
-  const double frozen_temperature = initial_temperature / 10000.0;
+  const double frozen_temperature = initial_temperature / 1.0e4;
   const int frozen_num_no_improvements = 10;
   const int num_perturbations =
       database_.num_macros() * database_.num_macros() * 3;
@@ -91,18 +103,40 @@ void Floorplanner::SA() {
   const double adaptive_alpha_base = alpha / 4.0;
   const double adaptive_beta_base = beta / 4.0;
 
+  if (is_drawing_) {
+    drawing_["config"] = {{"initial_temperature", initial_temperature},
+                          {"r", r},
+                          {"num_perturbations", num_perturbations}};
+    drawing_["iterations"] = Json::array();
+  }
+
   Floorplan floorplan(best_floorplan_);
   floorplan.Pack(database_);
+
+  if (is_drawing_) {
+    drawing_["initial_floorplan"] = floorplan.drawing();
+  }
+
   double adaptive_alpha = adaptive_alpha_base;
   double adaptive_beta = adaptive_beta_base;
   double best_cost = ComputeCost(floorplan, adaptive_alpha, adaptive_beta);
   double last_cost = best_cost;
   double temperature = initial_temperature;
   int num_no_improvements = 0;
+  int nth_iteration = 0;
   while (temperature > frozen_temperature &&
          num_no_improvements < frozen_num_no_improvements) {
+    ++nth_iteration;
+
     double total_delta_cost = 0.0;
     int num_feasible_floorplans = 0;
+
+    if (is_drawing_) {
+      Json iteration = Json::object();
+      iteration["temperature"] = temperature;
+      iteration["floorplans"] = Json::array();
+      drawing_["iterations"].push_back(iteration);
+    }
 
     for (int i = 0; i < num_perturbations; ++i) {
       Floorplan new_floorplan(floorplan);
@@ -120,13 +154,21 @@ void Floorplanner::SA() {
 
         const double outline_width = database_.outline_width();
         const double outline_height = database_.outline_height();
-        if (new_floorplan.width() <= outline_width &&
-            new_floorplan.height() <= outline_height) {
+        if (floorplan.width() <= outline_width &&
+            floorplan.height() <= outline_height) {
           ++num_feasible_floorplans;
           if (cost < best_cost) {
-            best_floorplan_ = new_floorplan;
+            best_floorplan_ = floorplan;
             best_cost = cost;
           }
+        }
+
+        if (is_drawing_) {
+          Json floorplan_drawing = floorplan.drawing();
+          floorplan_drawing["is_accepted"] = true;
+          floorplan_drawing["cost"] = cost;
+          Json& iteration = drawing_["iterations"].back();
+          iteration["floorplans"].push_back(floorplan_drawing);
         }
       } else {
         const double p = exp(-1 * delta_cost / temperature);
@@ -135,6 +177,22 @@ void Floorplanner::SA() {
 
           floorplan = new_floorplan;
           last_cost = cost;
+
+          if (is_drawing_) {
+            Json floorplan_drawing = floorplan.drawing();
+            floorplan_drawing["is_accepted"] = true;
+            floorplan_drawing["cost"] = cost;
+            Json& iteration = drawing_["iterations"].back();
+            iteration["floorplans"].push_back(floorplan_drawing);
+          }
+        } else {
+          if (is_drawing_) {
+            Json new_floorplan_drawing = new_floorplan.drawing();
+            new_floorplan_drawing["is_accepted"] = false;
+            new_floorplan_drawing["cost"] = cost;
+            Json& iteration = drawing_["iterations"].back();
+            iteration["floorplans"].push_back(new_floorplan_drawing);
+          }
         }
       }
     }
@@ -155,6 +213,11 @@ void Floorplanner::SA() {
     }
 
     temperature *= r;
+
+    if (is_drawing_) {
+      Json& iteration = drawing_["iterations"].back();
+      iteration["num_feasible_floorplans"] = num_feasible_floorplans;
+    }
   }
 }
 

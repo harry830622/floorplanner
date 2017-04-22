@@ -3,9 +3,14 @@
 
 #include "./floorplan.hpp"
 
+#include "./json.hpp"
+
 class Floorplanner {
  public:
-  Floorplanner(const Database& database, double alpha);
+  Floorplanner(const Database& database, double alpha, bool is_using_fast_sa,
+               bool is_drawing);
+
+  const nlohmann::json& drawing() const;
 
   double alpha() const;
   const Floorplan& best_floorplan() const;
@@ -20,6 +25,8 @@ class Floorplanner {
 
   const Database& database_;
   double alpha_;
+  bool is_using_fast_sa_;
+  bool is_drawing_;
   double min_area_;
   double max_area_;
   double min_wirelength_;
@@ -28,6 +35,8 @@ class Floorplanner {
   double average_wirelength_;
   double average_uphill_cost_;
   Floorplan best_floorplan_;
+
+  nlohmann::json drawing_;
 };
 
 #endif
