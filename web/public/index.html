@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css">
+    <title>Floorplanner</title>
+  </head>
+  <body>
+    <div class="ui borderless labeled icon menu">
+      <a class="item">
+        <i class="folder open icon"></i>
+        Open...
+      </a>
+      <a class="item">
+        <i class="upload icon"></i>
+        Upload
+      </a>
+      <a class="item">
+        <i class="download icon"></i>
+        Dowload
+      </a>
+      <a class="item">
+        <i class="photo icon"></i>
+        Screenshot
+      </a>
+      <div class="right menu">
+        <a class="item">
+          <i class="setting icon"></i>
+          Settings
+        </a>
+      </div>
+    </div>
+    <main class="ui container" style="text-align: center;">
+      <canvas id="floorplan-canvas"></canvas>
+    </main>
+    <div class="ui container">
+      <div class="ui four column centered grid">
+        <div class="column" style="text-align: center;">
+          <div class="ui buttons">
+            <button id="fast-backward-btn" class="large ui icon button" type="button">
+              <i class="fast backward icon"></i>
+            </button>
+            <button id="backward-btn" class="large ui icon button" type="button">
+              <i class="backward icon"></i>
+            </button>
+            <button id="play-btn" class="large ui icon button" type="button">
+              <i class="play icon"></i>
+              <i class="pause icon" style="display: none;"></i>
+            </button>
+            <button id="forward-btn" class="large ui icon button" type="button">
+              <i class="forward icon"></i>
+            </button>
+            <button id="fast-forward-btn" class="large ui icon button" type="button">
+              <i class="fast forward icon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pixi.js/4.5.0/pixi.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/redux/3.6.0/redux.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/redux.thunk/2.2.0/redux-thunk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/redux.logger/3.0.1/index.min.js"></script>
+    <script src="./actions.js"></script>
+    <script src="./reducers.js"></script>
+    <script src="./store.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
