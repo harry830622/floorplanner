@@ -1,7 +1,21 @@
 const reducers = (() => {
   const { combineReducers } = Redux;
 
-  const { TOGGLE_IS_PLAYING, SET_SPEED } = actions;
+  const { FETCH, RECEIVE, TOGGLE_IS_PLAYING, SET_SPEED } = actions;
+
+  function isFetching(state = false, action) {
+    switch (action.type) {
+      case FETCH: {
+        return true;
+      }
+      case RECEIVE: {
+        return false;
+      }
+      default: {
+        return state;
+      }
+    }
+  }
 
   function isPlaying(state = false, action) {
     switch (action.type) {
@@ -25,9 +39,25 @@ const reducers = (() => {
     }
   }
 
+  function drawing(state = {}, action) {
+    switch (action.type) {
+      case FETCH: {
+        return {};
+      }
+      case RECEIVE: {
+        return action.payload;
+      }
+      default: {
+        return state;
+      }
+    }
+  }
+
   return combineReducers({
+    isFetching,
     isPlaying,
     speed,
+    drawing,
   });
 })();
 
