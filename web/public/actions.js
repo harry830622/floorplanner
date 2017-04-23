@@ -1,6 +1,6 @@
 const actions = (() => {
-  const FETCH = 'FETCH';
-  const RECEIVE = 'RECEIVE';
+  const FETCH_DRAWING = 'FETCH_DRAWING';
+  const RECEIVE_DRAWING = 'RECEIVE_DRAWING';
   const TOGGLE_IS_PLAYING = 'TOGGLE_IS_PLAYING';
   const SET_NTH_FLOORPLAN = 'SET_NTH_FLOORPLAN';
   const NEXT = 'NEXT';
@@ -9,8 +9,8 @@ const actions = (() => {
   const FORWARD = 'FORWARD';
 
   return {
-    FETCH,
-    RECEIVE,
+    FETCH_DRAWING,
+    RECEIVE_DRAWING,
     TOGGLE_IS_PLAYING,
     SET_NTH_FLOORPLAN,
     NEXT,
@@ -22,8 +22,8 @@ const actions = (() => {
 
 const actionCreators = (() => {
   const {
-    FETCH,
-    RECEIVE,
+    FETCH_DRAWING,
+    RECEIVE_DRAWING,
     TOGGLE_IS_PLAYING,
     SET_NTH_FLOORPLAN,
     NEXT,
@@ -32,16 +32,16 @@ const actionCreators = (() => {
     FORWARD,
   } = actions;
 
-  function fetch() {
+  function fetchDrawing() {
     return {
-      type: FETCH,
+      type: FETCH_DRAWING,
     };
   }
 
-  function receive(payload) {
+  function receiveDrawing(drawing) {
     return {
-      type: RECEIVE,
-      payload,
+      type: RECEIVE_DRAWING,
+      drawing,
     };
   }
 
@@ -93,8 +93,8 @@ const actionCreators = (() => {
   }
 
   return {
-    fetch,
-    receive,
+    fetchDrawing,
+    receiveDrawing,
     toggleIsPlaying,
     backward,
     forward,

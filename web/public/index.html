@@ -34,34 +34,115 @@
     <input id="open-input" type="file" style="display: none;" />
     <input id="upload-input" type="file" style="display: none;" />
 
-    <main class="ui container" style="text-align: center;">
-      <canvas id="floorplan-canvas"></canvas>
-    </main>
-
-    <div class="ui container">
-      <div class="ui four column centered grid">
-        <div class="column" style="text-align: center;">
-          <div class="ui buttons">
-            <button id="fast-backward-btn" class="large ui icon button" type="button">
-              <i class="fast backward icon"></i>
-            </button>
-            <button id="backward-btn" class="large ui icon button" type="button">
-              <i class="backward icon"></i>
-            </button>
-            <button id="play-btn" class="large ui icon button" type="button">
-              <i class="play icon"></i>
-              <i class="pause icon" style="display: none;"></i>
-            </button>
-            <button id="forward-btn" class="large ui icon button" type="button">
-              <i class="forward icon"></i>
-            </button>
-            <button id="fast-forward-btn" class="large ui icon button" type="button">
-              <i class="fast forward icon"></i>
-            </button>
+    <main class="ui container">
+      <div class="ui stackable grid">
+        <div class="twelve wide column" style="text-align: center;">
+          <div class="ui segment">
+            <canvas id="floorplan-canvas"></canvas>
+            <div class="ui buttons">
+              <button id="fast-backward-btn" class="large ui icon button" type="button">
+                <i class="fast backward icon"></i>
+              </button>
+              <button id="backward-btn" class="large ui icon button" type="button">
+                <i class="backward icon"></i>
+              </button>
+              <button id="play-btn" class="large ui icon button" type="button">
+                <i class="play icon"></i>
+                <i class="pause icon" style="display: none;"></i>
+              </button>
+              <button id="forward-btn" class="large ui icon button" type="button">
+                <i class="forward icon"></i>
+              </button>
+              <button id="fast-forward-btn" class="large ui icon button" type="button">
+                <i class="fast forward icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="four wide column" style="text-align: center;">
+          <div class="ui vertical segment">
+            <div id="name-stat" class="ui statistic">
+              <div class="label">Name</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="outline-width-stat" class="ui small statistic">
+              <div class="label">Outline Width</div>
+              <div class="value">N/A</div>
+            </div>
+            <div id="outline-height-stat" class="ui small statistic">
+              <div class="label">Outline Height</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="width-stat" class="ui small statistic">
+              <div class="label">
+                <span style="visibility: hidden;">Out</span>
+                Width
+                <span style="visibility: hidden;">lne</span>
+              </div>
+              <div class="value">N/A</div>
+            </div>
+            <div id="height-stat" class="ui small statistic">
+              <div class="label">
+                <span style="visibility: hidden;">Out</span>
+                Height
+                <span style="visibility: hidden;">lne</span>
+              </div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="area-stat" class="ui tiny statistic">
+              <div class="label">Area</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="wirelength-stat" class="ui tiny statistic">
+              <div class="label">Wirelength</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="cost-stat" class="ui tiny statistic">
+              <div class="label">Cost</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="alpha-stat" class="ui mini statistic">
+              <div class="label">Alpha</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="temperature-stat" class="ui mini statistic">
+              <div class="label">Temperature</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="nth-iteration-stat" class="ui mini statistic">
+              <div class="label">Nth Iteration</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="nth-perturbation-stat" class="ui mini statistic">
+              <div class="label">Nth Perturbation</div>
+              <div class="value">N/A</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
+
+    <p style="position: absolute; bottom: 0; left: 0; font-size: 12px">
+      Made with <i class="heart icon"></i> by Yu-Hsuan Chang
+    </p>
 
     <script src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>

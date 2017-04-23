@@ -1,7 +1,7 @@
 const reducer = (() => {
   const {
-    FETCH,
-    RECEIVE,
+    FETCH_DRAWING,
+    RECEIVE_DRAWING,
     TOGGLE_IS_PLAYING,
     SET_NTH_FLOORPLAN,
     NEXT,
@@ -12,11 +12,11 @@ const reducer = (() => {
 
   function drawing(state = {}, action) {
     switch (action.type) {
-      case FETCH: {
+      case FETCH_DRAWING: {
         return {};
       }
-      case RECEIVE: {
-        return action.payload;
+      case RECEIVE_DRAWING: {
+        return action.drawing;
       }
       default: {
         return state;
@@ -24,12 +24,12 @@ const reducer = (() => {
     }
   }
 
-  function isFetching(state = false, action) {
+  function isFetchingDrawing(state = false, action) {
     switch (action.type) {
-      case FETCH: {
+      case FETCH_DRAWING: {
         return true;
       }
-      case RECEIVE: {
+      case RECEIVE_DRAWING: {
         return false;
       }
       default: {
@@ -154,7 +154,7 @@ const reducer = (() => {
 
   return (state = {}, action) => ({
     drawing: drawing(state.drawing, action),
-    isFetching: isFetching(state.isFetching, action),
+    isFetchingDrawing: isFetchingDrawing(state.isFetchingDrawing, action),
     isPlaying: isPlaying(state.isPlaying, action),
     frame: frame(state.frame, action, state),
     config: config(state.config, action),

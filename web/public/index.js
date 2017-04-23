@@ -1,6 +1,6 @@
 const {
-  fetch,
-  receive,
+  fetchDrawing,
+  receiveDrawing,
   toggleIsPlaying,
   backward,
   forward,
@@ -18,12 +18,12 @@ uploadInput.addEventListener(
     const file = e.target.files[0];
 
     if (file) {
-      store.dispatch(fetch());
+      store.dispatch(fetchDrawing());
 
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
-        const payload = JSON.parse(e.target.result);
-        store.dispatch(receive(payload));
+        const drawing = JSON.parse(e.target.result);
+        store.dispatch(receiveDrawing(drawing));
       };
       fileReader.readAsText(file);
     }
@@ -48,9 +48,9 @@ const fastForwardBtn = document.querySelector('#fast-forward-btn');
 playBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetching } = store.getState();
+    const { drawing, isFetchingDrawing } = store.getState();
 
-    if (drawing.iterations && !isFetching) {
+    if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(toggleIsPlaying());
     }
   },
@@ -60,9 +60,9 @@ playBtn.addEventListener(
 backwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetching } = store.getState();
+    const { drawing, isFetchingDrawing } = store.getState();
 
-    if (drawing.iterations && !isFetching) {
+    if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(backward());
     }
   },
@@ -72,9 +72,9 @@ backwardBtn.addEventListener(
 forwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetching } = store.getState();
+    const { drawing, isFetchingDrawing } = store.getState();
 
-    if (drawing.iterations && !isFetching) {
+    if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(forward());
     }
   },
@@ -84,9 +84,9 @@ forwardBtn.addEventListener(
 fastBackwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetching } = store.getState();
+    const { drawing, isFetchingDrawing } = store.getState();
 
-    if (drawing.iterations && !isFetching) {
+    if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(fastBackward());
     }
   },
@@ -96,9 +96,9 @@ fastBackwardBtn.addEventListener(
 fastForwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetching } = store.getState();
+    const { drawing, isFetchingDrawing } = store.getState();
 
-    if (drawing.iterations && !isFetching) {
+    if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(fastForward());
     }
   },
@@ -114,6 +114,90 @@ store.subscribe(() => {
   } else {
     playBtn.querySelector('i.pause').style.display = 'none';
     playBtn.querySelector('i.play').style.display = 'inline-block';
+  }
+});
+
+const nameStatValue = document.querySelector('#name-stat>div.value');
+const outlineWidthStatValue = document.querySelector(
+  '#outline-width-stat>div.value'
+);
+const outlineHeightStatValue = document.querySelector(
+  '#outline-height-stat>div.value'
+);
+const alphaStatValue = document.querySelector('#alpha-stat>div.value');
+const widthStatValue = document.querySelector('#width-stat>div.value');
+const heightStatValue = document.querySelector('#height-stat>div.value');
+const areaStatValue = document.querySelector('#area-stat>div.value');
+const wirelengthStatValue = document.querySelector(
+  '#wirelength-stat>div.value'
+);
+const costStatValue = document.querySelector('#cost-stat>div.value');
+const nthIterationStatValue = document.querySelector(
+  '#nth-iteration-stat>div.value'
+);
+const temperatureStatValue = document.querySelector(
+  '#temperature-stat>div.value'
+);
+const nthPerturbationStatValue = document.querySelector(
+  '#nth-perturbation-stat>div.value'
+);
+
+store.subscribe(() => {
+  const { drawing, frame } = store.getState();
+  const {
+    benchmark,
+    alpha,
+    outline,
+    best_floorplan: bestFloorplan,
+    initial_floorplan: initialFloorplan,
+    iterations,
+  } = drawing;
+  const { nthFloorplan } = frame;
+
+  if (benchmark) {
+    nameStatValue.innerHTML = benchmark;
+    outlineWidthStatValue.innerHTML = outline.width;
+    outlineHeightStatValue.innerHTML = outline.height;
+    alphaStatValue.innerHTML = alpha;
+  }
+
+  if (nthFloorplan === -2) {
+    if (bestFloorplan) {
+      widthStatValue.innerHTML = bestFloorplan.width;
+      heightStatValue.innerHTML = bestFloorplan.height;
+      areaStatValue.innerHTML = bestFloorplan.area;
+      wirelengthStatValue.innerHTML = bestFloorplan.wirelength;
+      costStatValue.innerHTML =
+        alpha * bestFloorplan.area + (1 - alpha) * bestFloorplan.wirelength;
+    }
+  } else if (nthFloorplan === -1) {
+    if (initialFloorplan) {
+      widthStatValue.innerHTML = initialFloorplan.width;
+      heightStatValue.innerHTML = initialFloorplan.height;
+      areaStatValue.innerHTML = initialFloorplan.area;
+      wirelengthStatValue.innerHTML = initialFloorplan.wirelength;
+      costStatValue.innerHTML =
+        alpha * initialFloorplan.area +
+        (1 - alpha) * initialFloorplan.wirelength;
+    }
+  } else if (iterations) {
+    const numIterations = iterations.length;
+    const numFloorplans = iterations[0].floorplans.length;
+    const nthIteration = Math.floor(nthFloorplan / numFloorplans);
+    if (nthIteration < numIterations) {
+      const iteration = iterations[nthIteration];
+      const nthPerturbation = nthFloorplan % numFloorplans;
+      const floorplan = iteration.floorplans[nthPerturbation];
+      widthStatValue.innerHTML = floorplan.width;
+      heightStatValue.innerHTML = floorplan.height;
+      areaStatValue.innerHTML = floorplan.area;
+      wirelengthStatValue.innerHTML = floorplan.wirelength;
+      costStatValue.innerHTML =
+        alpha * floorplan.area + (1 - alpha) * floorplan.wirelength;
+      nthIterationStatValue.innerHTML = `${nthIteration + 1}/${numIterations}`;
+      temperatureStatValue.innerHTML = iteration.temperature;
+      nthPerturbationStatValue.innerHTML = `${nthPerturbation + 1}/${numFloorplans}`;
+    }
   }
 });
 
@@ -205,10 +289,10 @@ function drawMacro({ name, lowerLeft, upperRight }, scale) {
 }
 
 store.subscribe(() => {
-  const { isFetching, frame, drawing } = store.getState();
+  const { isFetchingDrawing, frame, drawing } = store.getState();
   const { nthFloorplan, nthMacro } = frame;
 
-  if (isFetching) {
+  if (isFetchingDrawing) {
     stage.removeChildren();
   }
 
@@ -264,8 +348,9 @@ store.subscribe(() => {
     const numFloorplans = iterations[0].floorplans.length;
     const nthIteration = Math.floor(nthFloorplan / numFloorplans);
     if (nthIteration < numIterations) {
-      const floorplan =
-        iterations[nthIteration].floorplans[nthFloorplan % numFloorplans];
+      const iteration = iterations[nthIteration];
+      const nthPerturbation = nthFloorplan % numFloorplans;
+      const floorplan = iteration.floorplans[nthPerturbation];
       const { macros } = floorplan;
 
       stage.removeChildren();
