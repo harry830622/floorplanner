@@ -4,6 +4,9 @@ const actions = (() => {
   const TOGGLE_IS_PLAYING = 'TOGGLE_IS_PLAYING';
   const SET_NTH_FLOORPLAN = 'SET_NTH_FLOORPLAN';
   const NEXT = 'NEXT';
+  const SET_CONFIG = 'SET_CONFIG';
+  const BACKWARD = 'BACKWARD';
+  const FORWARD = 'FORWARD';
 
   return {
     FETCH,
@@ -11,6 +14,9 @@ const actions = (() => {
     TOGGLE_IS_PLAYING,
     SET_NTH_FLOORPLAN,
     NEXT,
+    SET_CONFIG,
+    BACKWARD,
+    FORWARD,
   };
 })();
 
@@ -21,6 +27,9 @@ const actionCreators = (() => {
     TOGGLE_IS_PLAYING,
     SET_NTH_FLOORPLAN,
     NEXT,
+    SET_CONFIG,
+    BACKWARD,
+    FORWARD,
   } = actions;
 
   function fetch() {
@@ -49,6 +58,32 @@ const actionCreators = (() => {
     };
   }
 
+  function next(numMacros) {
+    return {
+      type: NEXT,
+      numMacros,
+    };
+  }
+
+  function setConfig(config) {
+    return {
+      type: SET_CONFIG,
+      config,
+    };
+  }
+
+  function backward() {
+    return {
+      type: BACKWARD,
+    };
+  }
+
+  function forward() {
+    return {
+      type: FORWARD,
+    };
+  }
+
   function fastBackward() {
     return setNthFloorplan(-1);
   }
@@ -57,17 +92,12 @@ const actionCreators = (() => {
     return setNthFloorplan(-2);
   }
 
-  function next(numMacros) {
-    return {
-      type: NEXT,
-      numMacros,
-    };
-  }
-
   return {
     fetch,
     receive,
     toggleIsPlaying,
+    backward,
+    forward,
     fastBackward,
     fastForward,
     next,

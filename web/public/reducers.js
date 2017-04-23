@@ -5,6 +5,9 @@ const reducer = (() => {
     TOGGLE_IS_PLAYING,
     SET_NTH_FLOORPLAN,
     NEXT,
+    SET_CONFIG,
+    BACKWARD,
+    FORWARD,
   } = actions;
 
   function drawing(state = {}, action) {
@@ -46,7 +49,13 @@ const reducer = (() => {
     }
   }
 
-  function frame(state = { nthFloorplan: -2, nthMacro: -1 }, action, drawing) {
+  function frame(
+    state = { nthFloorplan: -2, nthMacro: -1 },
+    action,
+    rootState
+  ) {
+    const { drawing, config } = rootState;
+
     switch (action.type) {
       case SET_NTH_FLOORPLAN: {
         if (action.nthFloorplan < 0) {
@@ -78,6 +87,65 @@ const reducer = (() => {
         }
         return state;
       }
+      case BACKWARD: {
+        if (drawing.iterations) {
+          if (config.speed === 1) {
+            const { iterations } = drawing;
+            const numFloorplans = iterations[0].floorplans.length;
+            const newNthFloorplan =
+              (Math.floor(state.nthFloorplan / numFloorplans) - 1) *
+              numFloorplans;
+            return Object.assign({}, state, {
+              nthFloorplan: Math.max(0, newNthFloorplan),
+              nthMacro: -1,
+            });
+          }
+        }
+        return state;
+      }
+      case FORWARD: {
+        if (drawing.iterations) {
+          if (config.speed === 3) {
+            const { iterations } = drawing;
+            const numIterations = iterations.length;
+            const numFloorplans = iterations[0].floorplans.length;
+            const newNthFloorplan =
+              (Math.floor(state.nthFloorplan / numFloorplans) + 1) *
+              numFloorplans;
+            return Object.assign({}, state, {
+              nthFloorplan: Math.min(
+                numIterations * numFloorplans - 2,
+                newNthFloorplan
+              ),
+              nthMacro: -1,
+            });
+          }
+        }
+        return state;
+      }
+      default: {
+        return state;
+      }
+    }
+  }
+
+  function config(state = { is_using_sa: true, speed: 1 }, action) {
+    switch (action.type) {
+      case SET_CONFIG: {
+        return Object.assign({}, state, action.config);
+      }
+      case BACKWARD: {
+        if (state.speed > 1) {
+          return Object.assign({}, state, { speed: state.speed - 1 });
+        }
+        return state;
+      }
+      case FORWARD: {
+        if (state.speed < 3) {
+          return Object.assign({}, state, { speed: state.speed + 1 });
+        }
+        return state;
+      }
       default: {
         return state;
       }
@@ -88,7 +156,8 @@ const reducer = (() => {
     drawing: drawing(state.drawing, action),
     isFetching: isFetching(state.isFetching, action),
     isPlaying: isPlaying(state.isPlaying, action),
-    frame: frame(state.frame, action, state.drawing),
+    frame: frame(state.frame, action, state),
+    config: config(state.config, action),
   });
 })();
 

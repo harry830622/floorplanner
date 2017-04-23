@@ -2,6 +2,8 @@ const {
   fetch,
   receive,
   toggleIsPlaying,
+  backward,
+  forward,
   fastBackward,
   fastForward,
   next,
@@ -38,16 +40,42 @@ uploadLink.addEventListener(
 );
 
 const playBtn = document.querySelector('#play-btn');
+const backwardBtn = document.querySelector('#backward-btn');
+const forwardBtn = document.querySelector('#forward-btn');
 const fastBackwardBtn = document.querySelector('#fast-backward-btn');
 const fastForwardBtn = document.querySelector('#fast-forward-btn');
 
 playBtn.addEventListener(
   'click',
   () => {
-    const { isFetching } = store.getState();
+    const { drawing, isFetching } = store.getState();
 
-    if (!isFetching) {
+    if (drawing.iterations && !isFetching) {
       store.dispatch(toggleIsPlaying());
+    }
+  },
+  false
+);
+
+backwardBtn.addEventListener(
+  'click',
+  () => {
+    const { drawing, isFetching } = store.getState();
+
+    if (drawing.iterations && !isFetching) {
+      store.dispatch(backward());
+    }
+  },
+  false
+);
+
+forwardBtn.addEventListener(
+  'click',
+  () => {
+    const { drawing, isFetching } = store.getState();
+
+    if (drawing.iterations && !isFetching) {
+      store.dispatch(forward());
     }
   },
   false
@@ -56,9 +84,9 @@ playBtn.addEventListener(
 fastBackwardBtn.addEventListener(
   'click',
   () => {
-    const { isFetching } = store.getState();
+    const { drawing, isFetching } = store.getState();
 
-    if (!isFetching) {
+    if (drawing.iterations && !isFetching) {
       store.dispatch(fastBackward());
     }
   },
@@ -68,9 +96,9 @@ fastBackwardBtn.addEventListener(
 fastForwardBtn.addEventListener(
   'click',
   () => {
-    const { isFetching } = store.getState();
+    const { drawing, isFetching } = store.getState();
 
-    if (!isFetching) {
+    if (drawing.iterations && !isFetching) {
       store.dispatch(fastForward());
     }
   },
@@ -232,32 +260,35 @@ store.subscribe(() => {
     }
   } else if (drawing.iterations) {
     const { outline, iterations } = drawing;
+    const numIterations = iterations.length;
     const numFloorplans = iterations[0].floorplans.length;
     const nthIteration = Math.floor(nthFloorplan / numFloorplans);
-    const floorplan =
-      iterations[nthIteration].floorplans[nthFloorplan % numFloorplans];
-    const { macros } = floorplan;
+    if (nthIteration < numIterations) {
+      const floorplan =
+        iterations[nthIteration].floorplans[nthFloorplan % numFloorplans];
+      const { macros } = floorplan;
 
-    stage.removeChildren();
+      stage.removeChildren();
 
-    const scale =
-      computeScale(
-        {
-          width: canvasWidth,
-          height: canvasHeight,
-        },
-        outline,
-        floorplan
-      ) * 0.97;
+      const scale =
+        computeScale(
+          {
+            width: canvasWidth,
+            height: canvasHeight,
+          },
+          outline,
+          floorplan
+        ) * 0.97;
 
-    drawOutline(outline, scale);
-    macros.slice(0, nthMacro + 1).forEach(({
-      name,
-      lower_left: lowerLeft,
-      upper_right: upperRight,
-    }) => {
-      drawMacro({ name, lowerLeft, upperRight }, scale);
-    });
+      drawOutline(outline, scale);
+      macros.slice(0, nthMacro + 1).forEach(({
+        name,
+        lower_left: lowerLeft,
+        upper_right: upperRight,
+      }) => {
+        drawMacro({ name, lowerLeft, upperRight }, scale);
+      });
+    }
   }
 });
 
@@ -265,12 +296,14 @@ let t = 0;
 function animate() {
   renderer.render(stage);
 
-  const { drawing, isPlaying } = store.getState();
+  const { drawing, isPlaying, config } = store.getState();
 
   if (drawing.iterations) {
     if (isPlaying) {
+      const { speed } = config;
+
       t += 1;
-      if (t % 10 === 0) {
+      if (t % ((4 - speed) * 3) === 0) {
         store.dispatch(next(1));
       }
     }
