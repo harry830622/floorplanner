@@ -2,15 +2,15 @@ const actions = (() => {
   const FETCH = 'FETCH';
   const RECEIVE = 'RECEIVE';
   const TOGGLE_IS_PLAYING = 'TOGGLE_IS_PLAYING';
-  const SET_SPEED = 'SET_SPEED';
-  const SET_NTH_ITERATION = 'SET_NTH_ITERATION';
+  const SET_NTH_FLOORPLAN = 'SET_NTH_FLOORPLAN';
+  const NEXT = 'NEXT';
 
   return {
     FETCH,
     RECEIVE,
     TOGGLE_IS_PLAYING,
-    SET_SPEED,
-    SET_NTH_ITERATION,
+    SET_NTH_FLOORPLAN,
+    NEXT,
   };
 })();
 
@@ -19,8 +19,8 @@ const actionCreators = (() => {
     FETCH,
     RECEIVE,
     TOGGLE_IS_PLAYING,
-    SET_SPEED,
-    SET_NTH_ITERATION,
+    SET_NTH_FLOORPLAN,
+    NEXT,
   } = actions;
 
   function fetch() {
@@ -42,17 +42,25 @@ const actionCreators = (() => {
     };
   }
 
-  function setSpeed(speed) {
+  function setNthFloorplan(nthFloorplan) {
     return {
-      type: SET_SPEED,
-      speed,
+      type: SET_NTH_FLOORPLAN,
+      nthFloorplan,
     };
   }
 
-  function setNthIteration(nthIteration) {
+  function fastBackward() {
+    return setNthFloorplan(-1);
+  }
+
+  function fastForward() {
+    return setNthFloorplan(-2);
+  }
+
+  function next(numMacros) {
     return {
-      type: SET_NTH_ITERATION,
-      nthIteration,
+      type: NEXT,
+      numMacros,
     };
   }
 
@@ -60,8 +68,9 @@ const actionCreators = (() => {
     fetch,
     receive,
     toggleIsPlaying,
-    setSpeed,
-    setNthIteration,
+    fastBackward,
+    fastForward,
+    next,
   };
 })();
 

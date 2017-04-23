@@ -2,8 +2,9 @@ const {
   fetch,
   receive,
   toggleIsPlaying,
-  setSpeed,
-  setNthIteration,
+  fastBackward,
+  fastForward,
+  next,
 } = actionCreators;
 
 const uploadInput = document.querySelector('#upload-input');
@@ -58,7 +59,7 @@ fastBackwardBtn.addEventListener(
     const { isFetching } = store.getState();
 
     if (!isFetching) {
-      store.dispatch(setNthIteration(-1));
+      store.dispatch(fastBackward());
     }
   },
   false
@@ -70,7 +71,7 @@ fastForwardBtn.addEventListener(
     const { isFetching } = store.getState();
 
     if (!isFetching) {
-      store.dispatch(setNthIteration(-2));
+      store.dispatch(fastForward());
     }
   },
   false
@@ -176,16 +177,69 @@ function drawMacro({ name, lowerLeft, upperRight }, scale) {
 }
 
 store.subscribe(() => {
-  const { isFetching, nthIteration, drawing } = store.getState();
+  const { isFetching, frame, drawing } = store.getState();
+  const { nthFloorplan, nthMacro } = frame;
 
   if (isFetching) {
     stage.removeChildren();
   }
 
-  if (nthIteration === -2 && drawing.best_floorplan) {
+  if (nthFloorplan === -2) {
+    if (drawing.best_floorplan) {
+      stage.removeChildren();
+
+      const { outline, best_floorplan } = drawing;
+      const scale =
+        computeScale(
+          {
+            width: canvasWidth,
+            height: canvasHeight,
+          },
+          outline,
+          best_floorplan
+        ) * 0.97;
+      drawOutline(outline, scale);
+      best_floorplan.macros.forEach(({
+        name,
+        lower_left: lowerLeft,
+        upper_right: upperRight,
+      }) => {
+        drawMacro({ name, lowerLeft, upperRight }, scale);
+      });
+    }
+  } else if (nthFloorplan === -1) {
+    if (drawing.initial_floorplan) {
+      stage.removeChildren();
+
+      const { outline, initial_floorplan } = drawing;
+      const scale =
+        computeScale(
+          {
+            width: canvasWidth,
+            height: canvasHeight,
+          },
+          outline,
+          initial_floorplan
+        ) * 0.97;
+      drawOutline(outline, scale);
+      initial_floorplan.macros.forEach(({
+        name,
+        lower_left: lowerLeft,
+        upper_right: upperRight,
+      }) => {
+        drawMacro({ name, lowerLeft, upperRight }, scale);
+      });
+    }
+  } else if (drawing.iterations) {
+    const { outline, iterations } = drawing;
+    const numFloorplans = iterations[0].floorplans.length;
+    const nthIteration = Math.floor(nthFloorplan / numFloorplans);
+    const floorplan =
+      iterations[nthIteration].floorplans[nthFloorplan % numFloorplans];
+    const { macros } = floorplan;
+
     stage.removeChildren();
 
-    const { outline, best_floorplan } = drawing;
     const scale =
       computeScale(
         {
@@ -193,31 +247,11 @@ store.subscribe(() => {
           height: canvasHeight,
         },
         outline,
-        best_floorplan
+        floorplan
       ) * 0.97;
-    drawOutline(outline, scale);
-    best_floorplan.macros.forEach(({
-      name,
-      lower_left: lowerLeft,
-      upper_right: upperRight,
-    }) => {
-      drawMacro({ name, lowerLeft, upperRight }, scale);
-    });
-  } else if (nthIteration === -1 && drawing.initial_floorplan) {
-    stage.removeChildren();
 
-    const { outline, initial_floorplan } = drawing;
-    const scale =
-      computeScale(
-        {
-          width: canvasWidth,
-          height: canvasHeight,
-        },
-        outline,
-        initial_floorplan
-      ) * 0.97;
     drawOutline(outline, scale);
-    initial_floorplan.macros.forEach(({
+    macros.slice(0, nthMacro + 1).forEach(({
       name,
       lower_left: lowerLeft,
       upper_right: upperRight,
@@ -227,8 +261,20 @@ store.subscribe(() => {
   }
 });
 
+let t = 0;
 function animate() {
   renderer.render(stage);
+
+  const { drawing, isPlaying } = store.getState();
+
+  if (drawing.iterations) {
+    if (isPlaying) {
+      t += 1;
+      if (t % 10 === 0) {
+        store.dispatch(next(1));
+      }
+    }
+  }
 
   requestAnimationFrame(animate);
 }

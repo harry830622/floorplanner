@@ -3,6 +3,6 @@ const store = (() => {
   const { default: thunk } = ReduxThunk;
   const { default: logger } = reduxLogger;
 
-  return createStore(reducers, {}, applyMiddleware(thunk, logger));
+  return createStore(reducer, {}, applyMiddleware(thunk, logger));
 })();
 
