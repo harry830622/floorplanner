@@ -1,5 +1,6 @@
 const {
   fetchDrawing,
+  fetchDrawingAsync,
   receiveDrawing,
   toggleIsPlaying,
   backward,
@@ -8,6 +9,55 @@ const {
   fastForward,
   next,
 } = actionCreators;
+
+const openInput = document.querySelector('#open-input');
+const openLink = document.querySelector('#open-link');
+
+openInput.addEventListener(
+  'change',
+  (e) => {
+    const files = e.target.files;
+
+    if (files.length === 2) {
+      let blockText = '';
+      let netText = '';
+      let numLoadedFiles = 0;
+      for (let i = 0; i < files.length; i += 1) {
+        const file = files[i];
+        const benchmarkName = file.name.split('.')[0];
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+          numLoadedFiles += 1;
+          const text = e.target.result;
+          if (text[0] === 'O') {
+            blockText = text;
+          } else {
+            netText = text;
+          }
+          if (numLoadedFiles === 2) {
+            store.dispatch(
+              fetchDrawingAsync({
+                name: benchmarkName,
+                blockInput: blockText,
+                netInput: netText,
+              })
+            );
+          }
+        };
+        fileReader.readAsText(file);
+      }
+    }
+  },
+  false
+);
+
+openLink.addEventListener(
+  'click',
+  () => {
+    openInput.click();
+  },
+  false
+);
 
 const uploadInput = document.querySelector('#upload-input');
 const uploadLink = document.querySelector('#upload-link');

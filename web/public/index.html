@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="ui borderless labeled icon menu">
-      <a class="item">
+      <a id="open-link" class="item">
         <i class="folder open icon"></i>
         Open...
       </a>
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <input id="open-input" type="file" style="display: none;" />
+    <input id="open-input" type="file" multiple style="display: none;" />
     <input id="upload-input" type="file" style="display: none;" />
 
     <main class="ui container">
@@ -39,6 +39,7 @@
         <div class="twelve wide column" style="text-align: center;">
           <div class="ui segment">
             <canvas id="floorplan-canvas"></canvas>
+            <div class="ui divider"></div>
             <div class="ui buttons">
               <button id="fast-backward-btn" class="large ui icon button" type="button">
                 <i class="fast backward icon"></i>
@@ -140,10 +141,11 @@
       </div>
     </main>
 
-    <p style="position: absolute; bottom: 0; left: 0; font-size: 12px">
+    <p style="position: absolute; bottom: -5px; left: 10px; font-size: 12px">
       Made with <i class="heart icon"></i> by Yu-Hsuan Chang
     </p>
 
+    <script src="https://cdn.jsdelivr.net/axios/0.16.1/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
     <script src="https://cdn.jsdelivr.net/pixi.js/4.5.0/pixi.min.js"></script>

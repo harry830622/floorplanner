@@ -45,6 +45,21 @@ const actionCreators = (() => {
     };
   }
 
+  function fetchDrawingAsync(benchmark) {
+    return (dispatch) => {
+      dispatch(fetchDrawing());
+
+      return fetch('/drawing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(benchmark),
+      })
+        .then(res => res.json())
+        .then(json => dispatch(receiveDrawing(json)))
+        .catch(err => Promise.reject(err));
+    };
+  }
+
   function toggleIsPlaying() {
     return {
       type: TOGGLE_IS_PLAYING,
@@ -94,8 +109,10 @@ const actionCreators = (() => {
 
   return {
     fetchDrawing,
+    fetchDrawingAsync,
     receiveDrawing,
     toggleIsPlaying,
+    setConfig,
     backward,
     forward,
     fastBackward,
