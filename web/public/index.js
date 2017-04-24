@@ -89,6 +89,18 @@ uploadLink.addEventListener(
   false
 );
 
+const loadingDimmer = document.querySelector('#loading-dimmer');
+
+store.subscribe(() => {
+  const { isFetchingDrawing } = store.getState();
+
+  if (isFetchingDrawing) {
+    loadingDimmer.classList.add('active');
+  } else {
+    loadingDimmer.classList.remove('active');
+  }
+});
+
 const playBtn = document.querySelector('#play-btn');
 const backwardBtn = document.querySelector('#backward-btn');
 const forwardBtn = document.querySelector('#forward-btn');
