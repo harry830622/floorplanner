@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     cout
         << "  " << argv[0]
         << " [--seed <number>] [--sa] [--draw <file>] [--draw-only-best <file>]"
-        << "<alpha> <block-input> <net-input> <output>" << endl;
+        << " <alpha> <block-input> <net-input> <output>" << endl;
     cout << options;
     return 0;
   }

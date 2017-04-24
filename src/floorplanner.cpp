@@ -95,7 +95,6 @@ void Floorplanner::SA() {
   const double initial_temperature =
       average_uphill_cost_ / -1 * log(initial_uphill_probability);
   const double frozen_temperature = initial_temperature / 1.0e4;
-  const int frozen_num_no_improvements = 10;
   const int num_perturbations =
       database_.num_macros() * database_.num_macros() * 3;
   const double alpha = alpha_;
@@ -122,13 +121,11 @@ void Floorplanner::SA() {
   double best_cost = ComputeCost(floorplan, adaptive_alpha, adaptive_beta);
   double last_cost = best_cost;
   double temperature = initial_temperature;
-  int num_no_improvements = 0;
   int nth_iteration = 0;
-  while (temperature > frozen_temperature &&
-         num_no_improvements < frozen_num_no_improvements) {
+  while (temperature > frozen_temperature) {
     ++nth_iteration;
 
-    double total_delta_cost = 0.0;
+    int num_accepted_floorplans = 0;
     int num_feasible_floorplans = 0;
 
     if (is_drawing_) {
@@ -147,8 +144,7 @@ void Floorplanner::SA() {
           ComputeCost(new_floorplan, adaptive_alpha, adaptive_beta);
       const double delta_cost = cost - last_cost;
       if (delta_cost < 0) {
-        total_delta_cost += delta_cost;
-
+        ++num_accepted_floorplans;
         floorplan = new_floorplan;
         last_cost = cost;
 
@@ -173,8 +169,7 @@ void Floorplanner::SA() {
       } else {
         const double p = exp(-1 * delta_cost / temperature);
         if (rand() / static_cast<double>(RAND_MAX) < p) {
-          total_delta_cost += delta_cost;
-
+          ++num_accepted_floorplans;
           floorplan = new_floorplan;
           last_cost = cost;
 
@@ -197,6 +192,11 @@ void Floorplanner::SA() {
       }
     }
 
+    if (num_accepted_floorplans / static_cast<double>(num_perturbations) <
+        0.05) {
+      break;
+    }
+
     adaptive_alpha =
         adaptive_alpha_base +
         (alpha - adaptive_alpha_base) *
@@ -205,12 +205,6 @@ void Floorplanner::SA() {
         adaptive_beta_base +
         (beta - adaptive_beta_base) *
             (num_feasible_floorplans / static_cast<double>(num_perturbations));
-
-    if (total_delta_cost == 0.0) {
-      ++num_no_improvements;
-    } else {
-      num_no_improvements = 0;
-    }
 
     temperature *= r;
 
@@ -247,6 +241,7 @@ void Floorplanner::FastSA() {
     ++nth_iteration;
 
     double total_delta_cost = 0.0;
+    int num_accepted_floorplans = 0;
     int num_feasible_floorplans = 0;
 
     for (int i = 0; i < num_perturbations; ++i) {
@@ -260,6 +255,7 @@ void Floorplanner::FastSA() {
       if (delta_cost < 0) {
         total_delta_cost += delta_cost;
 
+        ++num_accepted_floorplans;
         floorplan = new_floorplan;
         last_cost = cost;
 
@@ -278,6 +274,7 @@ void Floorplanner::FastSA() {
         if (rand() / static_cast<double>(RAND_MAX) < p) {
           total_delta_cost += delta_cost;
 
+          ++num_accepted_floorplans;
           floorplan = new_floorplan;
           last_cost = cost;
         }
@@ -293,6 +290,11 @@ void Floorplanner::FastSA() {
     /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
     /* cout << "  Best area: " << best_floorplan_.area() */
     /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
+
+    if (num_accepted_floorplans / static_cast<double>(num_perturbations) <
+        0.05) {
+      break;
+    }
 
     adaptive_alpha =
         adaptive_alpha_base +
