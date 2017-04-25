@@ -17,14 +17,15 @@ int main(int argc, char* argv[]) {
   // clang-format off
   options.add_options()
     ("help,h", "Print help messages")
-    ("seed", po::value<long>(), "Seed for random number generator")
-    ("sa", po::bool_switch(), "Use classical SA")
-    ("draw", po::value<string>(), "Draw floorplans")
-    ("draw-only-best", po::value<string>(), "Draw only best floorplan")
-    ("alpha", po::value<double>()->required(), "Alpha")
-    ("block-input", po::value<string>()->required(), "Block input")
-    ("net-input", po::value<string>()->required(), "Net input")
-    ("output", po::value<string>()->required(), "Output");
+    ("seed", po::value<long>()->value_name("NUM"), "Seed for random number generator")
+    ("sa", po::value<string>()->value_name("MODE")->default_value("both"), "SA mode: classical, fast or both")
+    ("draw-all", po::value<string>()->value_name("FILE"), "Draw all floorplans")
+    ("draw-only-best", po::value<string>()->value_name("FILE"), "Draw only best floorplan")
+    ("alpha", po::value<double>()->value_name("NUM")->required(), "Alpha")
+    ("block-input", po::value<string>()->value_name("FILE")->required(), "Block input")
+    ("net-input", po::value<string>()->value_name("FILE")->required(), "Net input")
+    ("output", po::value<string>()->value_name("FILE")->required(), "Output")
+    ;
   // clang-format on
 
   po::positional_options_description positional_options;
@@ -43,10 +44,9 @@ int main(int argc, char* argv[]) {
 
   if (arguments.count("help") || argc < 5) {
     cout << "Usage:" << endl;
-    cout
-        << "  " << argv[0]
-        << " [--seed <number>] [--sa] [--draw <file>] [--draw-only-best <file>]"
-        << " <alpha> <block-input> <net-input> <output>" << endl;
+    cout << "  " << argv[0] << " [--seed <number>] [--sa <classical|fast|both>]"
+         << " [--draw-all <file>] [--draw-only-best <file>]"
+         << " <alpha> <block-input> <net-input> <output>" << endl;
     cout << options;
     return 0;
   }
@@ -69,11 +69,12 @@ int main(int argc, char* argv[]) {
   Database database(block_input, net_input);
   /* database.Print(); */
 
-  const bool is_using_fast_sa = arguments.count("sa") == 1 ? false : true;
+  const string sa_mode =
+      arguments.count("sa") == 1 ? arguments["sa"].as<string>() : "both";
 
-  const bool is_drawing = arguments.count("draw") == 1 ? true : false;
+  const bool is_drawing = arguments.count("draw-all") == 1 ? true : false;
 
-  Floorplanner floorplanner(database, alpha, is_using_fast_sa, is_drawing);
+  Floorplanner floorplanner(database, alpha, sa_mode, is_drawing);
   floorplanner.Run();
 
   double runtime = (clock() - time_begin) / static_cast<double>(CLOCKS_PER_SEC);
@@ -116,7 +117,7 @@ int main(int argc, char* argv[]) {
   }
 
   if (is_drawing) {
-    ofstream drawing_output(arguments["draw"].as<string>());
+    ofstream drawing_output(arguments["draw-all"].as<string>());
     Json drawing = floorplanner.drawing();
     fs::path block_input_path(arguments["block-input"].as<string>());
     drawing["benchmark"] = block_input_path.stem().string();

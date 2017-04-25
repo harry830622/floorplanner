@@ -7,10 +7,10 @@ using namespace std;
 using Json = nlohmann::json;
 
 Floorplanner::Floorplanner(const Database& database, double alpha,
-                           bool is_using_fast_sa, bool is_drawing)
+                           const string& sa_mode, bool is_drawing)
     : database_(database),
       alpha_(alpha),
-      is_using_fast_sa_(is_using_fast_sa),
+      sa_mode_(sa_mode),
       is_drawing_(is_drawing),
       min_area_(numeric_limits<double>::max()),
       max_area_(0.0),
@@ -78,15 +78,44 @@ const Floorplan& Floorplanner::best_floorplan() const {
 }
 
 void Floorplanner::Run() {
-  do {
-    drawing_ = Json::object();
+  if (sa_mode_ == "classical") {
+    do {
+      drawing_ = Json::object();
 
-    if (is_using_fast_sa_) {
-      FastSA();
-    } else {
       SA();
+    } while (best_floorplan_.area() == 0.0);
+  } else if (sa_mode_ == "fast") {
+    do {
+      drawing_ = Json::object();
+
+      FastSA();
+    } while (best_floorplan_.area() == 0.0);
+  } else {
+    Floorplan initial_floorplan(best_floorplan_);
+
+    do {
+      drawing_ = Json::object();
+
+      SA();
+    } while (best_floorplan_.area() == 0.0);
+    Floorplan floorplan_sa(best_floorplan_);
+
+    best_floorplan_ = initial_floorplan;
+    do {
+      drawing_ = Json::object();
+
+      FastSA();
+    } while (best_floorplan_.area() == 0.0);
+    Floorplan floorplan_fsa(best_floorplan_);
+
+    const double beta = 1.0 - alpha_;
+    if (ComputeCost(floorplan_sa, alpha_, beta) <
+        ComputeCost(floorplan_fsa, alpha_, beta)) {
+      best_floorplan_ = floorplan_sa;
+    } else {
+      best_floorplan_ = floorplan_fsa;
     }
-  } while (best_floorplan_.area() == 0.0);
+  }
 }
 
 void Floorplanner::SA() {

@@ -59,8 +59,9 @@ app.use(
     });
 
     await new Promise((resolve, reject) => {
+      console.log(isDrawingAll);
       exec(
-        `./fp_static --sa ${isDrawingAll ? '--draw' : '--draw-only-best'} ${drawingName} ${alpha} ${blockInputName} ${netInputName} ${outputName}`,
+        `./fp_static --sa ${sa} ${isDrawingAll ? '--draw-all' : '--draw-only-best'} ${drawingName} ${alpha} ${blockInputName} ${netInputName} ${outputName}`,
         (err) => {
           if (err) {
             reject(err);
