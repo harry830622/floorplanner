@@ -45,14 +45,14 @@ const actionCreators = (() => {
     };
   }
 
-  function fetchDrawingAsync(benchmark) {
+  function fetchDrawingAsync(payload) {
     return (dispatch) => {
       dispatch(fetchDrawing());
 
       return fetch('/drawing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(benchmark),
+        body: JSON.stringify(payload),
       })
         .then(res => res.json())
         .then(json => dispatch(receiveDrawing(json)))

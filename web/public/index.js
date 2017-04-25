@@ -3,6 +3,7 @@ const {
   fetchDrawingAsync,
   receiveDrawing,
   toggleIsPlaying,
+  setConfig,
   backward,
   forward,
   fastBackward,
@@ -24,7 +25,6 @@ openInput.addEventListener(
       let numLoadedFiles = 0;
       for (let i = 0; i < files.length; i += 1) {
         const file = files[i];
-        const benchmarkName = file.name.split('.')[0];
         const fileReader = new FileReader();
         fileReader.onload = (e) => {
           numLoadedFiles += 1;
@@ -35,11 +35,15 @@ openInput.addEventListener(
             netText = text;
           }
           if (numLoadedFiles === 2) {
+            const { config } = store.getState();
             store.dispatch(
               fetchDrawingAsync({
-                name: benchmarkName,
-                blockInput: blockText,
-                netInput: netText,
+                benchmark: {
+                  name: file.name.split('.')[0],
+                  blockInput: blockText,
+                  netInput: netText,
+                },
+                config,
               })
             );
           }
@@ -100,6 +104,46 @@ store.subscribe(() => {
     loadingDimmer.classList.remove('active');
   }
 });
+
+const settingsLink = document.querySelector('#settings-link');
+
+settingsLink.addEventListener(
+  'click',
+  () => {
+    $('#settings-modal').modal('show');
+  },
+  false
+);
+
+const alphaInput = document.querySelector('#alpha-input');
+
+alphaInput.addEventListener(
+  'change',
+  () => {
+    store.dispatch(setConfig({ alpha: alphaInput.value }));
+  },
+  false
+);
+
+const saSelect = document.querySelector('#sa-select');
+
+saSelect.addEventListener(
+  'change',
+  () => {
+    store.dispatch(setConfig({ sa: saSelect.value }));
+  },
+  false
+);
+
+const isDrawingAllInput = document.querySelector('#is-drawing-all-input');
+
+isDrawingAllInput.addEventListener(
+  'change',
+  () => {
+    store.dispatch(setConfig({ isDrawingAll: isDrawingAllInput.checked }));
+  },
+  false
+);
 
 const playBtn = document.querySelector('#play-btn');
 const backwardBtn = document.querySelector('#backward-btn');
@@ -168,8 +212,24 @@ fastForwardBtn.addEventListener(
 );
 
 store.subscribe(() => {
-  const { isPlaying } = store.getState();
+  const { drawing } = store.getState();
+  if (drawing.iterations) {
+    fastBackwardBtn.classList.remove('disabled');
+    backwardBtn.classList.remove('disabled');
+    playBtn.classList.remove('disabled');
+    forwardBtn.classList.remove('disabled');
+    fastForwardBtn.classList.remove('disabled');
+  } else {
+    fastBackwardBtn.classList.add('disabled');
+    backwardBtn.classList.add('disabled');
+    playBtn.classList.add('disabled');
+    forwardBtn.classList.add('disabled');
+    fastForwardBtn.classList.add('disabled');
+  }
+});
 
+store.subscribe(() => {
+  const { isPlaying } = store.getState();
   if (isPlaying) {
     playBtn.querySelector('i.play').style.display = 'none';
     playBtn.querySelector('i.pause').style.display = 'inline-block';
@@ -450,7 +510,7 @@ function animate() {
       const { speed } = config;
 
       t += 1;
-      if (t % ((4 - speed) * 3) === 0) {
+      if (t % ((4 - speed) * 5) === 0) {
         store.dispatch(next(1));
       }
     }

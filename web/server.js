@@ -20,14 +20,16 @@ app.use(serve('./public'));
 
 app.use(
   route.post('/drawing', async (ctx) => {
-    const { name, blockInput, netInput } = ctx.request.body;
+    const {
+      benchmark: { name, blockInput, netInput },
+      config: { alpha, sa, isDrawingAll },
+    } = ctx.request.body;
     const id = uuid();
     const tmpDirName = id;
     const blockInputName = `${tmpDirName}/${name}.block`;
     const netInputName = `${tmpDirName}/${name}.net`;
     const outputName = `${tmpDirName}/${name}.out`;
     const drawingName = `${tmpDirName}/${name}.json`;
-    const alpha = 0.5;
 
     await new Promise((resolve, reject) => {
       fs.mkdir(tmpDirName, (err) => {
@@ -58,7 +60,7 @@ app.use(
 
     await new Promise((resolve, reject) => {
       exec(
-        `./fp_static --sa --draw ${drawingName} ${alpha} ${blockInputName} ${netInputName} ${outputName}`,
+        `./fp_static --sa ${isDrawingAll ? '--draw' : '--draw-only-best'} ${drawingName} ${alpha} ${blockInputName} ${netInputName} ${outputName}`,
         (err) => {
           if (err) {
             reject(err);

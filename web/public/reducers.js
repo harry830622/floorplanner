@@ -129,7 +129,10 @@ const reducer = (() => {
     }
   }
 
-  function config(state = { is_using_sa: true, speed: 1 }, action) {
+  function config(
+    state = { alpha: 0.5, sa: 'classical', isDrawingAll: false, speed: 1 },
+    action
+  ) {
     switch (action.type) {
       case SET_CONFIG: {
         return Object.assign({}, state, action.config);

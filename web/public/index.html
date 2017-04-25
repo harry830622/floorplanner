@@ -24,7 +24,7 @@
         Screenshot
       </a>
       <div class="right menu">
-        <a class="item">
+        <a id="settings-link" class="item">
           <i class="setting icon"></i>
           Settings
         </a>
@@ -41,20 +41,20 @@
             <canvas id="floorplan-canvas"></canvas>
             <div class="ui divider"></div>
             <div class="ui buttons">
-              <button id="fast-backward-btn" class="large ui icon button" type="button">
+              <button id="fast-backward-btn" class="ui large icon button disabled" type="button">
                 <i class="fast backward icon"></i>
               </button>
-              <button id="backward-btn" class="large ui icon button" type="button">
+              <button id="backward-btn" class="ui large icon button disabled" type="button">
                 <i class="backward icon"></i>
               </button>
-              <button id="play-btn" class="large ui icon button" type="button">
+              <button id="play-btn" class="ui large icon button disabled" type="button">
                 <i class="play icon"></i>
                 <i class="pause icon" style="display: none;"></i>
               </button>
-              <button id="forward-btn" class="large ui icon button" type="button">
+              <button id="forward-btn" class="ui large icon button disabled" type="button">
                 <i class="forward icon"></i>
               </button>
-              <button id="fast-forward-btn" class="large ui icon button" type="button">
+              <button id="fast-forward-btn" class="ui large icon button disabled" type="button">
                 <i class="fast forward icon"></i>
               </button>
             </div>
@@ -141,12 +141,41 @@
       </div>
     </main>
 
-    <p style="position: absolute; bottom: -5px; left: 10px; font-size: 12px">
+    <p style="position: absolute; bottom: 0px; left: 10px; font-size: 12px">
       Made with <i class="heart icon"></i> by Yu-Hsuan Chang
     </p>
 
     <div id="loading-dimmer" class="ui page dimmer">
-      <div class="ui massive text loader">Floorplanning</div>
+      <div class="ui massive text loader">Loading</div>
+    </div>
+
+    <div id="settings-modal" class="ui small modal">
+      <div class="header">Settings</div>
+      <div class="content">
+        <div class="ui form">
+          <div class="two fields">
+            <div class="field">
+              <label>Alpha</label>
+              <input id="alpha-input" type="number" min="0" max="1" step="0.01" value="0.5" />
+            </div>
+            <div class="field">
+              <label>SA</label>
+              <select id="sa-select" class="ui dropdown">
+                <option value="classical">Classical</option>
+                <option value="fast">Fast</option>
+              </select>
+            </div>
+          </div>
+          <div class="ui segment">
+            <div class="field">
+              <div class="ui toggle checkbox">
+                <input id="is-drawing-all-input" type="checkbox" />
+                <label>Draw all perturbations</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
