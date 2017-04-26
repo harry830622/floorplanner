@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css">
+    <title>Floorplanner</title>
+  </head>
+  <body>
+    <div class="ui borderless labeled icon menu">
+      <a id="open-link" class="item">
+        <i class="folder open icon"></i>
+        Open...
+      </a>
+      <a id="rerun-link" class="item">
+        <i class="repeat icon"></i>
+        Rerun
+      </a>
+      <a id="upload-link" class="item">
+        <i class="upload icon"></i>
+        Upload
+      </a>
+      <a id="download-link" class="item">
+        <i class="download icon"></i>
+        Dowload
+      </a>
+      <a id="screenshot-link" class="item">
+        <i class="photo icon"></i>
+        Screenshot
+      </a>
+      <div class="right menu">
+        <a id="settings-link" class="item">
+          <i class="setting icon"></i>
+          Settings
+        </a>
+      </div>
+    </div>
+
+    <input id="open-input" type="file" multiple style="display: none;" />
+    <input id="upload-input" type="file" style="display: none;" />
+
+    <main class="ui container">
+      <div class="ui stackable grid">
+        <div class="twelve wide column" style="text-align: center;">
+          <div class="ui segment">
+            <canvas id="floorplan-canvas"></canvas>
+            <div class="ui divider"></div>
+            <div class="ui buttons">
+              <button id="fast-backward-btn" class="ui large icon button disabled" type="button">
+                <i class="fast backward icon"></i>
+              </button>
+              <button id="step-backward-btn" class="ui large icon button disabled" type="button" style="display: none;">
+                <i class="step backward icon"></i>
+              </button>
+              <button id="backward-btn" class="ui large icon button disabled" type="button">
+                <i class="backward icon"></i>
+              </button>
+              <button id="play-btn" class="ui large icon button disabled" type="button">
+                <i class="play icon"></i>
+                <i class="pause icon" style="display: none;"></i>
+              </button>
+              <button id="forward-btn" class="ui large icon button disabled" type="button">
+                <i class="forward icon"></i>
+              </button>
+              <button id="step-forward-btn" class="ui large icon button disabled" type="button" style="display: none;">
+                <i class="step forward icon"></i>
+              </button>
+              <button id="fast-forward-btn" class="ui large icon button disabled" type="button">
+                <i class="fast forward icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="four wide column" style="text-align: center;">
+          <div class="ui vertical segment">
+            <div id="name-stat" class="ui statistic">
+              <div class="label">Name</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="outline-width-stat" class="ui small statistic">
+              <div class="label">Outline Width</div>
+              <div class="value">N/A</div>
+            </div>
+            <div id="outline-height-stat" class="ui small statistic">
+              <div class="label">Outline Height</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="width-stat" class="ui small statistic">
+              <div class="label">
+                <span style="visibility: hidden;">Out</span>
+                Width
+                <span style="visibility: hidden;">lne</span>
+              </div>
+              <div class="value">N/A</div>
+            </div>
+            <div id="height-stat" class="ui small statistic">
+              <div class="label">
+                <span style="visibility: hidden;">Out</span>
+                Height
+                <span style="visibility: hidden;">lne</span>
+              </div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="area-stat" class="ui tiny statistic">
+              <div class="label">Area</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="wirelength-stat" class="ui tiny statistic">
+              <div class="label">Wirelength</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="cost-stat" class="ui tiny statistic">
+              <div class="label">Cost</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="alpha-stat" class="ui mini statistic">
+              <div class="label">Alpha</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="temperature-stat" class="ui mini statistic">
+              <div class="label">Temperature</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="nth-iteration-stat" class="ui mini statistic">
+              <div class="label">Nth Iteration</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+          <div class="ui vertical segment">
+            <div id="nth-perturbation-stat" class="ui mini statistic">
+              <div class="label">Nth Perturbation</div>
+              <div class="value">N/A</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <p style="position: absolute; bottom: 0px; left: 10px; font-size: 12px">
+      Made with <i class="coffee icon"></i> by Yu-Hsuan Chang
+    </p>
+
+    <div id="loading-dimmer" class="ui page dimmer">
+      <div class="ui massive text loader">Loading</div>
+    </div>
+
+    <div id="settings-modal" class="ui small modal">
+      <div class="header">Settings</div>
+      <div class="content">
+        <div class="ui form">
+          <div class="two fields">
+            <div class="field">
+              <label>Alpha</label>
+              <input id="alpha-input" type="number" min="0" max="1" step="0.01" value="0.5" />
+            </div>
+            <div class="field">
+              <label>SA</label>
+              <select id="sa-select" class="ui dropdown">
+                <option value="classical">Classical</option>
+                <option value="fast">Fast</option>
+              </select>
+            </div>
+          </div>
+          <div class="ui segment">
+            <div class="field">
+              <div class="ui toggle checkbox">
+                <input id="is-drawing-all-input" type="checkbox" />
+                <label>Draw all perturbations</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pixi.js/4.5.0/pixi.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/redux/3.6.0/redux.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/redux.thunk/2.2.0/redux-thunk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/redux.logger/3.0.1/index.min.js"></script>
+    <script src="./actions.js"></script>
+    <script src="./reducers.js"></script>
+    <script src="./store.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>

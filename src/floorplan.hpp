@@ -4,9 +4,13 @@
 #include "./b_star_tree.hpp"
 #include "./database.hpp"
 
+#include "./json.hpp"
+
 class Floorplan {
  public:
-  Floorplan(int num_macros);
+  Floorplan(int num_macros, bool is_drawing);
+
+  const nlohmann::json& drawing() const;
 
   int num_macros() const;
   double width() const;
@@ -19,6 +23,7 @@ class Floorplan {
   void Pack(const Database& database);
 
  private:
+  bool is_drawing_;
   double width_;
   double height_;
   double wirelength_;
@@ -26,6 +31,8 @@ class Floorplan {
   std::vector<int> macro_id_by_node_id_;
   std::vector<bool> is_macro_rotated_by_id_;
   std::vector<std::pair<Point, Point>> macro_bounding_box_by_id_;
+
+  nlohmann::json drawing_;
 };
 
 #endif

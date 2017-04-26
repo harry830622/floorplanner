@@ -22,9 +22,9 @@ FLOORPLANNER_HPP	floorplanner.hpp	2;"	d
 FLOORPLAN_HPP	floorplan.hpp	2;"	d
 FastSA	floorplanner.cpp	/^void Floorplanner::FastSA() {$/;"	f	class:Floorplanner
 FindMaxYBetween	contour.cpp	/^double Contour::FindMaxYBetween(double x_begin, double x_end) const {$/;"	f	class:Contour
-Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros)$/;"	f	class:Floorplan
+Floorplan	floorplan.cpp	/^Floorplan::Floorplan(int num_macros, bool is_drawing)$/;"	f	class:Floorplan
 Floorplan	floorplan.hpp	/^class Floorplan {$/;"	c
-Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha)$/;"	f	class:Floorplanner
+Floorplanner	floorplanner.cpp	/^Floorplanner::Floorplanner(const Database& database, double alpha,$/;"	f	class:Floorplanner
 Floorplanner	floorplanner.hpp	/^class Floorplanner {$/;"	c
 HPWL	point.cpp	/^double Point::HPWL(const Point& point_a, const Point& point_b) {$/;"	f	class:Point
 Insert	b_star_tree.cpp	/^void BStarTree::Insert(int inserted_node_id, int target_node_id,$/;"	f	class:BStarTree
@@ -150,6 +150,10 @@ delimiters_	simple_parser.hpp	/^  Delimiters delimiters_;$/;"	m	class:simple_par
 depth	json.hpp	/^        int depth = 0;$/;"	m	class:nlohmann::basic_json::parser
 detail	json.hpp	/^namespace detail$/;"	n	namespace:nlohmann
 diff	json.hpp	/^    static basic_json diff(const basic_json& source,$/;"	f	class:nlohmann::basic_json
+drawing	floorplan.cpp	/^const Json& Floorplan::drawing() const { return drawing_; }$/;"	f	class:Floorplan
+drawing	floorplanner.cpp	/^const Json& Floorplanner::drawing() const { return drawing_; }$/;"	f	class:Floorplanner
+drawing_	floorplan.hpp	/^  nlohmann::json drawing_;$/;"	m	class:Floorplan
+drawing_	floorplanner.hpp	/^  nlohmann::json drawing_;$/;"	m	class:Floorplanner
 dump	json.hpp	/^    string_t dump(const int indent = -1) const$/;"	f	class:nlohmann::basic_json
 dump	json.hpp	/^    void dump(std::ostream& o,$/;"	f	class:nlohmann::basic_json
 emplace	json.hpp	/^    std::pair<iterator, bool> emplace(Args&& ... args)$/;"	f	class:nlohmann::basic_json
@@ -230,6 +234,8 @@ is_compatible_integer_type_impl	json.hpp	/^struct is_compatible_integer_type_imp
 is_compatible_object_type	json.hpp	/^struct is_compatible_object_type$/;"	s	namespace:nlohmann::detail
 is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl : std::false_type {};$/;"	s	namespace:nlohmann::detail
 is_compatible_object_type_impl	json.hpp	/^struct is_compatible_object_type_impl<true, RealType, CompatibleObjectType>$/;"	s	namespace:nlohmann::detail
+is_drawing_	floorplan.hpp	/^  bool is_drawing_;$/;"	m	class:Floorplan
+is_drawing_	floorplanner.hpp	/^  bool is_drawing_;$/;"	m	class:Floorplanner
 is_macro_existed	database.cpp	/^bool Database::is_macro_existed(const string& macro_name) const {$/;"	f	class:Database
 is_macro_rotated_by_id_	floorplan.hpp	/^  std::vector<bool> is_macro_rotated_by_id_;$/;"	m	class:Floorplan
 is_root	json.hpp	/^        bool is_root() const$/;"	f	class:nlohmann::basic_json::json_pointer
@@ -441,6 +447,7 @@ right_child_id	b_star_tree.cpp	/^int BStarTree::right_child_id(int node_id) cons
 right_child_id_	b_star_tree.hpp	/^    int right_child_id_;$/;"	m	class:BStarTree::Node
 root_id	b_star_tree.cpp	/^int BStarTree::root_id() const { return root_id_; }$/;"	f	class:BStarTree
 root_id_	b_star_tree.hpp	/^  int root_id_;$/;"	m	class:BStarTree
+sa_mode_	floorplanner.hpp	/^  std::string sa_mode_;$/;"	m	class:Floorplanner
 scan	json.hpp	/^        token_type scan()$/;"	f	class:nlohmann::basic_json::lexer
 simple_parser	simple_parser.hpp	/^namespace simple_parser {$/;"	n
 split	json.hpp	/^        static std::vector<std::string> split(const std::string& reference_string)$/;"	f	class:nlohmann::basic_json::json_pointer
