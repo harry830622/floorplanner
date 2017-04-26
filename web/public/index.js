@@ -95,6 +95,22 @@ uploadLink.addEventListener(
   false
 );
 
+const downloadLink = document.querySelector('#download-link');
+
+store.subscribe(() => {
+  const { isFetchingDrawing, drawing } = store.getState();
+
+  if (!isFetchingDrawing) {
+    if (drawing.bestFloorplan) {
+      downloadLink.setAttribute(
+        'href',
+        `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(drawing))}`
+      );
+      downloadLink.setAttribute('download', `${drawing.benchmark}.json`);
+    }
+  }
+});
+
 store.subscribe(() => {
   const { isFetchingDrawing, frame } = store.getState();
 
