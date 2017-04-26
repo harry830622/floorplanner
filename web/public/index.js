@@ -13,6 +13,19 @@ const {
   fastForward,
 } = actionCreators;
 
+const canvasWidth = 700;
+const canvasHeight = 700;
+
+const renderer = PIXI.autoDetectRenderer({
+  width: canvasWidth,
+  height: canvasHeight,
+  view: document.querySelector('#floorplan-canvas'),
+  backgroundColor: 0xf9f7f7,
+  preserveDrawingBuffer: true,
+});
+
+const stage = new PIXI.Container();
+
 const openInput = document.querySelector('#open-input');
 const openLink = document.querySelector('#open-link');
 
@@ -102,11 +115,18 @@ store.subscribe(() => {
 
   if (!isFetchingDrawing) {
     if (drawing.bestFloorplan) {
-      downloadLink.setAttribute(
-        'href',
-        `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(drawing))}`
-      );
-      downloadLink.setAttribute('download', `${drawing.benchmark.name}.json`);
+      downloadLink.href = `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(drawing))}`;
+      downloadLink.download = `${drawing.benchmark.name}.json`;
+    }
+  }
+});
+
+store.subscribe(() => {
+  const { isFetchingDrawing, isPlaying } = store.getState();
+
+  if (isFetchingDrawing) {
+    if (isPlaying) {
+      store.dispatch(toggleIsPlaying());
     }
   }
 });
@@ -114,8 +134,10 @@ store.subscribe(() => {
 store.subscribe(() => {
   const { isFetchingDrawing, frame } = store.getState();
 
-  if (isFetchingDrawing && frame.nthIteration !== -2) {
-    store.dispatch(fastForward());
+  if (isFetchingDrawing) {
+    if (frame.nthIteration !== -2) {
+      store.dispatch(fastForward());
+    }
   }
 });
 
@@ -127,6 +149,22 @@ rerunLink.addEventListener(
     const { config, drawing: { benchmark } } = store.getState();
     if (benchmark) {
       store.dispatch(fetchDrawingAsync({ benchmark, config }));
+    }
+  },
+  false
+);
+
+const screenshotLink = document.querySelector('#screenshot-link');
+
+screenshotLink.addEventListener(
+  'click',
+  () => {
+    const { config, drawing: { bestFloorplan } } = store.getState();
+    if (bestFloorplan) {
+      const a = document.createElement('a');
+      a.href = renderer.plugins.extract.base64();
+      a.download = 'screenshot.png';
+      a.click();
     }
   },
   false
@@ -459,18 +497,6 @@ store.subscribe(() => {
     }
   }
 });
-
-const canvasWidth = 700;
-const canvasHeight = 700;
-
-const renderer = PIXI.autoDetectRenderer({
-  width: canvasWidth,
-  height: canvasHeight,
-  view: document.querySelector('#floorplan-canvas'),
-  backgroundColor: 0xf9f7f7,
-});
-
-const stage = new PIXI.Container();
 
 function computeScale({ width: targetWidth, height: targetHeight }, ...objs) {
   const { width: maxObjWidth, height: maxObjHeight } = objs.reduce(
