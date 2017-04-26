@@ -61,8 +61,11 @@ int main(int argc, char* argv[]) {
       arguments.count("seed") == 1 ? arguments["seed"].as<long>() : time(NULL);
   srand(seed);
 
-  ifstream block_input(arguments["block-input"].as<string>());
-  ifstream net_input(arguments["net-input"].as<string>());
+  const string block_input_name = arguments["block-input"].as<string>();
+  const string net_input_name = arguments["net-input"].as<string>();
+
+  ifstream block_input(block_input_name);
+  ifstream net_input(net_input_name);
 
   clock_t time_begin = clock();
 
@@ -119,8 +122,15 @@ int main(int argc, char* argv[]) {
   if (is_drawing) {
     ofstream drawing_output(arguments["draw-all"].as<string>());
     Json drawing = floorplanner.drawing();
-    fs::path block_input_path(arguments["block-input"].as<string>());
-    drawing["benchmark"] = block_input_path.stem().string();
+    fs::path block_input_path(block_input_name);
+    drawing["benchmark"] = Json::object();
+    drawing["benchmark"]["name"] = block_input_path.stem().string();
+    ifstream blockInput(block_input_name);
+    ifstream netInput(net_input_name);
+    drawing["benchmark"]["blockInput"] = string(
+        istreambuf_iterator<char>(blockInput), istreambuf_iterator<char>());
+    drawing["benchmark"]["netInput"] = string(
+        istreambuf_iterator<char>(netInput), istreambuf_iterator<char>());
     drawing["alpha"] = alpha;
     drawing["outline"] = {{"width", database.outline_width()},
                           {"height", database.outline_height()}};
@@ -136,8 +146,15 @@ int main(int argc, char* argv[]) {
   if (is_drawing_only_best) {
     ofstream drawing_output(arguments["draw-only-best"].as<string>());
     Json drawing = Json::object();
-    fs::path block_input_path(arguments["block-input"].as<string>());
-    drawing["benchmark"] = block_input_path.stem().string();
+    fs::path block_input_path(block_input_name);
+    drawing["benchmark"] = Json::object();
+    drawing["benchmark"]["name"] = block_input_path.stem().string();
+    ifstream blockInput(block_input_name);
+    ifstream netInput(net_input_name);
+    drawing["benchmark"]["blockInput"] = string(
+        istreambuf_iterator<char>(blockInput), istreambuf_iterator<char>());
+    drawing["benchmark"]["netInput"] = string(
+        istreambuf_iterator<char>(netInput), istreambuf_iterator<char>());
     drawing["alpha"] = alpha;
     drawing["outline"] = {{"width", database.outline_width()},
                           {"height", database.outline_height()}};

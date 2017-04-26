@@ -77,19 +77,17 @@ app.use(
         }
         resolve(JSON.parse(data));
       });
-    })
-      .then(json => Object.assign({}, json, { benchmark: name }))
-      .then(
-        drawing =>
-          new Promise((resolve, reject) => {
-            fs.writeFile(drawingName, JSON.stringify(drawing), (err) => {
-              if (err) {
-                reject(err);
-              }
-              resolve();
-            });
-          })
-      );
+    }).then(
+      drawing =>
+        new Promise((resolve, reject) => {
+          fs.writeFile(drawingName, JSON.stringify(drawing), (err) => {
+            if (err) {
+              reject(err);
+            }
+            resolve();
+          });
+        })
+    );
 
     await send(ctx, drawingName);
 

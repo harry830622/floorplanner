@@ -106,7 +106,7 @@ store.subscribe(() => {
         'href',
         `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(drawing))}`
       );
-      downloadLink.setAttribute('download', `${drawing.benchmark}.json`);
+      downloadLink.setAttribute('download', `${drawing.benchmark.name}.json`);
     }
   }
 });
@@ -118,6 +118,19 @@ store.subscribe(() => {
     store.dispatch(fastForward());
   }
 });
+
+const rerunLink = document.querySelector('#rerun-link');
+
+rerunLink.addEventListener(
+  'click',
+  () => {
+    const { config, drawing: { benchmark } } = store.getState();
+    if (benchmark) {
+      store.dispatch(fetchDrawingAsync({ benchmark, config }));
+    }
+  },
+  false
+);
 
 const loadingDimmer = document.querySelector('#loading-dimmer');
 
@@ -399,7 +412,7 @@ store.subscribe(() => {
   const { nthIteration, nthFloorplan } = frame;
 
   if (benchmark) {
-    nameStatValue.innerHTML = benchmark;
+    nameStatValue.innerHTML = benchmark.name;
     outlineWidthStatValue.innerHTML = outline.width;
     outlineHeightStatValue.innerHTML = outline.height;
     alphaStatValue.innerHTML = alpha;
