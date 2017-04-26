@@ -2,21 +2,27 @@ const actions = (() => {
   const FETCH_DRAWING = 'FETCH_DRAWING';
   const RECEIVE_DRAWING = 'RECEIVE_DRAWING';
   const TOGGLE_IS_PLAYING = 'TOGGLE_IS_PLAYING';
-  const SET_NTH_FLOORPLAN = 'SET_NTH_FLOORPLAN';
-  const NEXT = 'NEXT';
   const SET_CONFIG = 'SET_CONFIG';
+  const NEXT = 'NEXT';
   const BACKWARD = 'BACKWARD';
   const FORWARD = 'FORWARD';
+  const STEP_BACKWARD = 'STEP_BACKWARD';
+  const STEP_FORWARD = 'STEP_FORWARD';
+  const FAST_BACKWARD = 'FAST_BACKWARD';
+  const FAST_FORWARD = 'FAST_FORWARD';
 
   return {
     FETCH_DRAWING,
     RECEIVE_DRAWING,
     TOGGLE_IS_PLAYING,
-    SET_NTH_FLOORPLAN,
-    NEXT,
     SET_CONFIG,
+    NEXT,
     BACKWARD,
     FORWARD,
+    STEP_BACKWARD,
+    STEP_FORWARD,
+    FAST_BACKWARD,
+    FAST_FORWARD,
   };
 })();
 
@@ -25,11 +31,14 @@ const actionCreators = (() => {
     FETCH_DRAWING,
     RECEIVE_DRAWING,
     TOGGLE_IS_PLAYING,
-    SET_NTH_FLOORPLAN,
-    NEXT,
     SET_CONFIG,
+    NEXT,
     BACKWARD,
     FORWARD,
+    STEP_BACKWARD,
+    STEP_FORWARD,
+    FAST_BACKWARD,
+    FAST_FORWARD,
   } = actions;
 
   function fetchDrawing() {
@@ -66,24 +75,16 @@ const actionCreators = (() => {
     };
   }
 
-  function setNthFloorplan(nthFloorplan) {
-    return {
-      type: SET_NTH_FLOORPLAN,
-      nthFloorplan,
-    };
-  }
-
-  function next(numMacros) {
-    return {
-      type: NEXT,
-      numMacros,
-    };
-  }
-
   function setConfig(config) {
     return {
       type: SET_CONFIG,
       config,
+    };
+  }
+
+  function next() {
+    return {
+      type: NEXT,
     };
   }
 
@@ -99,12 +100,28 @@ const actionCreators = (() => {
     };
   }
 
+  function stepBackward() {
+    return {
+      type: STEP_BACKWARD,
+    };
+  }
+
+  function stepForward() {
+    return {
+      type: STEP_FORWARD,
+    };
+  }
+
   function fastBackward() {
-    return setNthFloorplan(-1);
+    return {
+      type: FAST_BACKWARD,
+    };
   }
 
   function fastForward() {
-    return setNthFloorplan(-2);
+    return {
+      type: FAST_FORWARD,
+    };
   }
 
   return {
@@ -115,6 +132,8 @@ const actionCreators = (() => {
     setConfig,
     backward,
     forward,
+    stepBackward,
+    stepForward,
     fastBackward,
     fastForward,
     next,

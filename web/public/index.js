@@ -4,11 +4,13 @@ const {
   receiveDrawing,
   toggleIsPlaying,
   setConfig,
+  next,
   backward,
   forward,
+  stepBackward,
+  stepForward,
   fastBackward,
   fastForward,
-  next,
 } = actionCreators;
 
 const openInput = document.querySelector('#open-input');
@@ -93,6 +95,14 @@ uploadLink.addEventListener(
   false
 );
 
+store.subscribe(() => {
+  const { isFetchingDrawing, frame } = store.getState();
+
+  if (isFetchingDrawing && frame.nthIteration !== -2) {
+    store.dispatch(fastForward());
+  }
+});
+
 const loadingDimmer = document.querySelector('#loading-dimmer');
 
 store.subscribe(() => {
@@ -148,13 +158,15 @@ isDrawingAllInput.addEventListener(
 const playBtn = document.querySelector('#play-btn');
 const backwardBtn = document.querySelector('#backward-btn');
 const forwardBtn = document.querySelector('#forward-btn');
+const stepBackwardBtn = document.querySelector('#step-backward-btn');
+const stepForwardBtn = document.querySelector('#step-forward-btn');
 const fastBackwardBtn = document.querySelector('#fast-backward-btn');
 const fastForwardBtn = document.querySelector('#fast-forward-btn');
 
 playBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetchingDrawing } = store.getState();
+    const { isFetchingDrawing, drawing } = store.getState();
 
     if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(toggleIsPlaying());
@@ -166,7 +178,7 @@ playBtn.addEventListener(
 backwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetchingDrawing } = store.getState();
+    const { isFetchingDrawing, isPlaying, drawing } = store.getState();
 
     if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(backward());
@@ -178,7 +190,7 @@ backwardBtn.addEventListener(
 forwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetchingDrawing } = store.getState();
+    const { isFetchingDrawing, isPlaying, drawing } = store.getState();
 
     if (drawing.iterations && !isFetchingDrawing) {
       store.dispatch(forward());
@@ -187,12 +199,54 @@ forwardBtn.addEventListener(
   false
 );
 
+stepBackwardBtn.addEventListener(
+  'click',
+  () => {
+    const { isFetchingDrawing, isPlaying, drawing } = store.getState();
+
+    if (drawing.iterations && !isFetchingDrawing) {
+      if (isPlaying) {
+        store.dispatch(toggleIsPlaying());
+      }
+      store.dispatch(stepBackward());
+    }
+  },
+  false
+);
+
+stepForwardBtn.addEventListener(
+  'click',
+  () => {
+    const { isFetchingDrawing, isPlaying, drawing } = store.getState();
+
+    if (drawing.iterations && !isFetchingDrawing) {
+      if (isPlaying) {
+        store.dispatch(toggleIsPlaying());
+      }
+      store.dispatch(stepForward());
+    }
+  },
+  false
+);
+
 fastBackwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetchingDrawing } = store.getState();
+    const { isFetchingDrawing, isPlaying, drawing } = store.getState();
 
     if (drawing.iterations && !isFetchingDrawing) {
+      fastBackwardBtn.classList.add('disabled');
+      stepBackwardBtn.classList.remove('disabled');
+      backwardBtn.classList.remove('disabled');
+      playBtn.classList.remove('disabled');
+      forwardBtn.classList.remove('disabled');
+      stepForwardBtn.classList.remove('disabled');
+      fastForwardBtn.classList.remove('disabled');
+
+      if (isPlaying) {
+        store.dispatch(toggleIsPlaying());
+      }
+
       store.dispatch(fastBackward());
     }
   },
@@ -202,9 +256,21 @@ fastBackwardBtn.addEventListener(
 fastForwardBtn.addEventListener(
   'click',
   () => {
-    const { drawing, isFetchingDrawing } = store.getState();
+    const { isFetchingDrawing, isPlaying, drawing } = store.getState();
 
     if (drawing.iterations && !isFetchingDrawing) {
+      fastBackwardBtn.classList.remove('disabled');
+      stepBackwardBtn.classList.add('disabled');
+      backwardBtn.classList.add('disabled');
+      playBtn.classList.add('disabled');
+      forwardBtn.classList.add('disabled');
+      stepForwardBtn.classList.add('disabled');
+      fastForwardBtn.classList.add('disabled');
+
+      if (isPlaying) {
+        store.dispatch(toggleIsPlaying());
+      }
+
       store.dispatch(fastForward());
     }
   },
@@ -213,29 +279,69 @@ fastForwardBtn.addEventListener(
 
 store.subscribe(() => {
   const { drawing } = store.getState();
+
   if (drawing.iterations) {
     fastBackwardBtn.classList.remove('disabled');
-    backwardBtn.classList.remove('disabled');
-    playBtn.classList.remove('disabled');
-    forwardBtn.classList.remove('disabled');
-    fastForwardBtn.classList.remove('disabled');
   } else {
     fastBackwardBtn.classList.add('disabled');
+    stepBackwardBtn.classList.add('disabled');
     backwardBtn.classList.add('disabled');
     playBtn.classList.add('disabled');
     forwardBtn.classList.add('disabled');
+    stepForwardBtn.classList.add('disabled');
     fastForwardBtn.classList.add('disabled');
   }
 });
 
 store.subscribe(() => {
   const { isPlaying } = store.getState();
+
   if (isPlaying) {
     playBtn.querySelector('i.play').style.display = 'none';
     playBtn.querySelector('i.pause').style.display = 'inline-block';
   } else {
     playBtn.querySelector('i.pause').style.display = 'none';
     playBtn.querySelector('i.play').style.display = 'inline-block';
+  }
+});
+
+store.subscribe(() => {
+  const { config } = store.getState();
+
+  if (config.speed === 1) {
+    backwardBtn.style.display = 'none';
+    stepBackwardBtn.style.display = 'inline-block';
+  } else {
+    backwardBtn.style.display = 'inline-block';
+    stepBackwardBtn.style.display = 'none';
+  }
+
+  if (config.speed === 3) {
+    forwardBtn.style.display = 'none';
+    stepForwardBtn.style.display = 'inline-block';
+  } else {
+    forwardBtn.style.display = 'inline-block';
+    stepForwardBtn.style.display = 'none';
+  }
+});
+
+store.subscribe(() => {
+  const { frame, drawing } = store.getState();
+
+  if (drawing.iterations) {
+    const numIterations = drawing.iterations.length;
+
+    if (frame.nthIteration <= 0) {
+      stepBackwardBtn.classList.add('disabled');
+    } else {
+      stepBackwardBtn.classList.remove('disabled');
+    }
+
+    if (frame.nthIteration >= numIterations - 1) {
+      stepForwardBtn.classList.add('disabled');
+    } else {
+      stepForwardBtn.classList.remove('disabled');
+    }
   }
 });
 
@@ -274,7 +380,7 @@ store.subscribe(() => {
     initial_floorplan: initialFloorplan,
     iterations,
   } = drawing;
-  const { nthFloorplan } = frame;
+  const { nthIteration, nthFloorplan } = frame;
 
   if (benchmark) {
     nameStatValue.innerHTML = benchmark;
@@ -283,7 +389,7 @@ store.subscribe(() => {
     alphaStatValue.innerHTML = alpha;
   }
 
-  if (nthFloorplan === -2) {
+  if (nthIteration === -2) {
     if (bestFloorplan) {
       widthStatValue.innerHTML = bestFloorplan.width;
       heightStatValue.innerHTML = bestFloorplan.height;
@@ -292,7 +398,7 @@ store.subscribe(() => {
       costStatValue.innerHTML =
         alpha * bestFloorplan.area + (1 - alpha) * bestFloorplan.wirelength;
     }
-  } else if (nthFloorplan === -1) {
+  } else if (nthIteration === -1) {
     if (initialFloorplan) {
       widthStatValue.innerHTML = initialFloorplan.width;
       heightStatValue.innerHTML = initialFloorplan.height;
@@ -305,20 +411,22 @@ store.subscribe(() => {
   } else if (iterations) {
     const numIterations = iterations.length;
     const numFloorplans = iterations[0].floorplans.length;
-    const nthIteration = Math.floor(nthFloorplan / numFloorplans);
-    if (nthIteration < numIterations) {
-      const iteration = iterations[nthIteration];
-      const nthPerturbation = nthFloorplan % numFloorplans;
-      const floorplan = iteration.floorplans[nthPerturbation];
-      widthStatValue.innerHTML = floorplan.width;
-      heightStatValue.innerHTML = floorplan.height;
-      areaStatValue.innerHTML = floorplan.area;
-      wirelengthStatValue.innerHTML = floorplan.wirelength;
-      costStatValue.innerHTML =
-        alpha * floorplan.area + (1 - alpha) * floorplan.wirelength;
-      nthIterationStatValue.innerHTML = `${nthIteration + 1}/${numIterations}`;
+    const iteration = iterations[nthIteration];
+
+    if (iteration) {
       temperatureStatValue.innerHTML = iteration.temperature;
-      nthPerturbationStatValue.innerHTML = `${nthPerturbation + 1}/${numFloorplans}`;
+      nthIterationStatValue.innerHTML = `${nthIteration + 1}/${numIterations}`;
+      nthPerturbationStatValue.innerHTML = `${nthFloorplan + 1}/${numFloorplans}`;
+
+      const floorplan = iteration.floorplans[nthFloorplan];
+      if (floorplan) {
+        widthStatValue.innerHTML = floorplan.width;
+        heightStatValue.innerHTML = floorplan.height;
+        areaStatValue.innerHTML = floorplan.area;
+        wirelengthStatValue.innerHTML = floorplan.wirelength;
+        costStatValue.innerHTML =
+          alpha * floorplan.area + (1 - alpha) * floorplan.wirelength;
+      }
     }
   }
 });
@@ -412,28 +520,32 @@ function drawMacro({ name, lowerLeft, upperRight }, scale) {
 
 store.subscribe(() => {
   const { isFetchingDrawing, frame, drawing } = store.getState();
-  const { nthFloorplan, nthMacro } = frame;
+  const { nthIteration, nthFloorplan, nthMacro } = frame;
+  const {
+    outline,
+    best_floorplan: bestFloorplan,
+    initial_floorplan: initialFloorplan,
+    iterations,
+  } = drawing;
 
   if (isFetchingDrawing) {
     stage.removeChildren();
   }
 
-  if (nthFloorplan === -2) {
-    if (drawing.best_floorplan) {
+  if (nthIteration === -2) {
+    if (bestFloorplan) {
       stage.removeChildren();
 
-      const { outline, best_floorplan } = drawing;
       const scale =
         computeScale(
-          {
-            width: canvasWidth,
-            height: canvasHeight,
-          },
+          { width: canvasWidth, height: canvasHeight },
           outline,
-          best_floorplan
+          bestFloorplan
         ) * 0.97;
+
       drawOutline(outline, scale);
-      best_floorplan.macros.forEach(({
+
+      bestFloorplan.macros.forEach(({
         name,
         lower_left: lowerLeft,
         upper_right: upperRight,
@@ -441,22 +553,20 @@ store.subscribe(() => {
         drawMacro({ name, lowerLeft, upperRight }, scale);
       });
     }
-  } else if (nthFloorplan === -1) {
-    if (drawing.initial_floorplan) {
+  } else if (nthIteration === -1) {
+    if (initialFloorplan) {
       stage.removeChildren();
 
-      const { outline, initial_floorplan } = drawing;
       const scale =
         computeScale(
-          {
-            width: canvasWidth,
-            height: canvasHeight,
-          },
+          { width: canvasWidth, height: canvasHeight },
           outline,
-          initial_floorplan
+          initialFloorplan
         ) * 0.97;
+
       drawOutline(outline, scale);
-      initial_floorplan.macros.forEach(({
+
+      initialFloorplan.macros.forEach(({
         name,
         lower_left: lowerLeft,
         upper_right: upperRight,
@@ -464,37 +574,30 @@ store.subscribe(() => {
         drawMacro({ name, lowerLeft, upperRight }, scale);
       });
     }
-  } else if (drawing.iterations) {
-    const { outline, iterations } = drawing;
-    const numIterations = iterations.length;
-    const numFloorplans = iterations[0].floorplans.length;
-    const nthIteration = Math.floor(nthFloorplan / numFloorplans);
-    if (nthIteration < numIterations) {
-      const iteration = iterations[nthIteration];
-      const nthPerturbation = nthFloorplan % numFloorplans;
-      const floorplan = iteration.floorplans[nthPerturbation];
-      const { macros } = floorplan;
-
+  } else if (iterations) {
+    const iteration = iterations[nthIteration];
+    if (iteration) {
       stage.removeChildren();
 
-      const scale =
-        computeScale(
-          {
-            width: canvasWidth,
-            height: canvasHeight,
-          },
-          outline,
-          floorplan
-        ) * 0.97;
+      const floorplan = iteration.floorplans[nthFloorplan];
+      if (floorplan) {
+        const scale =
+          computeScale(
+            { width: canvasWidth, height: canvasHeight },
+            outline,
+            floorplan
+          ) * 0.97;
 
-      drawOutline(outline, scale);
-      macros.slice(0, nthMacro + 1).forEach(({
-        name,
-        lower_left: lowerLeft,
-        upper_right: upperRight,
-      }) => {
-        drawMacro({ name, lowerLeft, upperRight }, scale);
-      });
+        drawOutline(outline, scale);
+
+        floorplan.macros.slice(0, nthMacro + 1).forEach(({
+          name,
+          lower_left: lowerLeft,
+          upper_right: upperRight,
+        }) => {
+          drawMacro({ name, lowerLeft, upperRight }, scale);
+        });
+      }
     }
   }
 });
@@ -503,15 +606,40 @@ let t = 0;
 function animate() {
   renderer.render(stage);
 
-  const { drawing, isPlaying, config } = store.getState();
+  const { isPlaying, config, frame, drawing } = store.getState();
 
   if (drawing.iterations) {
     if (isPlaying) {
+      const numIterations = drawing.iterations.length;
+
+      if (frame.nthIteration >= numIterations) {
+        store.dispatch(toggleIsPlaying());
+      }
+
       const { speed } = config;
 
       t += 1;
-      if (t % ((4 - speed) * 5) === 0) {
-        store.dispatch(next(1));
+      switch (speed) {
+        case 1: {
+          if (t % 60 === 0) {
+            store.dispatch(next());
+          }
+          break;
+        }
+        case 2: {
+          if (t % 20 === 0) {
+            store.dispatch(next());
+          }
+          break;
+        }
+        case 3: {
+          if (t % 5 === 0) {
+            store.dispatch(next());
+          }
+          break;
+        }
+        default:
+          break;
       }
     }
   }
