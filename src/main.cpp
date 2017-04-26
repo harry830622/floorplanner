@@ -125,7 +125,7 @@ int main(int argc, char* argv[]) {
     drawing["outline"] = {{"width", database.outline_width()},
                           {"height", database.outline_height()}};
     drawing["seed"] = seed;
-    drawing["best_floorplan"] = best_floorplan.drawing();
+    drawing["bestFloorplan"] = best_floorplan.drawing();
     drawing["runtime"] = runtime;
     drawing_output << drawing;
   }
@@ -142,8 +142,8 @@ int main(int argc, char* argv[]) {
     drawing["outline"] = {{"width", database.outline_width()},
                           {"height", database.outline_height()}};
     drawing["seed"] = seed;
-    drawing["best_floorplan"] = Json::object();
-    Json& best_floorplan_drawing = drawing["best_floorplan"];
+    drawing["bestFloorplan"] = Json::object();
+    Json& best_floorplan_drawing = drawing["bestFloorplan"];
     best_floorplan_drawing["macros"] = Json::array();
     for (int i = 0; i < database.num_macros(); ++i) {
       const int macro_id = i;
@@ -155,9 +155,9 @@ int main(int argc, char* argv[]) {
       const string& macro_name = macro.name();
       best_floorplan_drawing["macros"].push_back(
           {{"name", macro_name},
-           {"lower_left",
+           {"lowerLeft",
             {{"x", macro_lower_left.x()}, {"y", macro_lower_left.y()}}},
-           {"upper_right",
+           {"upperRight",
             {{"x", macro_upper_right.x()}, {"y", macro_upper_right.y()}}}});
     }
     best_floorplan_drawing["width"] = best_floorplan.width();

@@ -133,9 +133,9 @@ void Floorplanner::SA() {
   const double adaptive_beta_base = beta / 4.0;
 
   if (is_drawing_) {
-    drawing_["config"] = {{"initial_temperature", initial_temperature},
+    drawing_["config"] = {{"initialTemperature", initial_temperature},
                           {"r", r},
-                          {"num_perturbations", num_perturbations}};
+                          {"numPerturbations", num_perturbations}};
     drawing_["iterations"] = Json::array();
   }
 
@@ -143,7 +143,7 @@ void Floorplanner::SA() {
   floorplan.Pack(database_);
 
   if (is_drawing_) {
-    drawing_["initial_floorplan"] = floorplan.drawing();
+    drawing_["initialFloorplan"] = floorplan.drawing();
   }
 
   double adaptive_alpha = adaptive_alpha_base;
@@ -191,7 +191,7 @@ void Floorplanner::SA() {
 
         if (is_drawing_) {
           Json floorplan_drawing = floorplan.drawing();
-          floorplan_drawing["is_accepted"] = true;
+          floorplan_drawing["isAccepted"] = true;
           floorplan_drawing["cost"] = cost;
           Json& iteration = drawing_["iterations"].back();
           iteration["floorplans"].push_back(floorplan_drawing);
@@ -205,7 +205,7 @@ void Floorplanner::SA() {
 
           if (is_drawing_) {
             Json floorplan_drawing = floorplan.drawing();
-            floorplan_drawing["is_accepted"] = true;
+            floorplan_drawing["isAccepted"] = true;
             floorplan_drawing["cost"] = cost;
             Json& iteration = drawing_["iterations"].back();
             iteration["floorplans"].push_back(floorplan_drawing);
@@ -213,7 +213,7 @@ void Floorplanner::SA() {
         } else {
           if (is_drawing_) {
             Json new_floorplan_drawing = new_floorplan.drawing();
-            new_floorplan_drawing["is_accepted"] = false;
+            new_floorplan_drawing["isAccepted"] = false;
             new_floorplan_drawing["cost"] = cost;
             Json& iteration = drawing_["iterations"].back();
             iteration["floorplans"].push_back(new_floorplan_drawing);
@@ -251,7 +251,7 @@ void Floorplanner::SA() {
 
     if (is_drawing_) {
       Json& iteration = drawing_["iterations"].back();
-      iteration["num_feasible_floorplans"] = num_feasible_floorplans;
+      iteration["numFeasibleFloorplans"] = num_feasible_floorplans;
     }
   }
 }
@@ -272,10 +272,10 @@ void Floorplanner::FastSA() {
   const int k = 6;
 
   if (is_drawing_) {
-    drawing_["config"] = {{"initial_temperature", initial_temperature},
+    drawing_["config"] = {{"initialTemperature", initial_temperature},
                           {"c", c},
                           {"k", k},
-                          {"num_perturbations", num_perturbations}};
+                          {"numPerturbations", num_perturbations}};
     drawing_["iterations"] = Json::array();
   }
 
@@ -283,7 +283,7 @@ void Floorplanner::FastSA() {
   floorplan.Pack(database_);
 
   if (is_drawing_) {
-    drawing_["initial_floorplan"] = floorplan.drawing();
+    drawing_["initialFloorplan"] = floorplan.drawing();
   }
 
   double adaptive_alpha = adaptive_alpha_base;
@@ -334,7 +334,7 @@ void Floorplanner::FastSA() {
 
         if (is_drawing_) {
           Json floorplan_drawing = floorplan.drawing();
-          floorplan_drawing["is_accepted"] = true;
+          floorplan_drawing["isAccepted"] = true;
           floorplan_drawing["cost"] = cost;
           Json& iteration = drawing_["iterations"].back();
           iteration["floorplans"].push_back(floorplan_drawing);
@@ -350,7 +350,7 @@ void Floorplanner::FastSA() {
 
           if (is_drawing_) {
             Json floorplan_drawing = floorplan.drawing();
-            floorplan_drawing["is_accepted"] = true;
+            floorplan_drawing["isAccepted"] = true;
             floorplan_drawing["cost"] = cost;
             Json& iteration = drawing_["iterations"].back();
             iteration["floorplans"].push_back(floorplan_drawing);
@@ -358,7 +358,7 @@ void Floorplanner::FastSA() {
         } else {
           if (is_drawing_) {
             Json new_floorplan_drawing = new_floorplan.drawing();
-            new_floorplan_drawing["is_accepted"] = false;
+            new_floorplan_drawing["isAccepted"] = false;
             new_floorplan_drawing["cost"] = cost;
             Json& iteration = drawing_["iterations"].back();
             iteration["floorplans"].push_back(new_floorplan_drawing);
@@ -404,7 +404,7 @@ void Floorplanner::FastSA() {
 
     if (is_drawing_) {
       Json& iteration = drawing_["iterations"].back();
-      iteration["num_feasible_floorplans"] = num_feasible_floorplans;
+      iteration["numFeasibleFloorplans"] = num_feasible_floorplans;
     }
   }
 }

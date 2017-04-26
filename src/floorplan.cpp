@@ -79,8 +79,8 @@ void Floorplan::Perturb(const Database& database) {
         const string& macro_a_name = database.macro(node_a_macro_id).name();
         const string& macro_b_name = database.macro(node_b_macro_id).name();
         drawing_["perturbation"] = {{"type", "swap"},
-                                    {"macro_a", macro_a_name},
-                                    {"macro_b", macro_b_name}};
+                                    {"macroA", macro_a_name},
+                                    {"macroB", macro_b_name}};
       }
 
       break;
@@ -102,9 +102,9 @@ void Floorplan::Perturb(const Database& database) {
         const int node_b_macro_id = macro_id_by_node_id_.at(node_b_id);
         const string& macro_a_name = database.macro(node_a_macro_id).name();
         const string& macro_b_name = database.macro(node_b_macro_id).name();
-        drawing_["perturbation"] = {{"type", "delete_and_insert"},
-                                    {"deleted_macro", macro_a_name},
-                                    {"target_macro", macro_b_name}};
+        drawing_["perturbation"] = {{"type", "deleteAndInsert"},
+                                    {"deletedMacro", macro_a_name},
+                                    {"targetMacro", macro_b_name}};
       }
 
       break;
@@ -141,9 +141,9 @@ void Floorplan::Pack(const Database& database) {
     const string& root_macro_name = root_macro.name();
     drawing_["macros"].push_back(
         {{"name", root_macro_name},
-         {"lower_left",
+         {"lowerLeft",
           {{"x", root_macro_lower_left.x()}, {"y", root_macro_lower_left.y()}}},
-         {"upper_right",
+         {"upperRight",
           {{"x", root_macro_upper_right.x()},
            {"y", root_macro_upper_right.y()}}}});
   }
@@ -186,10 +186,10 @@ void Floorplan::Pack(const Database& database) {
         const string& left_child_macro_name = left_child_macro.name();
         drawing_["macros"].push_back(
             {{"name", left_child_macro_name},
-             {"lower_left",
+             {"lowerLeft",
               {{"x", left_child_macro_lower_left.x()},
                {"y", left_child_macro_lower_left.y()}}},
-             {"upper_right",
+             {"upperRight",
               {{"x", left_child_macro_upper_right.x()},
                {"y", left_child_macro_upper_right.y()}}}});
       }
@@ -222,10 +222,10 @@ void Floorplan::Pack(const Database& database) {
         const string& right_child_macro_name = right_child_macro.name();
         drawing_["macros"].push_back(
             {{"name", right_child_macro_name},
-             {"lower_left",
+             {"lowerLeft",
               {{"x", right_child_macro_lower_right.x()},
                {"y", right_child_macro_lower_right.y()}}},
-             {"upper_right",
+             {"upperRight",
               {{"x", right_child_macro_upper_right.x()},
                {"y", right_child_macro_upper_right.y()}}}});
       }

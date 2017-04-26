@@ -337,7 +337,7 @@ store.subscribe(() => {
       stepBackwardBtn.classList.remove('disabled');
     }
 
-    if (frame.nthIteration >= numIterations - 1) {
+    if (frame.nthIteration >= numIterations - 1 || frame.nthIteration === -2) {
       stepForwardBtn.classList.add('disabled');
     } else {
       stepForwardBtn.classList.remove('disabled');
@@ -376,8 +376,8 @@ store.subscribe(() => {
     benchmark,
     alpha,
     outline,
-    best_floorplan: bestFloorplan,
-    initial_floorplan: initialFloorplan,
+    bestFloorplan,
+    initialFloorplan,
     iterations,
   } = drawing;
   const { nthIteration, nthFloorplan } = frame;
@@ -521,12 +521,7 @@ function drawMacro({ name, lowerLeft, upperRight }, scale) {
 store.subscribe(() => {
   const { isFetchingDrawing, frame, drawing } = store.getState();
   const { nthIteration, nthFloorplan, nthMacro } = frame;
-  const {
-    outline,
-    best_floorplan: bestFloorplan,
-    initial_floorplan: initialFloorplan,
-    iterations,
-  } = drawing;
+  const { outline, bestFloorplan, initialFloorplan, iterations } = drawing;
 
   if (isFetchingDrawing) {
     stage.removeChildren();
@@ -545,12 +540,8 @@ store.subscribe(() => {
 
       drawOutline(outline, scale);
 
-      bestFloorplan.macros.forEach(({
-        name,
-        lower_left: lowerLeft,
-        upper_right: upperRight,
-      }) => {
-        drawMacro({ name, lowerLeft, upperRight }, scale);
+      bestFloorplan.macros.forEach((macro) => {
+        drawMacro(macro, scale);
       });
     }
   } else if (nthIteration === -1) {
@@ -566,12 +557,8 @@ store.subscribe(() => {
 
       drawOutline(outline, scale);
 
-      initialFloorplan.macros.forEach(({
-        name,
-        lower_left: lowerLeft,
-        upper_right: upperRight,
-      }) => {
-        drawMacro({ name, lowerLeft, upperRight }, scale);
+      initialFloorplan.macros.forEach((macro) => {
+        drawMacro(macro, scale);
       });
     }
   } else if (iterations) {
@@ -590,12 +577,8 @@ store.subscribe(() => {
 
         drawOutline(outline, scale);
 
-        floorplan.macros.slice(0, nthMacro + 1).forEach(({
-          name,
-          lower_left: lowerLeft,
-          upper_right: upperRight,
-        }) => {
-          drawMacro({ name, lowerLeft, upperRight }, scale);
+        floorplan.macros.slice(0, nthMacro + 1).forEach((macro) => {
+          drawMacro(macro, scale);
         });
       }
     }
