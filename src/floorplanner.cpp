@@ -119,13 +119,14 @@ void Floorplanner::Run() {
 }
 
 void Floorplanner::SA() {
-  const double initial_uphill_probability = 0.999;
+  const double initial_uphill_probability = 0.999999;
   const double r = 0.85;
   const double initial_temperature =
       average_uphill_cost_ / -1 * log(initial_uphill_probability);
-  const double frozen_temperature = initial_temperature / 1.0e4;
   const int num_perturbations =
       database_.num_macros() * database_.num_macros() * 3;
+  const double frozen_temperature = initial_temperature / 1.0e4;
+  const double frozen_acceptance_rate = 0.01;
   const double alpha = alpha_;
   const double beta = (1 - alpha);
   const double adaptive_alpha_base = alpha / 4.0;
@@ -221,8 +222,19 @@ void Floorplanner::SA() {
       }
     }
 
+    /* cout << "nth_iteration: " << nth_iteration << endl; */
+    /* cout << "  temperature: " << temperature << endl; */
+    /* cout << "  num_accepted_floorplans: " << num_accepted_floorplans << endl;
+     */
+    /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl;
+     */
+    /* cout << "  adaptive_alpha: " << adaptive_alpha */
+    /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
+    /* cout << "  Best area: " << best_floorplan_.area() */
+    /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
+
     if (num_accepted_floorplans / static_cast<double>(num_perturbations) <
-        0.05) {
+        frozen_acceptance_rate) {
       break;
     }
 
@@ -245,12 +257,13 @@ void Floorplanner::SA() {
 }
 
 void Floorplanner::FastSA() {
-  const double initial_uphill_probability = 0.999;
+  const double initial_uphill_probability = 0.999999;
   const double initial_temperature =
       average_uphill_cost_ / -1 * log(initial_uphill_probability);
-  const double frozen_temperature = initial_temperature / 1.0e50;
   const int num_perturbations =
       database_.num_macros() * database_.num_macros() * 3;
+  const double frozen_temperature = initial_temperature / 1.0e50;
+  const double frozen_acceptance_rate = 0.01;
   const double alpha = alpha_;
   const double beta = (1 - alpha);
   const double adaptive_alpha_base = alpha / 4.0;
@@ -357,6 +370,8 @@ void Floorplanner::FastSA() {
     /* cout << "nth_iteration: " << nth_iteration << endl; */
     /* cout << "  temperature: " << temperature << endl; */
     /* cout << "  total_delta_cost: " << total_delta_cost << endl; */
+    /* cout << "  num_accepted_floorplans: " << num_accepted_floorplans << endl;
+     */
     /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl;
      */
     /* cout << "  adaptive_alpha: " << adaptive_alpha */
@@ -365,7 +380,7 @@ void Floorplanner::FastSA() {
     /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
 
     if (num_accepted_floorplans / static_cast<double>(num_perturbations) <
-        0.05) {
+        frozen_acceptance_rate) {
       break;
     }
 
@@ -401,6 +416,7 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
   const double width = floorplan.width();
   const double height = floorplan.height();
 
+  const double penalty_weight = 10.0;
   double penalty = 0.0;
   if (width > outline_width || height > outline_height) {
     if (width > outline_width && height > outline_height) {
@@ -415,6 +431,7 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
     penalty /= (max_area_ - min_area_);
   }
 
+  /* const double penalty_weight = 1.0; */
   /* double penalty = 0.0; */
   /* if (width > outline_width || height > outline_height) { */
   /*   const double ratio = height / width; */
@@ -422,6 +439,7 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
   /*   penalty = (ratio - outline_ratio) * (ratio - outline_ratio); */
   /* } */
 
+  /* const double penalty_weight = 1.0; */
   /* const double ratio = height / width; */
   /* const double outline_ratio = outline_height / outline_width; */
   /* const double penalty = (ratio - outline_ratio) * (ratio - outline_ratio);
@@ -431,7 +449,6 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
   const double normalized_wirelength =
       floorplan.wirelength() / (max_wirelength_ - min_wirelength_);
 
-  const double penalty_weight = 10.0;
   const double cost = alpha * normalized_area + beta * normalized_wirelength +
                       (1.0 - alpha - beta) * penalty_weight * penalty;
 
