@@ -8,7 +8,7 @@
 class Floorplanner {
  public:
   Floorplanner(const Database& database, double alpha,
-               const std::string& sa_mode, bool is_drawing);
+               const std::string& sa_mode, bool is_verbose, bool is_drawing);
 
   const nlohmann::json& drawing() const;
 
@@ -26,6 +26,7 @@ class Floorplanner {
   const Database& database_;
   double alpha_;
   std::string sa_mode_;
+  bool is_verbose_;
   bool is_drawing_;
   double min_area_;
   double max_area_;
