@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     ("help,h", "Print help messages")
     ("verbose,v", "Print detail informations during floorplanning")
     ("seed", po::value<long>()->value_name("NUM"), "Seed for random number generator")
-    ("sa", po::value<string>()->value_name("MODE")->default_value("both"), "SA mode: classical, fast or both")
+    ("sa", po::value<string>()->value_name("MODE")->default_value("fast-5"), "SA mode: classical, fast, both or fast-5")
     ("draw-all", po::value<string>()->value_name("FILE"), "Draw all floorplans")
     ("draw-only-best", po::value<string>()->value_name("FILE"), "Draw only best floorplan")
     ("alpha", po::value<double>()->value_name("NUM")->required(), "Alpha")

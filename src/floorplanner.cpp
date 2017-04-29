@@ -101,7 +101,7 @@ void Floorplanner::Run() {
 
       FastSA();
     } while (best_floorplan_.area() == 0.0);
-  } else {
+  } else if (sa_mode_ == "both") {
     Floorplan initial_floorplan(best_floorplan_);
 
     int nth_sa = 0;
@@ -133,6 +133,44 @@ void Floorplanner::Run() {
       best_floorplan_ = floorplan_sa;
     } else {
       best_floorplan_ = floorplan_fsa;
+    }
+  } else if (sa_mode_ == "fast-5") {
+    const int num_fsa = 5;
+
+    Floorplan initial_floorplan(best_floorplan_);
+    Floorplan best_floorplan(initial_floorplan);
+    int nth_fsa = 0;
+    for (int i = 0; i < num_fsa; ++i) {
+      ++nth_fsa;
+
+      if (is_verbose_) {
+        cout << nth_fsa << " th Fast SA" << endl;
+      }
+
+      FastSA();
+
+      if (best_floorplan_.area() != 0.0) {
+        const double beta = 1.0 - alpha_;
+        if (best_floorplan.area() == 0.0 ||
+            ComputeCost(best_floorplan_, alpha_, beta) <
+                ComputeCost(best_floorplan, alpha_, beta)) {
+          best_floorplan = best_floorplan_;
+        }
+      }
+
+      best_floorplan_ = initial_floorplan;
+    }
+
+    best_floorplan_ = best_floorplan;
+
+    while (best_floorplan_.area() == 0.0) {
+      ++nth_fsa;
+
+      if (is_verbose_) {
+        cout << nth_fsa << " th Fast SA" << endl;
+      }
+
+      FastSA();
     }
   }
 }
@@ -443,7 +481,7 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
   const double width = floorplan.width();
   const double height = floorplan.height();
 
-  const double penalty_weight = 10.0;
+  const double penalty_weight = 100.0;
   double penalty = 0.0;
   if (width > outline_width || height > outline_height) {
     if (width > outline_width && height > outline_height) {
