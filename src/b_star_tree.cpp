@@ -6,12 +6,28 @@ using namespace std;
 
 BStarTree::BStarTree(int num_macros)
     : root_id_(0), nodes_(num_macros, Node(-1, -1, -1)) {
-  for (int i = 0; i < nodes_.size() - 1; ++i) {
+  const int num_nodes = nodes_.size();
+
+  for (int i = 0; i < num_nodes - 1; ++i) {
     nodes_[i].left_child_id_ = i + 1;
   }
-  for (int i = 1; i < nodes_.size(); ++i) {
+  for (int i = 1; i < num_nodes; ++i) {
     nodes_[i].parent_id_ = i - 1;
   }
+
+  /* for (int i = 0; i < num_nodes / 2 + 1; ++i) { */
+  /*   const int right_child_id = (i + 1) * 2; */
+  /*   const int left_child_id = right_child_id - 1; */
+  /*   if (left_child_id < num_nodes) { */
+  /*     nodes_[i].left_child_id_ = left_child_id; */
+  /*   } */
+  /*   if (right_child_id < num_nodes) { */
+  /*     nodes_[i].right_child_id_ = right_child_id; */
+  /*   } */
+  /* } */
+  /* for (int i = 1; i < num_nodes; ++i) { */
+  /*   nodes_[i].parent_id_ = (i - 1) / 2; */
+  /* } */
 }
 
 void BStarTree::Print(ostream& os, int indent_level) const {

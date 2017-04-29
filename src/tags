@@ -242,6 +242,7 @@ is_root	json.hpp	/^        bool is_root() const$/;"	f	class:nlohmann::basic_json
 is_rotatable	macro.cpp	/^bool Macro::is_rotatable() const { return is_rotatable_; }$/;"	f	class:Macro
 is_rotatable_	macro.hpp	/^  bool is_rotatable_;$/;"	m	class:Macro
 is_terminal_existed	database.cpp	/^bool Database::is_terminal_existed(const string& terminal_name) const {$/;"	f	class:Database
+is_verbose_	floorplanner.hpp	/^  bool is_verbose_;$/;"	m	class:Floorplanner
 is_visited	b_star_tree.cpp	/^bool BStarTree::is_visited(int node_id) const {$/;"	f	class:BStarTree
 is_visited_	b_star_tree.hpp	/^    bool is_visited_;$/;"	m	class:BStarTree::Node
 iter_impl	json.hpp	/^    class iter_impl : public std::iterator<std::random_access_iterator_tag, U>$/;"	c	class:nlohmann::basic_json

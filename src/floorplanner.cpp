@@ -7,10 +7,12 @@ using namespace std;
 using Json = nlohmann::json;
 
 Floorplanner::Floorplanner(const Database& database, double alpha,
-                           const string& sa_mode, bool is_drawing)
+                           const string& sa_mode, bool is_verbose,
+                           bool is_drawing)
     : database_(database),
       alpha_(alpha),
       sa_mode_(sa_mode),
+      is_verbose_(is_verbose),
       is_drawing_(is_drawing),
       min_area_(numeric_limits<double>::max()),
       max_area_(0.0),
@@ -19,9 +21,10 @@ Floorplanner::Floorplanner(const Database& database, double alpha,
       average_area_(0.0),
       average_wirelength_(0.0),
       average_uphill_cost_(0.0),
-      best_floorplan_(Floorplan(database.num_macros(), is_drawing)),
+      best_floorplan_(Floorplan(database_.num_macros(), is_drawing)),
       drawing_(Json::object()) {
-  const int num_perturbations = 5000;
+  const int num_macros = database_.num_macros();
+  const int num_perturbations = num_macros * num_macros;
   Floorplan floorplan(best_floorplan_);
 
   double total_area = 0.0;
@@ -79,30 +82,46 @@ const Floorplan& Floorplanner::best_floorplan() const {
 
 void Floorplanner::Run() {
   if (sa_mode_ == "classical") {
+    int nth_sa = 0;
     do {
-      drawing_ = Json::object();
+      ++nth_sa;
+      if (is_verbose_) {
+        cout << nth_sa << " th SA" << endl;
+      }
 
       SA();
     } while (best_floorplan_.area() == 0.0);
   } else if (sa_mode_ == "fast") {
+    int nth_fsa = 0;
     do {
-      drawing_ = Json::object();
+      ++nth_fsa;
+      if (is_verbose_) {
+        cout << nth_fsa << " th Fast SA" << endl;
+      }
 
       FastSA();
     } while (best_floorplan_.area() == 0.0);
-  } else {
+  } else if (sa_mode_ == "both") {
     Floorplan initial_floorplan(best_floorplan_);
 
+    int nth_sa = 0;
     do {
-      drawing_ = Json::object();
+      ++nth_sa;
+      if (is_verbose_) {
+        cout << nth_sa << " th SA" << endl;
+      }
 
       SA();
     } while (best_floorplan_.area() == 0.0);
     Floorplan floorplan_sa(best_floorplan_);
 
     best_floorplan_ = initial_floorplan;
+    int nth_fsa = 0;
     do {
-      drawing_ = Json::object();
+      ++nth_fsa;
+      if (is_verbose_) {
+        cout << nth_fsa << " th Fast SA" << endl;
+      }
 
       FastSA();
     } while (best_floorplan_.area() == 0.0);
@@ -115,17 +134,55 @@ void Floorplanner::Run() {
     } else {
       best_floorplan_ = floorplan_fsa;
     }
+  } else if (sa_mode_ == "fast-5") {
+    const int num_fsa = 5;
+
+    Floorplan initial_floorplan(best_floorplan_);
+    Floorplan best_floorplan(initial_floorplan);
+    int nth_fsa = 0;
+    for (int i = 0; i < num_fsa; ++i) {
+      ++nth_fsa;
+
+      if (is_verbose_) {
+        cout << nth_fsa << " th Fast SA" << endl;
+      }
+
+      FastSA();
+
+      if (best_floorplan_.area() != 0.0) {
+        const double beta = 1.0 - alpha_;
+        if (best_floorplan.area() == 0.0 ||
+            ComputeCost(best_floorplan_, alpha_, beta) <
+                ComputeCost(best_floorplan, alpha_, beta)) {
+          best_floorplan = best_floorplan_;
+        }
+      }
+
+      best_floorplan_ = initial_floorplan;
+    }
+
+    best_floorplan_ = best_floorplan;
+
+    while (best_floorplan_.area() == 0.0) {
+      ++nth_fsa;
+
+      if (is_verbose_) {
+        cout << nth_fsa << " th Fast SA" << endl;
+      }
+
+      FastSA();
+    }
   }
 }
 
 void Floorplanner::SA() {
-  const double initial_uphill_probability = 0.999999;
-  const double r = 0.85;
+  const double initial_uphill_probability = 0.99;
+  const double r = 0.75;
   const double initial_temperature =
-      average_uphill_cost_ / -1 * log(initial_uphill_probability);
+      average_uphill_cost_ / (-1 * log(initial_uphill_probability));
   const int num_perturbations =
       database_.num_macros() * database_.num_macros() * 3;
-  const double frozen_temperature = initial_temperature / 1.0e4;
+  const double frozen_temperature = initial_temperature / 1.0e50;
   const double frozen_acceptance_rate = 0.01;
   const double alpha = alpha_;
   const double beta = (1 - alpha);
@@ -133,6 +190,7 @@ void Floorplanner::SA() {
   const double adaptive_beta_base = beta / 4.0;
 
   if (is_drawing_) {
+    drawing_ = Json::object();
     drawing_["config"] = {{"initialTemperature", initial_temperature},
                           {"r", r},
                           {"numPerturbations", num_perturbations}};
@@ -222,16 +280,19 @@ void Floorplanner::SA() {
       }
     }
 
-    /* cout << "nth_iteration: " << nth_iteration << endl; */
-    /* cout << "  temperature: " << temperature << endl; */
-    /* cout << "  num_accepted_floorplans: " << num_accepted_floorplans << endl;
-     */
-    /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl;
-     */
-    /* cout << "  adaptive_alpha: " << adaptive_alpha */
-    /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
-    /* cout << "  Best area: " << best_floorplan_.area() */
-    /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
+    if (is_verbose_) {
+      cout << "  nth_iteration: " << nth_iteration << endl;
+      cout << "    temperature: " << temperature << endl;
+      cout << "    num_accepted_floorplans: " << num_accepted_floorplans
+           << endl;
+      cout << "    num_feasible_floorplans: " << num_feasible_floorplans
+           << endl;
+      cout << "    num_perturbations: " << num_perturbations << endl;
+      cout << "    adaptive_alpha: " << adaptive_alpha
+           << "\tadaptive_beta: " << adaptive_beta << endl;
+      cout << "    Best area: " << best_floorplan_.area()
+           << "\tBest wirelength: " << best_floorplan_.wirelength() << endl;
+    }
 
     if (num_accepted_floorplans / static_cast<double>(num_perturbations) <
         frozen_acceptance_rate) {
@@ -257,9 +318,9 @@ void Floorplanner::SA() {
 }
 
 void Floorplanner::FastSA() {
-  const double initial_uphill_probability = 0.999999;
+  const double initial_uphill_probability = 0.99;
   const double initial_temperature =
-      average_uphill_cost_ / -1 * log(initial_uphill_probability);
+      average_uphill_cost_ / (-1 * log(initial_uphill_probability));
   const int num_perturbations =
       database_.num_macros() * database_.num_macros() * 3;
   const double frozen_temperature = initial_temperature / 1.0e50;
@@ -269,9 +330,10 @@ void Floorplanner::FastSA() {
   const double adaptive_alpha_base = alpha / 4.0;
   const double adaptive_beta_base = beta / 4.0;
   const int c = 100;
-  const int k = 6;
+  const int k = 7;
 
   if (is_drawing_) {
+    drawing_ = Json::object();
     drawing_["config"] = {{"initialTemperature", initial_temperature},
                           {"c", c},
                           {"k", k},
@@ -367,17 +429,20 @@ void Floorplanner::FastSA() {
       }
     }
 
-    /* cout << "nth_iteration: " << nth_iteration << endl; */
-    /* cout << "  temperature: " << temperature << endl; */
-    /* cout << "  total_delta_cost: " << total_delta_cost << endl; */
-    /* cout << "  num_accepted_floorplans: " << num_accepted_floorplans << endl;
-     */
-    /* cout << "  num_feasible_floorplans: " << num_feasible_floorplans << endl;
-     */
-    /* cout << "  adaptive_alpha: " << adaptive_alpha */
-    /*      << "\tadaptive_beta: " << adaptive_beta << endl; */
-    /* cout << "  Best area: " << best_floorplan_.area() */
-    /*      << "\tBest wirelength: " << best_floorplan_.wirelength() << endl; */
+    if (is_verbose_) {
+      cout << "  nth_iteration: " << nth_iteration << endl;
+      cout << "    temperature: " << temperature << endl;
+      cout << "    total_delta_cost: " << total_delta_cost << endl;
+      cout << "    num_accepted_floorplans: " << num_accepted_floorplans
+           << endl;
+      cout << "    num_feasible_floorplans: " << num_feasible_floorplans
+           << endl;
+      cout << "    num_perturbations: " << num_perturbations << endl;
+      cout << "    adaptive_alpha: " << adaptive_alpha
+           << "\tadaptive_beta: " << adaptive_beta << endl;
+      cout << "    Best area: " << best_floorplan_.area()
+           << "\tBest wirelength: " << best_floorplan_.wirelength() << endl;
+    }
 
     if (num_accepted_floorplans / static_cast<double>(num_perturbations) <
         frozen_acceptance_rate) {
@@ -416,7 +481,7 @@ double Floorplanner::ComputeCost(const Floorplan& floorplan, double alpha,
   const double width = floorplan.width();
   const double height = floorplan.height();
 
-  const double penalty_weight = 10.0;
+  const double penalty_weight = 100.0;
   double penalty = 0.0;
   if (width > outline_width || height > outline_height) {
     if (width > outline_width && height > outline_height) {

@@ -17,8 +17,9 @@ int main(int argc, char* argv[]) {
   // clang-format off
   options.add_options()
     ("help,h", "Print help messages")
+    ("verbose,v", "Print detail informations during floorplanning")
     ("seed", po::value<long>()->value_name("NUM"), "Seed for random number generator")
-    ("sa", po::value<string>()->value_name("MODE")->default_value("both"), "SA mode: classical, fast or both")
+    ("sa", po::value<string>()->value_name("MODE")->default_value("classical"), "SA mode: classical, fast, both or fast-5")
     ("draw-all", po::value<string>()->value_name("FILE"), "Draw all floorplans")
     ("draw-only-best", po::value<string>()->value_name("FILE"), "Draw only best floorplan")
     ("alpha", po::value<double>()->value_name("NUM")->required(), "Alpha")
@@ -44,7 +45,8 @@ int main(int argc, char* argv[]) {
 
   if (arguments.count("help") || argc < 5) {
     cout << "Usage:" << endl;
-    cout << "  " << argv[0] << " [--seed <number>] [--sa <classical|fast|both>]"
+    cout << "  " << argv[0] << " [--verbose]"
+         << " [--seed <number>] [--sa <classical|fast|both|fast-5>]"
          << " [--draw-all <file>] [--draw-only-best <file>]"
          << " <alpha> <block-input> <net-input> <output>" << endl;
     cout << options;
@@ -58,7 +60,7 @@ int main(int argc, char* argv[]) {
   }
 
   const long seed =
-      arguments.count("seed") == 1 ? arguments["seed"].as<long>() : time(NULL);
+      arguments.count("seed") ? arguments["seed"].as<long>() : time(NULL);
   srand(seed);
 
   const string block_input_name = arguments["block-input"].as<string>();
@@ -72,12 +74,11 @@ int main(int argc, char* argv[]) {
   Database database(block_input, net_input);
   /* database.Print(); */
 
-  const string sa_mode =
-      arguments.count("sa") == 1 ? arguments["sa"].as<string>() : "both";
+  const string sa_mode = arguments["sa"].as<string>();
+  const bool is_verbose = arguments.count("verbose");
+  const bool is_drawing = arguments.count("draw-all");
 
-  const bool is_drawing = arguments.count("draw-all") == 1 ? true : false;
-
-  Floorplanner floorplanner(database, alpha, sa_mode, is_drawing);
+  Floorplanner floorplanner(database, alpha, sa_mode, is_verbose, is_drawing);
   floorplanner.Run();
 
   double runtime = (clock() - time_begin) / static_cast<double>(CLOCKS_PER_SEC);
@@ -101,7 +102,7 @@ int main(int argc, char* argv[]) {
   cout << "best area:\t" << best_area << "\tbest wirelength:\t"
        << best_wirelength << endl;
   cout << "alpha:\t\t" << alpha << "\t\tbest cost:\t\t" << best_cost << endl;
-  cout << "runtime:\t" << runtime << endl;
+  cout << "seed: \t\t" << seed << "\truntime:\t\t" << runtime << endl;
 
   ofstream output(arguments["output"].as<string>());
   output << best_cost << endl;
@@ -140,8 +141,7 @@ int main(int argc, char* argv[]) {
     drawing_output << drawing;
   }
 
-  const bool is_drawing_only_best =
-      arguments.count("draw-only-best") == 1 ? true : false;
+  const bool is_drawing_only_best = arguments.count("draw-only-best");
 
   if (is_drawing_only_best) {
     ofstream drawing_output(arguments["draw-only-best"].as<string>());

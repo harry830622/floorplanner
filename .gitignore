@@ -1,5 +1,6 @@
 fp
 *.rpt
+*.json
 
 # Compiled Object files
 *.slo
