@@ -177,7 +177,7 @@ void Floorplanner::Run() {
 
 void Floorplanner::SA() {
   const double initial_uphill_probability = 0.99;
-  const double r = 0.85;
+  const double r = 0.75;
   const double initial_temperature =
       average_uphill_cost_ / (-1 * log(initial_uphill_probability));
   const int num_perturbations =
@@ -330,7 +330,7 @@ void Floorplanner::FastSA() {
   const double adaptive_alpha_base = alpha / 4.0;
   const double adaptive_beta_base = beta / 4.0;
   const int c = 100;
-  const int k = 6;
+  const int k = 7;
 
   if (is_drawing_) {
     drawing_ = Json::object();
