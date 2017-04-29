@@ -13,8 +13,9 @@ for i in $(seq 1 $num_of_times); do
   echo "$i th iteration"
   run="$exe $alpha ./input/$benchmark.block ./input/$benchmark.nets ./output/$benchmark.rpt $flags --seed $seed"
   echo "$run"
-  cost="$($run | tee /dev/tty | grep "cost" | awk "{print \$5}")"
-  runtime="$($run | tee /dev/tty | grep "runtime" | awk "{print \$4}")"
+  result="$($run | tee /dev/tty)"
+  cost="$(echo "$result" | grep "cost" | awk "{print \$5}")"
+  runtime="$(echo "$result" | grep "runtime" | awk "{print \$4}")"
   cost_sum=$(awk "BEGIN {print $cost_sum+$cost; exit}")
   runtime_sum=$(awk "BEGIN {print $runtime_sum+$runtime; exit}")
   seed=$(($seed + 1))
