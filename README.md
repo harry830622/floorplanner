@@ -26,6 +26,17 @@ Options:
   --output FILE          Output
 ```
 
+## SA mode
+ - classical: Run classical SA until floorplan is feasible. (default)
+ - fast: Run fast SA until floorplan is feasible.
+ - both: Run classical SA and fast SA until floorplan is feasible, then
+   output the better one.
+ - fast-5: Run fast SA 5 times and output the best floorplan.
+ 
+## Seed
+Since every perturbation in SA is randomly made, if we fix the seed for
+the random number generator, the output will be the same every time.
+
 ## GUI
 
 You can run floorplanning on my [web app](https://b-star-tree.yhchang.me).
