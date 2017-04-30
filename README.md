@@ -34,8 +34,9 @@ Options:
  - fast-5: Run fast SA 5 times and output the best floorplan.
  
 ## Seed
-Since every perturbation in SA is randomly made, if we fix the seed for
-the random number generator, the output will be the same every time.
+Since every perturbation in SA is randomly made, we can fix the seed to
+get the same sequence of preturbations, thus the same floorplan result
+every time.
 
 ## GUI
 
