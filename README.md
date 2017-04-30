@@ -35,7 +35,7 @@ Options:
  
 ## Seed
 Since every perturbation in SA is randomly made, we can fix the seed to
-get the same sequence of preturbations, thus the same floorplan result
+get the same sequence of perturbations, thus the same floorplan result
 every time.
 
 ## GUI
