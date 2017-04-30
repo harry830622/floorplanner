@@ -26,6 +26,6 @@ Options:
   --output FILE          Output
 ```
 
-## Web App
+## GUI
 
 You can run floorplanning on my [web app](https://b-star-tree.yhchang.me).
